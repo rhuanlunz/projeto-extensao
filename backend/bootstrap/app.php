@@ -7,6 +7,11 @@ use Illuminate\Foundation\Configuration\Middleware;
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
         health: '/up',
+        then: function() {
+            $api_prefix = '/api/v1/';
+
+            Route::prefix($api_prefix.'auth')->group(base_path('routes/auth.php'));
+        }
     )
     ->withMiddleware(function (Middleware $middleware): void {
         //
