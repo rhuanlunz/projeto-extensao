@@ -41,7 +41,6 @@ class AuthController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Credenciais inválidas. Verifique e tente novamente.',
-                'data' => []
             ], 401);
         }
 
@@ -53,6 +52,16 @@ class AuthController extends Controller
                 'token_type' => 'bearer',
                 'expires_in' => auth()->factory()->getTTL() * 60
             ]
-        ], 201);
+        ], 200);
+    }
+
+    public function logout()
+    {
+        auth()->logout();
+
+        return response()->json([
+            'sucess' => true,
+            'message' => 'Logout realizado com sucesso',
+        ], 200);
     }
 }
