@@ -10,7 +10,7 @@ class RegisterRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string', 'max:255', 'alpha'],
-            'email' => ['required', 'string', 'email', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'max:300'],
             'password_confirmation' => ['required', 'string', 'min:8', 'max:300', 'confirmed:password'],
         ];
@@ -28,6 +28,7 @@ class RegisterRequest extends FormRequest
             'email.string' => 'O e-mail deve ser uma string válida.',
             'email.email' => 'Informe um endereço de e-mail válido.',
             'email.max' => 'O e-mail não pode ultrapassar 255 caracteres.',
+            'email.unique' => 'O e-mail informado não pode ser utilizado. Verifique os dados e tente novamente.',
 
             'password.required' => 'O campo senha é obrigatório.',
             'password.string' => 'A senha deve ser uma string válida.',
