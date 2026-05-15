@@ -7,6 +7,7 @@ use App\Http\Requests\LoginRequest;
 use Illuminate\Http\JsonResponse;
 use App\Models\User;
 
+
 class AuthController extends Controller
 {
     public function register(RegisterRequest $request): JsonResponse

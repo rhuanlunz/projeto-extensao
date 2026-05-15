@@ -9,20 +9,21 @@ class RegisterRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required', 'string', 'max:255', 'alpha'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password' => ['required', 'string', 'min:8', 'max:300'],
-            'password_confirmation' => ['required', 'string', 'min:8', 'max:300', 'confirmed:password'],
+            'name' => ['required', 'string', 'max:255', 'regex:/^[\pL\s]+$/u'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email'],
+            'password' => ['required', 'string', 'min:8', 'max:300', 'confirmed'],
+            'password_confirmation' => ['required', 'string', 'min:8', 'max:300'],
         ];
     }
 
     public function messages(): array
     {
-        return array(
+        return [
             'name.required' => 'O campo nome é obrigatório.',
             'name.string' => 'O nome deve ser uma string válida.',
             'name.max' => 'O nome não pode ultrapassar 255 caracteres.',
             'name.alpha' => 'O nome deve conter apenas letras.',
+            'name.regex' => 'O nome deve conter apenas letras e espaços.',
 
             'email.required' => 'O campo e-mail é obrigatório.',
             'email.string' => 'O e-mail deve ser uma string válida.',
@@ -40,7 +41,7 @@ class RegisterRequest extends FormRequest
             'password_confirmation.min' => 'A confirmação de senha deve ter pelo menos 8 caracteres.',
             'password_confirmation.max' => 'A confirmação de senha não pode ultrapassar 300 caracteres.',
             'password_confirmation.confirmed' => 'As senhas não coincidem.',
-        );
+        ];
     }
 
     public function authorize(): bool

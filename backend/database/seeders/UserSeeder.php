@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Http\Enums\Roles;
 use Illuminate\Support\Str;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -19,7 +20,7 @@ class UserSeeder extends Seeder
             'name' => 'bigboyadmin',
             'email' => 'bigbadass@root.rules',
             'password' => Hash::make('rootrules1234'),
-            'role_id' => 1,
+            'role_id' => Roles::ADMIN->value,
             'created_at' => now(),
             'updated_at' => now()
         ]);
