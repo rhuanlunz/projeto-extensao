@@ -10,7 +10,7 @@ class LoginRequest extends FormRequest
     {
         return [
             'email' => ['required', 'string', 'email', 'max:255'],
-            'password' => ['required', 'string', 'min:8', 'max:300']
+            'password' => ['required', 'string', 'max:300']
         ];
     }
 
@@ -24,7 +24,6 @@ class LoginRequest extends FormRequest
 
             'password.required' => 'O campo senha é obrigatório.',
             'password.string' => 'A senha deve ser uma string válida.',
-            'password.min' => 'A senha deve ter pelo menos 8 caracteres.',
             'password.max' => 'A senha não pode ultrapassar 300 caracteres.'
         );
     }
