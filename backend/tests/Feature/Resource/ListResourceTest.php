@@ -48,11 +48,6 @@ test('should return list of resources grouped by level name when they exist', fu
                         'name',
                         'unesc_id',
                         'status',
-                        'category_id',
-                        'level_id',
-                        'created_at',
-                        'updated_at',
-                        'deleted_at',
                         'level' => ['id', 'name'],
                         'category' => ['id', 'name']
                     ]

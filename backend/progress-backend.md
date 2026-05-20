@@ -101,7 +101,25 @@ Conclusão das operações fundamentais de CRUD para a feature de recursos (`res
 ### Motivo
 Finalizar o ciclo de gerenciamento básico de recursos, permitindo que administradores modifiquem dados existentes ou removam recursos (mantendo o rastro via Soft Delete) conforme definido no PRD.
 
+---
+
+## 2026-05-20 (Implementação Final: Review Backend)
+
+### Contexto
+Conclusão da implementação das melhorias solicitadas no review técnico, utilizando a base estrutural preparada e garantindo conformidade com os padrões do PRD.
+
+### Alterações realizadas
+- Ativação definitiva dos API Resources (`ResourceResource`, `CategoryResource`, `LevelResource`) nos endpoints de listagem, criação e atualização de recursos, garantindo a ocultação de campos internos (`timestamps`, `chaves estrangeiras`).
+- Padronização do endpoint `DELETE /api/v1/resources/{id}`: alterado status de `204` para `200` e adicionado corpo JSON de sucesso conforme `PRD-backend.md`.
+- Implementação de sanitização automática (trim) para o campo `name` via `prepareForValidation` nos Form Requests.
+- Adição de validação de tamanho máximo (`max:50`) para o campo `unesc_id`.
+- Atualização da suíte de testes (`DeleteResourceTest.php`) para validar o novo comportamento do endpoint de exclusão.
+- Garantia de integridade do domínio, mantendo a acentuação no campo `status` conforme restrição técnica de segurança.
+
+### Motivo
+Finalizar o ciclo de ajustes do review para entregar uma API profissional, padronizada e segura, alinhada às expectativas arquiteturais do projeto.
+
 ### Impactos
-A feature de recursos agora possui um CRUD funcional e testado. A arquitetura `Request -> Controller -> Service -> Model` foi preservada, garantindo manutenibilidade. O uso de Soft Deletes assegura que remoções não causem perda definitiva de dados no banco, respeitando a integridade referencial.
+A API agora expõe apenas os dados necessários de forma estruturada e consistente. O endpoint de deleção segue o padrão global de respostas do sistema. As entradas de dados estão mais protegidas via sanitização e validação de limites. Todos os testes feature foram validados e estão passando com as novas regras.
 
 

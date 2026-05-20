@@ -9,6 +9,7 @@ use Illuminate\Http\JsonResponse;
 
 use App\Http\Requests\StoreResourceRequest;
 use App\Http\Requests\UpdateResourceRequest;
+use App\Http\Resources\ResourceResource;
 
 class ResourceController extends Controller
 {
@@ -26,12 +27,17 @@ class ResourceController extends Controller
      */
     public function index(): JsonResponse
     {
-        $resources = $this->resourceService->listAll();
+        $resourcesGrouped = $this->resourceService->listAll();
+
+        $formattedData = [];
+        foreach ($resourcesGrouped as $levelName => $resources) {
+            $formattedData[$levelName] = ResourceResource::collection($resources);
+        }
 
         return response()->json([
             'success' => true,
             'message' => 'Resources retrieved successfully',
-            'data' => $resources
+            'data' => $formattedData
         ], 200);
     }
 
@@ -44,11 +50,12 @@ class ResourceController extends Controller
     public function store(StoreResourceRequest $request): JsonResponse
     {
         $resource = $this->resourceService->create($request->validated());
+        $resource->load(['level', 'category']);
 
         return response()->json([
             'success' => true,
             'message' => 'Resource created successfully',
-            'data' => $resource
+            'data' => new ResourceResource($resource)
         ], 201);
     }
 
@@ -62,11 +69,12 @@ class ResourceController extends Controller
     public function update(UpdateResourceRequest $request, string $id): JsonResponse
     {
         $resource = $this->resourceService->update($id, $request->validated());
+        $resource->load(['level', 'category']);
 
         return response()->json([
             'success' => true,
             'message' => 'Resource updated successfully',
-            'data' => $resource
+            'data' => new ResourceResource($resource)
         ], 200);
     }
 
@@ -80,6 +88,9 @@ class ResourceController extends Controller
     {
         $this->resourceService->delete($id);
 
-        return response()->json(null, 204);
+        return response()->json([
+            'success' => true,
+            'message' => 'Resource deleted successfully'
+        ], 200);
     }
 }

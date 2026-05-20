@@ -16,6 +16,18 @@ class UpdateResourceRequest extends FormRequest
     }
 
     /**
+     * Prepare the data for validation.
+     */
+    protected function prepareForValidation(): void
+    {
+        if ($this->has('name')) {
+            $this->merge([
+                'name' => trim($this->name),
+            ]);
+        }
+    }
+
+    /**
      * Get the validation rules that apply to the request.
      *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
@@ -24,8 +36,8 @@ class UpdateResourceRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:255',
-            'unesc_id' => 'required|string|unique:resources,unesc_id,' . $this->route('id'),
-            'status' => 'required|in:disponível,indisponível',
+            'unesc_id' => 'required|string|max:50|unique:resources,unesc_id,' . $this->route('id'),
+            'status' => 'required|in:disponivel,indisponivel',
             'category_id' => 'required|exists:categories,id',
             'level_id' => 'required|exists:levels,id',
         ];

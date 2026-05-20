@@ -10,7 +10,11 @@ test('should delete resource with success (soft delete)', function () {
 
     $response = $this->deleteJson("/api/v1/resources/{$resource->id}");
 
-    $response->assertStatus(204);
+    $response->assertStatus(200)
+        ->assertJson([
+            'success' => true,
+            'message' => 'Resource deleted successfully'
+        ]);
 
     $this->assertSoftDeleted('resources', [
         'id' => $resource->id

@@ -99,8 +99,8 @@ Sistema web com API REST para gerenciamento e visualização de recursos físico
 ### RF05 – Status
 
 - Recurso pode ser:
-    - disponível
-    - indisponível
+    - disponivel
+    - indisponivel
 
 ---
 

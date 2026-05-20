@@ -20,7 +20,7 @@ class ResourceFactory extends Factory
         return [
             'name' => $this->faker->word(),
             'unesc_id' => $this->faker->unique()->numerify('UNESC-####'),
-            'status' => $this->faker->randomElement(['disponível', 'indisponível']),
+            'status' => $this->faker->randomElement(['disponivel', 'indisponivel']),
             'category_id' => \App\Models\Category::factory(),
             'level_id' => \App\Models\Level::factory(),
         ];

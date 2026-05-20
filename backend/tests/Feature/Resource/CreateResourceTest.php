@@ -14,7 +14,7 @@ test('should create resource with success', function () {
     $payload = [
         'name' => 'Rack A1',
         'unesc_id' => 'UNESC-0001',
-        'status' => 'disponível',
+        'status' => 'disponivel',
         'category_id' => $category->id,
         'level_id' => $level->id,
     ];
@@ -34,10 +34,8 @@ test('should create resource with success', function () {
                 'name',
                 'unesc_id',
                 'status',
-                'category_id',
-                'level_id',
-                'created_at',
-                'updated_at'
+                'level' => ['id', 'name'],
+                'category' => ['id', 'name']
             ]
         ]);
 
@@ -50,7 +48,7 @@ test('should fail when level_id is missing', function () {
     $response = $this->postJson('/api/v1/resources', [
         'name' => 'Rack A1',
         'unesc_id' => 'UNESC-0001',
-        'status' => 'disponível',
+        'status' => 'disponivel',
         'category_id' => Category::factory()->create()->id,
     ]);
 
@@ -62,7 +60,7 @@ test('should fail when level_id does not exist', function () {
     $response = $this->postJson('/api/v1/resources', [
         'name' => 'Rack A1',
         'unesc_id' => 'UNESC-0001',
-        'status' => 'disponível',
+        'status' => 'disponivel',
         'category_id' => Category::factory()->create()->id,
         'level_id' => 999
     ]);
@@ -103,7 +101,7 @@ test('should allow multiple resources in the same level', function () {
     $payload1 = [
         'name' => 'Rack A1',
         'unesc_id' => 'UNESC-0001',
-        'status' => 'disponível',
+        'status' => 'disponivel',
         'category_id' => $category->id,
         'level_id' => $level->id,
     ];
@@ -111,7 +109,7 @@ test('should allow multiple resources in the same level', function () {
     $payload2 = [
         'name' => 'Rack A2',
         'unesc_id' => 'UNESC-0002',
-        'status' => 'disponível',
+        'status' => 'disponivel',
         'category_id' => $category->id,
         'level_id' => $level->id,
     ];
@@ -135,7 +133,7 @@ test('should fail when unesc_id is not unique', function () {
     $response = $this->postJson('/api/v1/resources', [
         'name' => 'Rack A1',
         'unesc_id' => 'DUPLICATE',
-        'status' => 'disponível',
+        'status' => 'disponivel',
         'category_id' => Category::factory()->create()->id,
         'level_id' => Level::factory()->create()->id,
     ]);

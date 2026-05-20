@@ -15,7 +15,7 @@ test('should update resource with success', function () {
     $payload = [
         'name' => 'Updated Name',
         'unesc_id' => $resource->unesc_id, // Keeping same ID
-        'status' => 'indisponível',
+        'status' => 'indisponivel',
         'category_id' => $new_category->id,
         'level_id' => $new_level->id,
     ];
@@ -31,7 +31,7 @@ test('should update resource with success', function () {
     $this->assertDatabaseHas('resources', [
         'id' => $resource->id,
         'name' => 'Updated Name',
-        'status' => 'indisponível'
+        'status' => 'indisponivel'
     ]);
 });
 
@@ -39,7 +39,7 @@ test('should fail update when resource does not exist', function () {
     $payload = [
         'name' => 'Updated Name',
         'unesc_id' => 'NEW-ID',
-        'status' => 'indisponível',
+        'status' => 'indisponivel',
         'category_id' => Category::factory()->create()->id,
         'level_id' => Level::factory()->create()->id,
     ];
@@ -73,7 +73,7 @@ test('should fail update with duplicate unesc_id belonging to another resource',
     $payload = [
         'name' => 'Updated Name',
         'unesc_id' => 'ID-2', // Trying to use ID-2 which belongs to resource2
-        'status' => 'disponível',
+        'status' => 'disponivel',
         'category_id' => $resource1->category_id,
         'level_id' => $resource1->level_id,
     ];
@@ -83,3 +83,4 @@ test('should fail update with duplicate unesc_id belonging to another resource',
     $response->assertStatus(422)
         ->assertJsonValidationErrors(['unesc_id']);
 });
+
