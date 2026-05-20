@@ -122,4 +122,23 @@ Finalizar o ciclo de ajustes do review para entregar uma API profissional, padro
 ### Impactos
 A API agora expõe apenas os dados necessários de forma estruturada e consistente. O endpoint de deleção segue o padrão global de respostas do sistema. As entradas de dados estão mais protegidas via sanitização e validação de limites. Todos os testes feature foram validados e estão passando com as novas regras.
 
+---
+
+## 2026-05-20 (Refatoração: Robustez e DX nos Seeders)
+
+### Contexto
+Melhoria na qualidade de desenvolvimento (DX) e na robustez dos seeders para garantir um ambiente previsível e fácil de testar.
+
+### Alterações realizadas
+- Substituição da lógica de contagem frágil no `DevelopmentSeeder` por uma trava determinística baseada na existência do usuário âncora (`professor@teste.com`).
+- Definição explícita de senhas (`Hash::make('password')`) para os usuários de teste no `DevelopmentSeeder`, removendo a dependência de configurações implícitas da factory.
+- Garantia de idempotência total: o seeder pode ser executado múltiplas vezes sem duplicar dados ou gerar erros de restrição única.
+- Adição de mensagens informativas no console durante a execução dos seeders.
+
+### Motivo
+Remover heurísticas que poderiam falhar em ambientes com dados reais e facilitar o onboarding de novos desenvolvedores, que agora têm credenciais de teste claras e documentadas no próprio seeder.
+
+### Impacto
+O fluxo de desenvolvimento tornou-se mais resiliente. Desenvolvedores podem rodar o seeder de desenvolvimento a qualquer momento para garantir que possuem dados de teste, sem risco de poluir o banco com duplicatas ou enfrentar erros de execução.
+
 
