@@ -18,8 +18,8 @@ export function SidebarMenuItem({
   return (
     <div
       className={cn(
-        "group flex w-full cursor-pointer items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors hover:bg-white/5",
-        isActive ? "bg-white/10 text-white" : "text-white/70 hover:text-white",
+        "group flex w-full cursor-pointer items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors hover:bg-slate-50",
+        isActive ? "bg-primary/5 text-primary" : "text-slate-600 hover:text-primary",
         isNested && "px-4"
       )}
     >

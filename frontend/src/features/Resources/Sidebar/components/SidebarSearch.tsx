@@ -7,12 +7,12 @@ interface SidebarSearchProps {
 
 export function SidebarSearch({ onSearch }: SidebarSearchProps) {
   return (
-    <div className="px-6 pb-6">
+    <div className="px-3 pb-6">
       <div className="relative">
-        <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-white/40" />
+        <Search className="absolute left-6 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
         <Input
           placeholder="Pesquisar..."
-          className="h-10 border-none bg-white/10 pl-10 text-sm text-white placeholder:text-white/40 focus-visible:ring-1 focus-visible:ring-white/20"
+          className="h-10 border border-slate-100 bg-slate-50 pl-12 text-sm text-slate-900 placeholder:text-slate-400 focus-visible:ring-1 focus-visible:ring-primary/20"
           onChange={(e) => onSearch(e.target.value)}
         />
       </div>

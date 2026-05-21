@@ -78,5 +78,46 @@ A configuração `verbatimModuleSyntax: true` no `tsconfig.app.json` exige que t
 ### Impactos
 - Build volta a passar com sucesso (`npm run build` OK).
 - Componentes da Sidebar agora são interpretados corretamente pelo runtime.
-- Resolução total da tela branca.
+
+---
+
+## 21/05/2026 (Refinamento Visual)
+
+### Contexto
+Ajuste fino visual da Sidebar Global para aumentar a fidelidade ao protótipo oficial e adequação à identidade visual institucional.
+
+### Alterações realizadas
+- **Fundo**: Alterada a cor de fundo da Sidebar de azul para branco sólido (`bg-white`), com adição de borda lateral suave (`border-r border-slate-100`).
+- **Dimensões**: Reduzida a largura da Sidebar de `w-72` para `w-64` para proporcionar um layout mais equilibrado e fiel ao design proposto.
+- **Identidade Visual**: Atualizada a cor do título "Recursos" e do placeholder do logo para o azul institucional (`#0085FF`), utilizando a cor primária do tema.
+- **Hierarquia Visual**: Inserido componente `Separator` entre o cabeçalho e o campo de pesquisa para melhor distinção de seções.
+- **Adaptação de Componentes**: Atualizados todos os subcomponentes da Sidebar (`Header`, `Search`, `Menu`, `Accordion` e `User`) com cores contrastantes (tons de slate) e estados de hover/active adequados para legibilidade sobre o novo fundo branco.
+
+### Motivo
+Melhorar a experiência do usuário através de um design mais limpo, minimalista e alinhado aos padrões institucionais, mantendo a sobriedade técnica exigida pelo sistema.
+
+### Impactos
+- Sidebar com aparência mais profissional e leve.
+- Aumento da fidelidade visual em relação ao protótipo.
+- Melhor legibilidade e contraste nos elementos de navegação e busca.
+
+---
+
+## 21/05/2026 (Ajuste Fino Visual)
+
+### Contexto
+Refinamento final da Sidebar para garantir alinhamento milimétrico entre os componentes e aumentar a fidelidade ao protótipo institucional.
+
+### Alterações realizadas
+- **Linha Divisória**: Ajustado o componente `Separator` para `mx-3` e cor `bg-black/15` (preto suave), garantindo que a linha alinhe perfeitamente com as bordas dos itens de menu (área de navegação).
+- **Alinhamento de Componentes**: Padronizados os paddings horizontais de `SidebarHeader` e `SidebarSearch` para `px-3`, mantendo a consistência visual em toda a vertical da Sidebar.
+- **Consistência de Conteúdo**: Aplicado `ml-3` no logo e ajustado `left-6`/`pl-12` na busca para que, mesmo com containers mais largos (`px-3`), o conteúdo interno (ícones e textos) permaneça alinhado ao grid de `px-6` estabelecido anteriormente.
+
+### Motivo
+Corrigir a percepção de desalinhamento da linha divisória em relação aos itens de menu e garantir que todos os elementos visuais (caixa de busca, linha e itens de navegação) compartilhem o mesmo eixo vertical de início e fim.
+
+### Impactos
+*   Interface visualmente mais coesa e equilibrada.
+*   Alinhamento vertical perfeito entre a linha divisória, a caixa de busca e os estados de hover do menu.
+*   Manutenção da identidade visual institucional com maior precisão nos detalhes de espaçamento.
 
