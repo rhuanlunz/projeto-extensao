@@ -24,7 +24,7 @@ test('should create resource with success', function () {
     $response->assertStatus(201)
         ->assertJson([
             'success' => true,
-            'message' => 'Resource created successfully'
+            'message' => 'Recurso criado com sucesso'
         ])
         ->assertJsonStructure([
             'success',
@@ -53,6 +53,10 @@ test('should fail when level_id is missing', function () {
     ]);
 
     $response->assertStatus(422)
+        ->assertJson([
+            'success' => false,
+            'message' => 'Erro de validação'
+        ])
         ->assertJsonValidationErrors(['level_id']);
 });
 
@@ -66,6 +70,10 @@ test('should fail when level_id does not exist', function () {
     ]);
 
     $response->assertStatus(422)
+        ->assertJson([
+            'success' => false,
+            'message' => 'Erro de validação'
+        ])
         ->assertJsonValidationErrors(['level_id']);
 });
 
@@ -78,6 +86,10 @@ test('should fail when status is missing', function () {
     ]);
 
     $response->assertStatus(422)
+        ->assertJson([
+            'success' => false,
+            'message' => 'Erro de validação'
+        ])
         ->assertJsonValidationErrors(['status']);
 });
 
@@ -91,6 +103,10 @@ test('should fail when status is invalid', function () {
     ]);
 
     $response->assertStatus(422)
+        ->assertJson([
+            'success' => false,
+            'message' => 'Erro de validação'
+        ])
         ->assertJsonValidationErrors(['status']);
 });
 
@@ -124,6 +140,10 @@ test('should fail when required fields are missing', function () {
     $response = $this->postJson('/api/v1/resources', []);
 
     $response->assertStatus(422)
+        ->assertJson([
+            'success' => false,
+            'message' => 'Erro de validação'
+        ])
         ->assertJsonValidationErrors(['name', 'unesc_id', 'status', 'category_id', 'level_id']);
 });
 
@@ -139,5 +159,9 @@ test('should fail when unesc_id is not unique', function () {
     ]);
 
     $response->assertStatus(422)
+        ->assertJson([
+            'success' => false,
+            'message' => 'Erro de validação'
+        ])
         ->assertJsonValidationErrors(['unesc_id']);
 });

@@ -42,7 +42,11 @@ test('should register user and ignore non-existent or hidden/private fields if a
 test('should prevent user from being registered if any fields are left blank.', function () {
     $result = $this->postJson('/api/v1/auth/register');
 
-    $result->assertStatus(422);
+    $result->assertStatus(422)
+        ->assertJson([
+            'success' => false,
+            'message' => 'Erro de validação'
+        ]);
 });
 
 test('should prevent user from being registered if the username contains numbers or special characters.', function () {
@@ -56,7 +60,11 @@ test('should prevent user from being registered if the username contains numbers
         'password_confirmation' => 'password',
     ]);
 
-    $result->assertStatus(422);
+    $result->assertStatus(422)
+        ->assertJson([
+            'success' => false,
+            'message' => 'Erro de validação'
+        ]);
     $this->assertDatabaseMissing('users', [
         'email' => $new_user->email
     ]);
@@ -73,7 +81,11 @@ test('should prevent user from being registered if the username exceeds the maxi
         'password_confirmation' => 'password',
     ]);
 
-    $result->assertStatus(422);
+    $result->assertStatus(422)
+        ->assertJson([
+            'success' => false,
+            'message' => 'Erro de validação'
+        ]);
     $this->assertDatabaseMissing('users', [
         'email' => $new_user->email
     ]);
@@ -90,7 +102,11 @@ test('should prevent user from being registered if the email is invalid.', funct
         'password_confirmation' => 'password',
     ]);
 
-    $result->assertStatus(422);
+    $result->assertStatus(422)
+        ->assertJson([
+            'success' => false,
+            'message' => 'Erro de validação'
+        ]);
     $this->assertDatabaseMissing('users', [
         'email' => $new_user->email
     ]);
@@ -107,7 +123,11 @@ test('should prevent user from being registered if the email exceeds the maximum
         'password_confirmation' => 'password',
     ]);
 
-    $result->assertStatus(422);
+    $result->assertStatus(422)
+        ->assertJson([
+            'success' => false,
+            'message' => 'Erro de validação'
+        ]);
     $this->assertDatabaseMissing('users', [
         'email' => $new_user->email
     ]);
@@ -123,7 +143,11 @@ test('should prevent user from being registered if the email is already register
         'password_confirmation' => 'password',
     ]);
 
-    $result->assertStatus(422);
+    $result->assertStatus(422)
+        ->assertJson([
+            'success' => false,
+            'message' => 'Erro de validação'
+        ]);
     $this->assertDatabaseHas('users', [
         'email' => $existing_user->email
     ]);
@@ -140,7 +164,11 @@ test('should prevent user from being registered if the password exceeds the maxi
         'password_confirmation' => $invalid_length_password,
     ]);
 
-    $result->assertStatus(422);
+    $result->assertStatus(422)
+        ->assertJson([
+            'success' => false,
+            'message' => 'Erro de validação'
+        ]);
     $this->assertDatabaseMissing('users', [
         'email' => $new_user->email
     ]);
@@ -157,7 +185,11 @@ test('should prevent user from being registered if the password is shorter than 
         'password_confirmation' => $invalid_length_password,
     ]);
 
-    $result->assertStatus(422);
+    $result->assertStatus(422)
+        ->assertJson([
+            'success' => false,
+            'message' => 'Erro de validação'
+        ]);
     $this->assertDatabaseMissing('users', [
         'email' => $new_user->email
     ]);
@@ -174,7 +206,11 @@ test('should prevent user from being registered if the password confirmation doe
         'password_confirmation' => $invalid_password_confirmation,
     ]);
 
-    $result->assertStatus(422);
+    $result->assertStatus(422)
+        ->assertJson([
+            'success' => false,
+            'message' => 'Erro de validação'
+        ]);
     $this->assertDatabaseMissing('users', [
         'email' => $new_user->email
     ]);
