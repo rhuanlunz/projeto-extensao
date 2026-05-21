@@ -18,7 +18,7 @@ test('should return empty grouped list when no resources exist', function () {
     $response->assertStatus(200)
         ->assertJson([
             'success' => true,
-            'message' => 'Resources retrieved successfully',
+            'message' => 'Recursos recuperados com sucesso',
             'data' => $expectedData
         ]);
 });
@@ -34,7 +34,7 @@ test('should return list of resources grouped by level name when they exist', fu
     $response->assertStatus(200)
         ->assertJson([
             'success' => true,
-            'message' => 'Resources retrieved successfully'
+            'message' => 'Recursos recuperados com sucesso'
         ])
         ->assertJsonCount(3, "data.{$levels[0]->name}")
         ->assertJsonCount(0, "data.{$levels[1]->name}")

@@ -25,7 +25,7 @@ test('should update resource with success', function () {
     $response->assertStatus(200)
         ->assertJson([
             'success' => true,
-            'message' => 'Resource updated successfully'
+            'message' => 'Recurso atualizado com sucesso'
         ]);
 
     $this->assertDatabaseHas('resources', [
@@ -46,7 +46,11 @@ test('should fail update when resource does not exist', function () {
 
     $response = $this->putJson("/api/v1/resources/999", $payload);
 
-    $response->assertStatus(404);
+    $response->assertStatus(404)
+        ->assertJson([
+            'success' => false,
+            'message' => 'Registro não encontrado'
+        ]);
 });
 
 test('should fail update with invalid status', function () {
@@ -63,6 +67,10 @@ test('should fail update with invalid status', function () {
     $response = $this->putJson("/api/v1/resources/{$resource->id}", $payload);
 
     $response->assertStatus(422)
+        ->assertJson([
+            'success' => false,
+            'message' => 'Erro de validação'
+        ])
         ->assertJsonValidationErrors(['status']);
 });
 
@@ -81,6 +89,10 @@ test('should fail update with duplicate unesc_id belonging to another resource',
     $response = $this->putJson("/api/v1/resources/{$resource1->id}", $payload);
 
     $response->assertStatus(422)
+        ->assertJson([
+            'success' => false,
+            'message' => 'Erro de validação'
+        ])
         ->assertJsonValidationErrors(['unesc_id']);
 });
 
