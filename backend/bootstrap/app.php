@@ -11,6 +11,7 @@ return Application::configure(basePath: dirname(__DIR__))
             $api_prefix = '/api/v1/';
 
             Route::prefix($api_prefix.'auth')->group(base_path('routes/auth.php'));
+            Route::prefix($api_prefix.'resources')->group(base_path('routes/resources.php'));
         }
     )
     ->withMiddleware(function (Middleware $middleware): void {

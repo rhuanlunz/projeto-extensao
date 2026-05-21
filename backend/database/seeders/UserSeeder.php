@@ -15,14 +15,18 @@ class UserSeeder extends Seeder
 
     public function run(): void
     {
-        DB::table('users')->insert([
-            'id' => Str::uuid(),
-            'name' => 'bigboyadmin',
-            'email' => 'bigbadass@root.rules',
-            'password' => Hash::make('rootrules1234'),
-            'role_id' => Roles::ADMIN->value,
-            'created_at' => now(),
-            'updated_at' => now()
-        ]);
+        $email = 'bigbadass@root.rules';
+        
+        if (!DB::table('users')->where('email', $email)->exists()) {
+            DB::table('users')->insert([
+                'id' => Str::uuid(),
+                'name' => 'bigboyadmin',
+                'email' => $email,
+                'password' => Hash::make('rootrules1234'),
+                'role_id' => Roles::ADMIN->value,
+                'created_at' => now(),
+                'updated_at' => now()
+            ]);
+        }
     }
 }

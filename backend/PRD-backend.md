@@ -300,11 +300,27 @@ deleted_at
 
 # 12. Seeders
 
-O sistema deve possuir seeders iniciais para:
+O sistema separa os seeders em duas categorias para garantir a integridade do domínio e facilitar o desenvolvimento.
 
-- roles
-- admin inicial
-- levels
+## 12.1. Seeders Estruturais (Obrigatórios)
+
+Dados reais necessários para o funcionamento básico do sistema. São executados automaticamente via `php artisan db:seed`.
+
+- **RoleSeeder**: Define os perfis de acesso (admin, teacher, student).
+- **LevelSeeder**: Define os andares do bloco (Térreo, 1º Andar, etc).
+- **CategorySeeder**: Define as categorias padrão de recursos (Sala de Aula, Laboratório, etc).
+- **UserSeeder**: Cria o usuário administrador inicial.
+
+## 12.2. Seeders de Desenvolvimento (Opcionais)
+
+Massa de dados artificiais para testes manuais, QA e integração com frontend.
+
+- **DevelopmentSeeder**: Cria usuários de teste e diversos recursos fakes associados aos dados estruturais.
+
+Comando para execução:
+```bash
+php artisan db:seed --class=DevelopmentSeeder
+```
 
 ---
 
