@@ -3,9 +3,9 @@ import { createRoot } from "react-dom/client"
 
 import "./index.css"
 import { ThemeProvider } from "@/components/theme-provider.tsx"
-import { BrowserRouter, Routes, Route } from "react-router"
-import ForgotPassword from "./Auth/ForgotPassword/ForgotPassword.tsx"
-import ResetPassword from "./Auth/ResetPassword/ResetPassword.tsx"
+import { BrowserRouter, Routes, Route } from "react-router-dom"
+// import ForgotPassword from "./Auth/ForgotPassword/ForgotPassword.tsx"
+// import ResetPassword from "./Auth/ResetPassword/ResetPassword.tsx"
 import App from "./App.tsx"
 
 createRoot(document.getElementById("root")!).render(
@@ -13,14 +13,14 @@ createRoot(document.getElementById("root")!).render(
     <ThemeProvider>
       <BrowserRouter>
         <Routes>
-
+          <Route path="/" element={<App />} />
           <Route path="/autenticacao">
             <Route path="login" element={<App />} />
             <Route path="cadastro" element={<App />} />
-            <Route path="esqueci-minha-senha" element={<ForgotPassword />} />
-            <Route path="redefinir-senha" element={<ResetPassword />} />
+            {/* <Route path="esqueci-minha-senha" element={<ForgotPassword />} />
+            <Route path="redefinir-senha" element={<ResetPassword />} /> */}
           </Route>
-        
+          <Route path="*" element={<App />} />
         </Routes>
       </BrowserRouter>
     </ThemeProvider>
