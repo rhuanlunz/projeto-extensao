@@ -121,3 +121,33 @@ Corrigir a percepção de desalinhamento da linha divisória em relação aos it
 *   Alinhamento vertical perfeito entre a linha divisória, a caixa de busca e os estados de hover do menu.
 *   Manutenção da identidade visual institucional com maior precisão nos detalhes de espaçamento.
 
+---
+
+## 21/05/2026 (Implementação Card 2)
+
+### Contexto
+Implementação da interface principal de visualização de recursos físicos (Racks), focada em fidelidade visual, renderização dinâmica e agrupamento por andar.
+
+### Alterações realizadas
+- **Estrutura Modular**: Criada a feature `Resources/Racks` seguindo o padrão modular.
+- **Componentes de UI**:
+    - `ResourceCard`: Visualização individual do rack com ícone, nome e status (disponível/indisponível) com indicador circular.
+    - `FloorSection`: Agrupamento visual por andar com título e linha divisória.
+    - `ResourceSummaryHeader`: Cabeçalho institucional azul (#0085FF) com indicadores dinâmicos de racks por andar.
+    - `FloatingActionButton`: Botão circular flutuante visual para futuras ações de adição.
+- **Camada de Serviços**:
+    - `racks.types.ts`: Definição de contratos para racks e agrupamentos.
+    - `groupResourcesByFloor.ts`: Lógica pura para transformar a lista de racks em seções por andar.
+- **Mocks**: Criado `mockRacks.ts` com dados dinâmicos cobrindo múltiplos andares e status.
+- **Integração**: Atualizado `App.tsx` para compor a Sidebar existente e a nova tela de Racks em um layout Flexbox limpo e eficiente.
+- **Visual**: Aplicada a cor de fundo oficial `#EEF3F7` e paddings institucionais.
+
+### Motivo
+Prover a interface central de visualização do sistema, permitindo que os usuários acompanhem a distribuição e status dos racks de forma clara, organizada e visualmente alinhada à identidade da UNESC.
+
+### Impactos
+- Nova tela principal funcional com renderização dinâmica.
+- Separação clara entre lógica de dados (services) e visual (components).
+- Preservação integral da Sidebar e padrões estabelecidos no Card 1.
+- Interface preparada para integração futura com APIs e sistema de permissões.
+
