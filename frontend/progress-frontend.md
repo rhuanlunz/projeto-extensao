@@ -103,23 +103,27 @@ Melhorar a experiência do usuário através de um design mais limpo, minimalist
 
 ---
 
-## 21/05/2026 (Ajuste Fino Visual)
+## 21/05/2026 (Reorganização Arquitetural)
 
 ### Contexto
-Refinamento final da Sidebar para garantir alinhamento milimétrico entre os componentes e aumentar a fidelidade ao protótipo institucional.
+Reorganização estrutural do projeto para alinhar com a arquitetura modular oficial, corrigindo a organização incorreta baseada em uma pasta global de `features`.
 
 ### Alterações realizadas
-- **Linha Divisória**: Ajustado o componente `Separator` para `mx-3` e cor `bg-black/15` (preto suave), garantindo que a linha alinhe perfeitamente com as bordas dos itens de menu (área de navegação).
-- **Alinhamento de Componentes**: Padronizados os paddings horizontais de `SidebarHeader` e `SidebarSearch` para `px-3`, mantendo a consistência visual em toda a vertical da Sidebar.
-- **Consistência de Conteúdo**: Aplicado `ml-3` no logo e ajustado `left-6`/`pl-12` na busca para que, mesmo com containers mais largos (`px-3`), o conteúdo interno (ícones e textos) permaneça alinhado ao grid de `px-6` estabelecido anteriormente.
+- **Remoção de /features**: A pasta `src/features` foi completamente removida do projeto.
+- **Movimentação da Sidebar**: O componente Sidebar foi movido de `src/features/Resources/Sidebar` para `src/shared/Sidebar`, refletindo sua natureza de componente global compartilhado.
+- **Criação da Feature Resources**: Criada a pasta `src/Resources` diretamente na raiz do `src`, contendo sua própria estrutura de `components`, `services` e o arquivo principal `Resources.tsx`.
+- **Desacoplamento de App.tsx**: A dependência arquitetural do `App.tsx` como centralizador de layout foi removida. O arquivo `main.tsx` agora renderiza a feature `Resources` diretamente na rota raiz.
+- **Estrutura de Layout**: Implementado container `flex h-screen` dentro de `Resources.tsx` para preservar o posicionamento da Sidebar e do conteúdo principal.
+- **Atualização de Imports**: Todos os imports afetados pela movimentação (Sidebar, components, services) foram atualizados e validados.
 
 ### Motivo
-Corrigir a percepção de desalinhamento da linha divisória em relação aos itens de menu e garantir que todos os elementos visuais (caixa de busca, linha e itens de navegação) compartilhem o mesmo eixo vertical de início e fim.
+Garantir que o projeto siga os padrões arquiteturais definidos no `PRD-frontend.md`, promovendo isolamento por feature na raiz do projeto e tratando componentes globais em `shared`.
 
 ### Impactos
-*   Interface visualmente mais coesa e equilibrada.
-*   Alinhamento vertical perfeito entre a linha divisória, a caixa de busca e os estados de hover do menu.
-*   Manutenção da identidade visual institucional com maior precisão nos detalhes de espaçamento.
+- Arquitetura mais limpa e alinhada com as diretrizes do projeto.
+- Facilidade de escalabilidade para novas features (ex: Auth, Dashboard).
+- Eliminação de dependências circulares ou aninhamentos desnecessários em `/features`.
+- Preservação integral da funcionalidade e comportamento da Sidebar.
 
 ---
 

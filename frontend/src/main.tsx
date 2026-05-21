@@ -4,23 +4,19 @@ import { createRoot } from "react-dom/client"
 import "./index.css"
 import { ThemeProvider } from "@/components/theme-provider.tsx"
 import { BrowserRouter, Routes, Route } from "react-router-dom"
-// import ForgotPassword from "./Auth/ForgotPassword/ForgotPassword.tsx"
-// import ResetPassword from "./Auth/ResetPassword/ResetPassword.tsx"
-import App from "./App.tsx"
+import { Resources } from "@/Resources/Resources"
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <ThemeProvider>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<App />} />
+          <Route path="/" element={<Resources />} />
           <Route path="/autenticacao">
-            <Route path="login" element={<App />} />
-            <Route path="cadastro" element={<App />} />
-            {/* <Route path="esqueci-minha-senha" element={<ForgotPassword />} />
-            <Route path="redefinir-senha" element={<ResetPassword />} /> */}
+            <Route path="login" element={<Resources />} />
+            <Route path="cadastro" element={<Resources />} />
           </Route>
-          <Route path="*" element={<App />} />
+          <Route path="*" element={<Resources />} />
         </Routes>
       </BrowserRouter>
     </ThemeProvider>
