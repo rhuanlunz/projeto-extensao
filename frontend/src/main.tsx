@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router"
 import ForgotPassword from "./Auth/ForgotPassword/ForgotPassword.tsx"
 import ResetPassword from "./Auth/ResetPassword/ResetPassword.tsx"
 import { Resources } from "@/Resources/Resources"
+import Login from "./Auth/Login/login"
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
@@ -13,8 +14,8 @@ createRoot(document.getElementById("root")!).render(
         <Routes>
 
           <Route path="/autenticacao">
-            {/* <Route path="login" element={<App />} />
-            <Route path="cadastro" element={<App />} /> */}
+            <Route path="login" element={<Login />} />
+            {* <Route path="cadastro" element={<App />} /> *}
             <Route path="esqueci-minha-senha" element={<ForgotPassword />} />
             <Route path="redefinir-senha" element={<ResetPassword />} />
           </Route>
