@@ -34,7 +34,7 @@ class ResourceController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Resources retrieved successfully',
+            'message' => 'Recursos recuperados com sucesso',
             'data' => $formattedData
         ], 200);
     }
@@ -52,7 +52,7 @@ class ResourceController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Resource created successfully',
+            'message' => 'Recurso criado com sucesso',
             'data' => new ResourceResource($resource)
         ], 201);
     }
@@ -71,7 +71,7 @@ class ResourceController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Resource updated successfully',
+            'message' => 'Recurso atualizado com sucesso',
             'data' => new ResourceResource($resource)
         ], 200);
     }
@@ -88,7 +88,7 @@ class ResourceController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Resource deleted successfully'
+            'message' => 'Recurso excluído com sucesso'
         ], 200);
     }
 }

@@ -181,7 +181,7 @@ A API deve seguir padrão RESTful.
 ```json
 {
   "success": true,
-  "message": "Mensagem",
+  "message": "Mensagem em português",
   "data": {}
 }
 ```
@@ -193,7 +193,7 @@ A API deve seguir padrão RESTful.
 ```json
 {
   "success": false,
-  "message": "Mensagem de erro"
+  "message": "Mensagem de erro em português"
 }
 ```
 
@@ -204,10 +204,28 @@ A API deve seguir padrão RESTful.
 ```json
 {
   "success": false,
-  "message": "Validation error",
+  "message": "Erro de validação",
   "errors": {}
 }
 ```
+
+---
+
+## 7.1 Localização
+
+O backend utiliza o locale `pt_BR` como padrão. Todas as mensagens retornadas pela API, incluindo mensagens de sucesso, erro e validações automáticas do Laravel, devem ser entregues em português.
+
+As traduções de validação são centralizadas em `lang/pt_BR/validation.php`.
+
+---
+
+## 7.2 Tratamento Global de Exceções
+
+O sistema utiliza o Exception Handler (`bootstrap/app.php`) para padronizar retornos de erro da API:
+
+- **ValidationException (422):** Retorna envelope com `message: "Erro de validação"` e o objeto `errors`.
+- **ModelNotFoundException / NotFoundHttpException (404):** Retorna envelope com `message: "Registro não encontrado"`.
+- **Erro Interno (500):** Em produção, retorna `message: "Ocorreu um erro interno."`.
 
 ---
 

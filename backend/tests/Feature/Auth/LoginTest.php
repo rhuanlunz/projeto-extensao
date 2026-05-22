@@ -40,10 +40,15 @@ test('should prevent user login if any field is empty or null', function() {
         'password' => null
     ]);
 
-    $result->assertStatus(422)->assertInvalid([
-        'email' => 'O campo e-mail é obrigatório.',
-        'password' => 'O campo senha é obrigatório.',
-    ]);
+    $result->assertStatus(422)
+        ->assertJson([
+            'success' => false,
+            'message' => 'Erro de validação'
+        ])
+        ->assertInvalid([
+            'email' => 'O campo e-mail é obrigatório.',
+            'password' => 'O campo senha é obrigatório.',
+        ]);
 });
 
 test('should prevent user login if email field is not string', function() {
@@ -51,9 +56,14 @@ test('should prevent user login if email field is not string', function() {
         'email' => 1
     ]);
 
-    $result->assertStatus(422)->assertInvalid([
-        'email' => 'O e-mail deve ser uma string válida.'
-    ]);
+    $result->assertStatus(422)
+        ->assertJson([
+            'success' => false,
+            'message' => 'Erro de validação'
+        ])
+        ->assertInvalid([
+            'email' => 'O campo e-mail deve ser uma string.'
+        ]);
 });
 
 test('should prevent user login if email field is invalid', function() {
@@ -61,9 +71,14 @@ test('should prevent user login if email field is invalid', function() {
         'email' => '-1invalid@!a$321'
     ]);
 
-    $result->assertStatus(422)->assertInvalid([
-        'email' => 'Informe um endereço de e-mail válido.'
-    ]);
+    $result->assertStatus(422)
+        ->assertJson([
+            'success' => false,
+            'message' => 'Erro de validação'
+        ])
+        ->assertInvalid([
+            'email' => 'O campo e-mail deve ser um endereço de e-mail válido.'
+        ]);
 });
 
 test('should prevent user login if email exceeds limit', function() {
@@ -71,9 +86,14 @@ test('should prevent user login if email exceeds limit', function() {
         'email' => Str::repeat('a', 255).'@email.com'
     ]);
 
-    $result->assertStatus(422)->assertInvalid([
-        'email' => 'O e-mail não pode ultrapassar 255 caracteres.'
-    ]);
+    $result->assertStatus(422)
+        ->assertJson([
+            'success' => false,
+            'message' => 'Erro de validação'
+        ])
+        ->assertInvalid([
+            'email' => 'O campo e-mail não pode ter mais do que 255 caracteres.'
+        ]);
 });
 
 test('should prevent user login if password field is not string', function() {
@@ -81,9 +101,14 @@ test('should prevent user login if password field is not string', function() {
         'password' => 1
     ]);
 
-    $result->assertStatus(422)->assertInvalid([
-        'password' => 'A senha deve ser uma string válida.'
-    ]);
+    $result->assertStatus(422)
+        ->assertJson([
+            'success' => false,
+            'message' => 'Erro de validação'
+        ])
+        ->assertInvalid([
+            'password' => 'O campo senha deve ser uma string.'
+        ]);
 });
 
 test('should prevent user login if password exceeds limit', function() {
@@ -91,9 +116,14 @@ test('should prevent user login if password exceeds limit', function() {
         'password' => Str::repeat('a', 301)
     ]);
 
-    $result->assertStatus(422)->assertInvalid([
-        'password' => 'A senha não pode ultrapassar 300 caracteres.'
-    ]);
+    $result->assertStatus(422)
+        ->assertJson([
+            'success' => false,
+            'message' => 'Erro de validação'
+        ])
+        ->assertInvalid([
+            'password' => 'O campo senha não pode ter mais do que 300 caracteres.'
+        ]);
 });
 
 test('should block requests by IP for 1 minute after 5 attempts.', function() {

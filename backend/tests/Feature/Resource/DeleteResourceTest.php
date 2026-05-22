@@ -13,7 +13,7 @@ test('should delete resource with success (soft delete)', function () {
     $response->assertStatus(200)
         ->assertJson([
             'success' => true,
-            'message' => 'Resource deleted successfully'
+            'message' => 'Recurso excluído com sucesso'
         ]);
 
     $this->assertSoftDeleted('resources', [
@@ -24,5 +24,9 @@ test('should delete resource with success (soft delete)', function () {
 test('should fail delete when resource does not exist', function () {
     $response = $this->deleteJson("/api/v1/resources/999");
 
-    $response->assertStatus(404);
+    $response->assertStatus(404)
+        ->assertJson([
+            'success' => false,
+            'message' => 'Registro não encontrado'
+        ]);
 });

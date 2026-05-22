@@ -141,4 +141,27 @@ Remover heurísticas que poderiam falhar em ambientes com dados reais e facilita
 ### Impacto
 O fluxo de desenvolvimento tornou-se mais resiliente. Desenvolvedores podem rodar o seeder de desenvolvimento a qualquer momento para garantir que possuem dados de teste, sem risco de poluir o banco com duplicatas ou enfrentar erros de execução.
 
+---
+
+## 2026-05-21 (Padronização e Localização: PT-BR)
+
+### Contexto
+Implementação da localização completa do sistema para Português (pt-BR) e padronização das respostas JSON da API conforme exigido pelo PRD.
+
+### Alterações realizadas
+- Configuração do locale padrão da aplicação para `pt_BR` em `config/app.php` e `.env`.
+- Criação do arquivo completo de traduções nativas em `lang/pt_BR/validation.php`, incluindo mapeamento de atributos amigáveis.
+- Remoção de mensagens manuais (método `messages()`) em `LoginRequest` e `RegisterRequest`, centralizando na camada de tradução do framework.
+- Implementação de tratamento global de exceções em `bootstrap/app.php` para garantir o envelope JSON `{ "success": false, "message": "..." }` em erros de validação (422), não encontrado (404) e erros internos (500).
+- Tradução integral de mensagens hardcoded no `ResourceController`.
+- Correção de erro de digitação na chave 'success' no `AuthController`.
+- Atualização de toda a suíte de testes Feature (`Resource` e `Auth`) para validar os novos textos em português e a nova estrutura JSON de erro.
+- Atualização dos documentos `PRD.md` e `PRD-backend.md` com as definições de localização e padronização.
+
+### Motivo
+Melhorar a experiência do usuário final e do desenvolvedor frontend, garantindo que todas as mensagens exibidas na interface sejam consistentes, em português e sigam um contrato de API rigoroso e previsível.
+
+### Impactos
+Todas as respostas da API agora seguem o padrão de envelope definido no PRD. Testes automatizados garantem que futuras alterações não regridam a linguagem ou a estrutura dos erros. O código tornou-se mais limpo com a remoção de mensagens manuais nos FormRequests.
+
 
