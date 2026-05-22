@@ -125,3 +125,84 @@ Garantir que o projeto siga os padrões arquiteturais definidos no `PRD-frontend
 - Eliminação de dependências circulares ou aninhamentos desnecessários em `/features`.
 - Preservação integral da funcionalidade e comportamento da Sidebar.
 
+---
+
+## 21/05/2026 (Implementação Card 2)
+
+### Contexto
+Implementação da interface principal de visualização de recursos físicos (Racks), focada em fidelidade visual, renderização dinâmica e agrupamento por andar.
+
+### Alterações realizadas
+- **Estrutura Modular**: Criada a feature `Resources/Racks` seguindo o padrão modular.
+- **Componentes de UI**:
+    - `ResourceCard`: Visualização individual do rack com ícone, nome e status (disponível/indisponível) com indicador circular.
+    - `FloorSection`: Agrupamento visual por andar com título e linha divisória.
+    - `ResourceSummaryHeader`: Cabeçalho institucional azul (#0085FF) com indicadores dinâmicos de racks por andar.
+    - `FloatingActionButton`: Botão circular flutuante visual para futuras ações de adição.
+- **Camada de Serviços**:
+    - `racks.types.ts`: Definição de contratos para racks e agrupamentos.
+    - `groupResourcesByFloor.ts`: Lógica pura para transformar a lista de racks em seções por andar.
+- **Mocks**: Criado `mockRacks.ts` com dados dinâmicos cobrindo múltiplos andares e status.
+- **Integração**: Atualizado `App.tsx` para compor a Sidebar existente e a nova tela de Racks em um layout Flexbox limpo e eficiente.
+- **Visual**: Aplicada a cor de fundo oficial `#EEF3F7` e paddings institucionais.
+
+### Motivo
+Prover a interface central de visualização do sistema, permitindo que os usuários acompanhem a distribuição e status dos racks de forma clara, organizada e visualmente alinhada à identidade da UNESC.
+
+---
+
+## 21/05/2026 (Padronização Arquitetural Resources)
+
+### Contexto
+Reorganização estrutural e arquitetural do módulo de visualização de recursos (Racks) para seguir rigorosamente o padrão oficial estabelecido pela Sidebar, focando em desacoplamento total, isolamento de lógica e composição limpa.
+
+### Alterações realizadas
+- **Consolidação de Feature**: O módulo foi completamente movido de `src/features/Resources/Racks` para `src/Resources/`, eliminando definitivamente o diretório legacy `/features`.
+- **Extração de Services**: Implementada a separação obrigatória de lógicas em quatro serviços especializados:
+    - `rack.types.ts`: Definições de contratos e interfaces.
+    - `rack.mock.ts`: Isolamento de dados estáticos de exemplo.
+    - `rack.group.ts`: Lógica pura de agrupamento por andar e cálculo de estatísticas (removida dos componentes).
+    - `rack.filter.ts`: Placeholder para futuras lógicas de busca e filtragem.
+- **Componentização Desacoplada**: Decomposição da UI em componentes de responsabilidade única:
+    - `RackStatus`: Componente atômico para indicação visual de status (dot + label).
+    - `RackCard`: Renderização individual do rack, utilizando `RackStatus`.
+    - `RackFloorSection`: Renderização visual de um andar específico.
+    - `RackGrid`: Orquestrador visual da listagem de andares, recebendo dados pré-processados.
+    - `RackHeader`: Banner superior institucional, recebendo estatísticas via props.
+    - `RackFilters` e `RackAddButton`: Componentes isolados para controles e ações.
+- **Refatoração do Orquestrador**: `Resources.tsx` transformado em um orquestrador puro (idêntico ao padrão da Sidebar), utilizando `useMemo` estritamente para chamar serviços e distribuir props, sem implementar lógica de negócio interna.
+- **Limpeza de Workspace**: Remoção total do diretório `src/features/` e do arquivo de mock global `src/mocks/mockRacks.ts`.
+- **Atualização de App.tsx**: Refatorado para servir como um entry-point limpo para a feature de Resources.
+
+### Motivo
+Garantir consistência arquitetural em todo o frontend, utilizando a Sidebar como referência oficial. A alteração elimina componentes monolíticos, centraliza lógica de dados em serviços puros e prepara a feature para crescimento escalável e fácil manutenção.
+
+---
+
+## 21/05/2026 (Correção Semântica: Rack → Resource)
+
+### Contexto
+Alinhamento semântico do módulo de visualização de recursos com o domínio funcional do projeto, corrigindo o acoplamento excessivo ao termo técnico "Rack".
+
+### Alterações realizadas
+- **Correção de Domínio**: Substituída a nomenclatura específica `Rack` pela nomenclatura genérica `Resource` em toda a arquitetura do módulo.
+- **Renomeação de Services**:
+    - `rack.types.ts` → `resource.types.ts` (Interfaces: `Resource`, `ResourceStatus`, `ResourcesByFloor`).
+    - `rack.mock.ts` → `resource.mock.ts` (Variável: `mockResources`).
+    - `rack.group.ts` → `resource.group.ts` (Funções: `groupResourcesByFloor`, `calculateResourceStats`).
+    - `rack.filter.ts` → `resource.filter.ts` (Função: `filterResources`).
+- **Renomeação de Components**:
+    - Todos os componentes técnicos (`RackHeader`, `RackGrid`, `RackCard`, etc.) foram renomeados para o prefixo `Resource`.
+    - Atualização das Props e referências internas para refletir o novo domínio.
+- **Ajuste de UI**: Atualizadas strings visuais (ex: "Status dos Racks" → "Status dos Recursos") para garantir consistência semântica para o usuário final.
+- **Preservação Arquitetural**: Mantido o padrão de orquestração no `Resources.tsx` e o desacoplamento entre UI e Services, utilizando a Sidebar como referência.
+
+### Motivo
+Atender aos requisitos de domínio definidos no PRD, onde "Rack" é apenas um tipo de recurso. A estrutura técnica deve ser agnóstica ao tipo específico para permitir escalabilidade e clareza conceitual.
+
+### Impactos
+- Base de código mais limpa e alinhada com as regras de negócio.
+- Arquitetura preparada para suportar outros tipos de recursos no futuro sem refatorações estruturais.
+- Manutenção da fidelidade visual e funcionalidade de agrupamento por andar.
+- Eliminação total de referências obsoletas ao termo `Rack` na estrutura de código do módulo.
+
