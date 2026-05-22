@@ -206,3 +206,59 @@ Atender aos requisitos de domínio definidos no PRD, onde "Rack" é apenas um ti
 - Manutenção da fidelidade visual e funcionalidade de agrupamento por andar.
 - Eliminação total de referências obsoletas ao termo `Rack` na estrutura de código do módulo.
 
+## [2026-05-22] Card 3 — Modal de Visualização Detalhada de Recurso
+
+### Implementação Concluída
+- Adição da feature de modal detalhado para recursos físicos seguindo a arquitetura modular do projeto.
+- Criação de componentes desacoplados em `src/Resources/components/`:
+  - `ResourceDetailsModal.tsx`: Orquestrador visual do modal (Dialog).
+  - `ResourceModalHeader.tsx`: Exibição do nome e botão de fechamento customizado.
+  - `ResourceModalImage.tsx`: Renderização de imagem com fallback.
+  - `ResourceModalContent.tsx`: Exibição de descrição com suporte a scroll.
+  - `ResourceModalStatus.tsx`: Reutilização do componente `ResourceStatus`.
+  - `ResourceModalActions.tsx`: Botão de edição (visual).
+- Implementação de primitives de UI:
+  - Criação de `src/components/ui/dialog.tsx` utilizando Radix UI.
+- Atualização do domínio `Resource`:
+  - Expansão da interface `Resource` em `resource.types.ts` com `description` e `imageUrl`.
+  - Atualização de `resource.mock.ts` com dados descritivos para testes.
+- Integração e Fluxo:
+  - `Resources.tsx` centraliza o estado do modal e recurso selecionado (componente controlado).
+  - `ResourceCard.tsx` dispara o evento de seleção via callback.
+  - Propagação de eventos através de `ResourceGrid` e `ResourceFloorSection`.
+- Padrões Visuais e Acessibilidade:
+  - Overlay com `backdrop-blur-sm` e `bg-black/30`.
+  - Layout horizontal (Imagem | Conteúdo).
+  - Estilização institucional (bordas azuis, botões arredondados).
+  - Suporte nativo Radix para ESC, focus trap e ARIA.
+- Qualidade e Arquitetura:
+  - Granularidade de props aplicada (subcomponentes recebem apenas dados necessários).
+  - Preservação do desacoplamento e responsabilidade única.
+  - Sem duplicação de lógica de status ou mocks.
+  - Preparado para futura integração com backend e permissões.
+
+
+---
+
+## 22/05/2026 (Refinamento Visual do Modal de Detalhes)
+
+### Contexto
+Refinamento est�tico e arquitetural do ResourceDetailsModal para eliminar inconsist�ncias visuais e melhorar a hierarquia de informa��o e legibilidade.
+
+### Altera��es realizadas
+- **Arquitetura (Encapsulamento)**: Removido o bot�o de fechamento duplicado atrav�s do seletor CSS local [&>button]:hidden no DialogContent, preservando a integridade do componente global dialog.tsx.
+- **Layout**: Expandida a largura m�xima do modal de max-w-3xl para max-w-4xl para otimizar a distribui��o horizontal entre imagem e conte�do em desktop.
+- **Hierarquia Tipogr�fica**:
+    - **T�tulo**: Aumentado para text-2xl md:text-3xl font-bold para maior destaque e adaptabilidade responsiva.
+    - **Descri��o**: Aumentada de text-sm para text-base, melhorando significativamente a legibilidade.
+- **Ajustes de Propor��o e UI**:
+    - **Bot�o Editar**: Aumentado o padding para px-8 md:px-10 py-3 e aplicada fonte text-base font-semibold.
+    - **Indicador de Status**: Redimensionado o indicador visual (bola) para h-3 w-3 e o texto para text-sm, com ajuste no espa�amento (gap-2.5).
+
+### Motivo
+Corrigir a polui��o visual causada por bot�es duplicados e a sensa��o de "vazio" no layout do modal devido a fontes subdimensionadas para o espa�o dispon�vel.
+
+### Impactos
+- Interface mais limpa, profissional e fiel ao prot�tipo institucional.
+- Melhor experi�ncia de leitura e escaneabilidade do conte�do do recurso.
+- Manuten��o da modularidade e isolamento de estilos do dom�nio Resources.

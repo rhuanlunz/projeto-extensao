@@ -5,6 +5,8 @@ export interface Resource {
   name: string;
   floor: number;
   status: ResourceStatus;
+  description?: string;
+  imageUrl?: string;
 }
 
 export type ResourcesByFloor = Record<string, Resource[]>;
