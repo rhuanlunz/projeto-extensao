@@ -16,13 +16,13 @@ export default function PasswordInput({ id, name, placehoder, value, onChange }:
     return (
         <div className="relative">
             <Input 
-                id={ id }
-                name={ name }
-                placeholder={ placehoder }
+                id={id}
+                name={name}
+                placeholder={placehoder}
                 value={value}
-                onChange={(e) => onChange(e.target.value)}
+                onChange={e => onChange(e.target.value)}
                 type={showPassword ? 'password' : 'text'} 
-                className="p-5 rounded-lg bg-gray-100 border-0"
+                className="p-5 rounded-lg bg-gray-100 border-0 text-black"
             />
 
             <button
