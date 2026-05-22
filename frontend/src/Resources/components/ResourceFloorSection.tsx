@@ -1,24 +1,24 @@
-import type { Rack } from "../services/racks.types";
+import type { Resource } from "../services/resource.types";
 import { ResourceCard } from "./ResourceCard";
 
-interface FloorSectionProps {
-  floor: string;
-  racks: Rack[];
+interface ResourceFloorSectionProps {
+  floorName: string;
+  resources: Resource[];
 }
 
-export function FloorSection({ floor, racks }: FloorSectionProps) {
+export function ResourceFloorSection({ floorName, resources }: ResourceFloorSectionProps) {
   return (
     <section className="mb-12">
       <div className="mb-6 flex items-center gap-4">
         <h2 className="whitespace-nowrap text-lg font-semibold text-slate-800">
-          {floor}
+          {floorName}
         </h2>
         <div className="h-[1px] w-full bg-slate-200" />
       </div>
 
       <div className="flex flex-wrap gap-6">
-        {racks.map((rack) => (
-          <ResourceCard key={rack.id} rack={rack} />
+        {resources.map((resource) => (
+          <ResourceCard key={resource.id} resource={resource} />
         ))}
       </div>
     </section>

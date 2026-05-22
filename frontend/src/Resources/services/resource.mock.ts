@@ -1,6 +1,6 @@
-import type { Rack } from "@/features/Resources/Racks/services/racks.types";
+import type { Resource } from "./resource.types";
 
-export const mockRacks: Rack[] = [
+export const mockResources: Resource[] = [
   {
     id: "rack-01",
     name: "Rack R-01",
