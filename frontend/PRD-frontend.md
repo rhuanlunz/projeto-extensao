@@ -325,13 +325,13 @@ Os recursos devem ser exibidos:
 
 ## Status visuais
 
-### disponível
+### disponivel
 
 - verde
 
 ---
 
-### indisponível
+### indisponivel
 
 - vermelho
 

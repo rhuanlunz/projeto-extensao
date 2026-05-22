@@ -99,8 +99,8 @@ Sistema web com API REST para gerenciamento e visualização de recursos físico
 ### RF05 – Status
 
 - Recurso pode ser:
-    - disponível
-    - indisponível
+    - disponivel
+    - indisponivel
 
 ---
 
@@ -157,6 +157,11 @@ Restrições:
 - RESTful
 - Versionada (`/api/v1`)
 - Respostas em JSON
+- **Localização:** Todas as mensagens de resposta da API (sucesso, erro e validação) devem estar em **Português (pt-BR)**.
+- **Padronização de Respostas:** Todas as respostas devem seguir o envelope JSON padronizado:
+    - Sucesso: `{ "success": true, "message": "...", "data": {} }`
+    - Erro: `{ "success": false, "message": "..." }`
+    - Erro de Validação: `{ "success": false, "message": "Erro de validação", "errors": {} }`
 
 ---
 

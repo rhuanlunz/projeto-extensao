@@ -181,7 +181,7 @@ A API deve seguir padrão RESTful.
 ```json
 {
   "success": true,
-  "message": "Mensagem",
+  "message": "Mensagem em português",
   "data": {}
 }
 ```
@@ -193,7 +193,7 @@ A API deve seguir padrão RESTful.
 ```json
 {
   "success": false,
-  "message": "Mensagem de erro"
+  "message": "Mensagem de erro em português"
 }
 ```
 
@@ -204,10 +204,28 @@ A API deve seguir padrão RESTful.
 ```json
 {
   "success": false,
-  "message": "Validation error",
+  "message": "Erro de validação",
   "errors": {}
 }
 ```
+
+---
+
+## 7.1 Localização
+
+O backend utiliza o locale `pt_BR` como padrão. Todas as mensagens retornadas pela API, incluindo mensagens de sucesso, erro e validações automáticas do Laravel, devem ser entregues em português.
+
+As traduções de validação são centralizadas em `lang/pt_BR/validation.php`.
+
+---
+
+## 7.2 Tratamento Global de Exceções
+
+O sistema utiliza o Exception Handler (`bootstrap/app.php`) para padronizar retornos de erro da API:
+
+- **ValidationException (422):** Retorna envelope com `message: "Erro de validação"` e o objeto `errors`.
+- **ModelNotFoundException / NotFoundHttpException (404):** Retorna envelope com `message: "Registro não encontrado"`.
+- **Erro Interno (500):** Em produção, retorna `message: "Ocorreu um erro interno."`.
 
 ---
 
@@ -300,11 +318,27 @@ deleted_at
 
 # 12. Seeders
 
-O sistema deve possuir seeders iniciais para:
+O sistema separa os seeders em duas categorias para garantir a integridade do domínio e facilitar o desenvolvimento.
 
-- roles
-- admin inicial
-- levels
+## 12.1. Seeders Estruturais (Obrigatórios)
+
+Dados reais necessários para o funcionamento básico do sistema. São executados automaticamente via `php artisan db:seed`.
+
+- **RoleSeeder**: Define os perfis de acesso (admin, teacher, student).
+- **LevelSeeder**: Define os andares do bloco (Térreo, 1º Andar, etc).
+- **CategorySeeder**: Define as categorias padrão de recursos (Sala de Aula, Laboratório, etc).
+- **UserSeeder**: Cria o usuário administrador inicial.
+
+## 12.2. Seeders de Desenvolvimento (Opcionais)
+
+Massa de dados artificiais para testes manuais, QA e integração com frontend.
+
+- **DevelopmentSeeder**: Cria usuários de teste e diversos recursos fakes associados aos dados estruturais.
+
+Comando para execução:
+```bash
+php artisan db:seed --class=DevelopmentSeeder
+```
 
 ---
 
