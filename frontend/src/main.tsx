@@ -4,6 +4,7 @@ import { createRoot } from "react-dom/client"
 import "./index.css"
 import { BrowserRouter, Routes, Route } from "react-router-dom"
 import { Resources } from "@/Resources/Resources"
+import Login from "./Auth/Login/login"
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
@@ -11,7 +12,7 @@ createRoot(document.getElementById("root")!).render(
         <Routes>
           <Route path="/" element={<Resources />} />
           <Route path="/autenticacao">
-            <Route path="login" element={<Resources />} />
+            <Route path="login" element={<Login />} />
             <Route path="cadastro" element={<Resources />} />
           </Route>
           <Route path="*" element={<Resources />} />
