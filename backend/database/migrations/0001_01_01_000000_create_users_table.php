@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('name', 255)->isNotEmpty();
             $table->string('email', 255)->unique()->isNotEmpty();
             $table->string('password', 300)->isNotEmpty();
+            $table->string('remember_token')->nullable();
             $table->foreignId('role_id')->default(3)->constrained();
             $table->timestamps();
         });

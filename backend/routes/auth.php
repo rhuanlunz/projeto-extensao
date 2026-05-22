@@ -12,3 +12,7 @@ Route::post('login', [AuthController::class, 'login'])
 
 Route::get('logout', [AuthController::class, 'logout'])
     ->middleware(AuthMiddleware::class);
+
+Route::post('forgot', [AuthController::class, 'forgot']);
+Route::post('reset', [AuthController::class, 'reset'])
+    ->name('password.reset');

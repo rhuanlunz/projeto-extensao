@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Models\User;
+use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
@@ -22,10 +24,13 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        RateLimiter::for('register', fn (Request $request) =>
+        RateLimiter::for('register', fn (Request $request): Limit =>
             Limit::perMinute(10)->by($request->ip()));
         
-        RateLimiter::for('login', fn (Request $request) =>
+        RateLimiter::for('login', fn (Request $request): Limit =>
             Limit::perMinute(5)->by($request->ip()));
+
+        ResetPassword::createUrlUsing(fn (User $user, string $token): string =>
+            "http://localhost:5173/autenticacao/redefinir-senha?token=$token");
     }
 }
