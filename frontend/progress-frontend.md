@@ -45,7 +45,7 @@ Garantir uma interface profissional, alinhada à identidade visual da UNESC, com
 ## 21/05/2026 (Correção)
 
 ### Contexto
-Resolução da falha de renderização (tela branca) ocorrida após a implementação da Sidebar modular.
+Resolução da falha de renderização (tela branca) ocorrão após a implementação da Sidebar modular.
 
 ### Alterações realizadas
 - **Roteamento**: Adicionada rota raiz (`/`) e rota de fallback (`*`) em `main.tsx` para garantir que o componente `App` seja renderizado corretamente.
@@ -243,22 +243,67 @@ Atender aos requisitos de domínio definidos no PRD, onde "Rack" é apenas um ti
 ## 22/05/2026 (Refinamento Visual do Modal de Detalhes)
 
 ### Contexto
-Refinamento est�tico e arquitetural do ResourceDetailsModal para eliminar inconsist�ncias visuais e melhorar a hierarquia de informa��o e legibilidade.
+Refinamento estético e arquitetural do ResourceDetailsModal para eliminar inconsistências visuais e melhorar a hierarquia de informação e legibilidade.
 
-### Altera��es realizadas
-- **Arquitetura (Encapsulamento)**: Removido o bot�o de fechamento duplicado atrav�s do seletor CSS local [&>button]:hidden no DialogContent, preservando a integridade do componente global dialog.tsx.
-- **Layout**: Expandida a largura m�xima do modal de max-w-3xl para max-w-4xl para otimizar a distribui��o horizontal entre imagem e conte�do em desktop.
-- **Hierarquia Tipogr�fica**:
-    - **T�tulo**: Aumentado para text-2xl md:text-3xl font-bold para maior destaque e adaptabilidade responsiva.
-    - **Descri��o**: Aumentada de text-sm para text-base, melhorando significativamente a legibilidade.
-- **Ajustes de Propor��o e UI**:
-    - **Bot�o Editar**: Aumentado o padding para px-8 md:px-10 py-3 e aplicada fonte text-base font-semibold.
-    - **Indicador de Status**: Redimensionado o indicador visual (bola) para h-3 w-3 e o texto para text-sm, com ajuste no espa�amento (gap-2.5).
+### Alterações realizadas
+- **Arquitetura (Encapsulamento)**: Removido o botão de fechamento duplicado através do seletor CSS local [&>button]:hidden no DialogContent, preservando a integridade do componente global dialog.tsx.
+- **Layout**: Expandida a largura máxima do modal de max-w-3xl para max-w-4xl para otimizar a distribuição horizontal entre imagem e conteúdo em desktop.
+- **Hierarquia Tipográfica**:
+    - **Título**: Aumentado para text-2xl md:text-3xl font-bold para maior destaque e adaptabilidade responsiva.
+    - **Descrição**: Aumentada de text-sm para text-base, melhorando significativamente a legibilidade.
+- **Ajustes de Proporção e UI**:
+    - **Botão Editar**: Aumentado o padding para px-8 md:px-10 py-3 e aplicada fonte text-base font-semibold.
+    - **Indicador de Status**: Redimensionado o indicador visual (bola) para h-3 w-3 e o texto para text-sm, com ajuste no espaçamento (gap-2.5).
 
 ### Motivo
-Corrigir a polui��o visual causada por bot�es duplicados e a sensa��o de "vazio" no layout do modal devido a fontes subdimensionadas para o espa�o dispon�vel.
+Corrigir a poluição visual causada por botões duplicados e a sensação de "vazio" no layout do modal devido a fontes subdimensionadas para o espaço disponível.
 
 ### Impactos
-- Interface mais limpa, profissional e fiel ao prot�tipo institucional.
-- Melhor experi�ncia de leitura e escaneabilidade do conte�do do recurso.
-- Manuten��o da modularidade e isolamento de estilos do dom�nio Resources.
+- Interface mais limpa, profissional e fiel ao protótipo institucional.
+- Melhor experiência de leitura e escaneabilidade do conteúdo do recurso.
+- Manutenção da modularidade e isolamento de estilos do domínio Resources.
+
+---
+
+## 22/05/2026 (Sistema de Ocultação da Sidebar)
+
+### Contexto
+Implementação do sistema de ocultação completa da Sidebar para otimizar o espaço de trabalho e permitir foco total no conteúdo principal, seguindo a arquitetura modular e regras de acessibilidade.
+
+### Alterações realizadas
+- **Arquitetura**: Reorganização da Sidebar para `shared/Sidebar/components/`, separando a estrutura (`Sidebar.tsx`) do conteúdo visual (`SidebarContent.tsx`).
+- **Animações**: Implementação de transições suaves baseadas em `width` para o container estrutural e `transform/opacity` para o conteúdo visual, utilizando `will-change-transform` para performance.
+- **Controles**:
+    - Adicionado botão de fechamento no `SidebarHeader.tsx`.
+    - Criado `SidebarToggle.tsx` (botão flutuante) centrado verticalmente à esquerda para reabertura.
+- **Estado**: Centralização do controle de visibilidade em `Resources.tsx`.
+- **Estabilidade de Layout**:
+    - Adicionado `min-w-0` ao conteúdo principal para evitar quebras de flexbox.
+    - Adicionado `overflow-x-hidden` ao container raiz para eliminar scrollbars temporárias durante animações.
+- **Acessibilidade**: Implementado `aria-hidden` e o atributo `inert` na Sidebar oculta para impedir interações e navegação por foco invisível.
+- **Constantes**: Criação de `sidebar.constants.ts` para padronização de larguras e transições.
+
+### Motivo
+Melhorar a experiência do usuário permitindo o uso total da largura da tela quando necessário, mantendo a integridade do layout e a acessibilidade do sistema.
+
+### Impactos
+- Interface mais flexível e moderna.
+- Expansão fluida do conteúdo principal sem "layout jumping".
+- Garantia de que elementos ocultos não interferem na navegação por teclado.
+
+---
+
+## 22/05/2026 (Refinamento de UX: Posicionamento do SidebarToggle)
+
+### Contexto
+Ajuste do posicionamento do botão flutuante de reabertura da Sidebar para garantir alinhamento visual com o Header da aplicação.
+
+### Alterações realizadas
+- **SidebarToggle.tsx**: Alterada a classe de posicionamento de `top-1/2 -translate-y-1/2` para `top-4`.
+
+### Motivo
+O posicionamento centralizado verticalmente gerava inconsistência visual e quebrava o alinhamento espacial esperado em relação ao cabeçalho do sistema.
+
+### Impactos
+- Melhor consistência visual e hierarquia espacial.
+- Alinhamento preciso com o Header/Topbar da interface.
