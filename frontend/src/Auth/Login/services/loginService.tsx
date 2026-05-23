@@ -41,6 +41,6 @@ export default async function loginService(loginCredentials: Credentials, naviga
 
         navigate('/', { replace: true });
     } catch {
-        showErrorMessage('Erro ao redefinir senha!');
+        showErrorMessage('Erro ao realizar login!');
     }
 }

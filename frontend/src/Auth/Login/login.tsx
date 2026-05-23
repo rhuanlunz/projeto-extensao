@@ -49,8 +49,8 @@ export default function Login() {
 
             <div className="space-y-3">
               <Field>
-                <FieldLabel className="text-sm font-medium text-zinc-700">
-                  Seu email
+                <FieldLabel className="text-sm font-medium">
+                  E-mail
                 </FieldLabel>
 
                 <FieldContent>
@@ -64,8 +64,8 @@ export default function Login() {
               </Field>
 
               <Field>
-                <FieldLabel className="text-sm font-medium text-zinc-700">
-                  Sua senha
+                <FieldLabel className="text-sm font-medium">
+                  Senha
                 </FieldLabel>
 
                 <FieldContent>
