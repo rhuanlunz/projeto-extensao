@@ -17,7 +17,7 @@ export function ResourceDetailsModal({ open, resource, onClose }: ResourceDetail
 
   return (
     <Dialog open={open} onOpenChange={(isOpen) => !isOpen && onClose()}>
-      <DialogOverlay className="bg-black/30 backdrop-blur-sm" />
+      <DialogOverlay className="bg-black/30 backdrop-blur-sm data-[state=open]:animate-none data-[state=closed]:animate-none transition-opacity duration-300 ease-in-out opacity-0 data-[state=open]:opacity-100 data-[state=closed]:opacity-0" />
       <DialogContent className="max-w-4xl border-2 border-[#0056A4] p-0 sm:rounded-2xl overflow-hidden [&>button]:hidden data-[state=open]:animate-none data-[state=closed]:animate-none transition-[opacity,scale] duration-300 ease-in-out opacity-0 scale-95 data-[state=open]:opacity-100 data-[state=open]:scale-100 data-[state=closed]:opacity-0 data-[state=closed]:scale-95">
         <div className="flex flex-col lg:flex-row h-full">
           {/* Lado Esquerdo: Imagem */}

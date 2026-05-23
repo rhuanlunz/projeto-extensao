@@ -350,3 +350,25 @@ Prover feedback visual imediato para a ação de saída, preparando a arquitetur
 - Interface mais interativa e intuitiva.
 - Preparação técnica concluída para futura implementação do logout real.
 - Preservação integral da estrutura e estilo institucional da Sidebar.
+
+---
+
+## 23/05/2026 (Sincronização de Animação: Backdrop e Modal)
+
+### Contexto
+Refinamento da sincronização visual entre o backdrop (overlay/blur) e o conteúdo do modal de detalhes para eliminar o atraso percebido e garantir uma transição coesa.
+
+### Alterações realizadas
+- **Sincronização Temporal**: A duração da animação do `DialogOverlay` foi ajustada para 300ms, igualando-se à duração do `DialogContent`.
+- **Otimização Técnica**: Substituídas as animações baseadas em keyframes (`animate-in/out`) do overlay por CSS Transitions (`transition-opacity`), seguindo recomendação técnica para maior estabilidade e performance.
+- **Alinhamento de Easing**: Aplicado o easing `ease-in-out` em ambos os elementos para garantir que a aceleração e desaceleração da transição sejam idênticas.
+- **Estados de Opacidade**: Definidos estados explícitos de `opacity-0` e `opacity-100` controlados pelos atributos `data-[state]` do Radix UI.
+
+### Motivo
+Melhorar a percepção de qualidade do sistema através de uma transição premium onde o fundo e o modal surgem e desaparecem como uma única unidade visual, sem sensação de "blur sobrando" ou atraso na entrada.
+
+### Impactos
+- Experiência de abertura de modal mais fluida, moderna e tecnicamente estável.
+- Redução do trabalho de processamento do browser ao utilizar transições de propriedade única no overlay.
+- Manutenção da integridade visual e funcional, sem alterações estruturais ou globais no componente de Dialog.
+
