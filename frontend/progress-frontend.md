@@ -307,3 +307,46 @@ O posicionamento centralizado verticalmente gerava inconsistência visual e queb
 ### Impactos
 - Melhor consistência visual e hierarquia espacial.
 - Alinhamento preciso com o Header/Topbar da interface.
+
+---
+
+## 23/05/2026 (Ajuste de Animação: Pop no Modal de Detalhes)
+
+### Contexto
+Substituição da animação lateral (slide) do modal de detalhes dos recursos por uma animação de popup centralizado ("pop animation"), visando uma experiência visual mais moderna e técnica.
+
+### Alterações realizadas
+- **Remoção de Slide**: Desativado o pipeline de animação baseado em keyframes (`animate-in/out`) no componente `ResourceDetailsModal.tsx` através da classe `animate-none`.
+- **Implementação de Pop**: Adicionada transição suave utilizando propriedades individuais de `opacity` e `scale` (fade + zoom).
+- **Refinamento**: Ajustada a duração da transição para 300ms com easing `ease-in-out` para garantir fluidez.
+- **Estabilidade**: A técnica utilizada garante que o `translate` de centralização permaneça estático, eliminando qualquer movimento residual (slide lateral ou vertical).
+
+### Motivo
+Atender à necessidade estética do projeto por transições centralizadas e elegantes, evitando o comportamento de "painel deslizante" que não condizia com a hierarquia visual do modal de detalhes.
+
+### Impactos
+- Interface do modal de detalhes com transição mais limpa e profissional.
+- Preservação total do layout, responsividade e conteúdo do modal.
+- Alteração isolada no domínio `Resources`, sem impactar o comportamento global de dialogs do sistema.
+
+---
+
+## 23/05/2026 (Preparação de Logout: Interação de Hover no Perfil)
+
+### Contexto
+Preparação da área de perfil do usuário na Sidebar para futura funcionalidade de logout, implementando uma interação visual de hover elegante e tecnicamente estável.
+
+### Alterações realizadas
+- **Interação de Hover**: Adicionado comportamento de hover na seção de usuário utilizando a classe `group` do Tailwind.
+- **Transição de Avatar**: Implementada troca suave (fade-out) do avatar durante o hover.
+- **Botão de Logout**: Adicionado botão de logout (`LogOut` icon) que surge exatamente na posição do avatar (fade-in + scale-up).
+- **Otimização de DOM**: Ambos os elementos (avatar e botão) permanecem montados no DOM simultaneamente, controlados via `opacity`, `scale` e `pointer-events`.
+- **Estabilidade Visual**: A técnica evita re-montagens de componentes, flickering e micro-deslocamentos de layout (layout shift), garantindo que nome e e-mail permaneçam estáticos.
+
+### Motivo
+Prover feedback visual imediato para a ação de saída, preparando a arquitetura do componente `SidebarUser` para a futura integração com a lógica de autenticação e limpeza de sessão.
+
+### Impactos
+- Interface mais interativa e intuitiva.
+- Preparação técnica concluída para futura implementação do logout real.
+- Preservação integral da estrutura e estilo institucional da Sidebar.
