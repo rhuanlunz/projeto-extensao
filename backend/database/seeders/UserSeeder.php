@@ -15,7 +15,7 @@ class UserSeeder extends Seeder
 
     public function run(): void
     {
-        $email = 'bigbadass@root.rules';
+        $email = 'yedej85479@marineso.com';
         
         if (!DB::table('users')->where('email', $email)->exists()) {
             DB::table('users')->insert([
