@@ -45,7 +45,7 @@ Garantir uma interface profissional, alinhada à identidade visual da UNESC, com
 ## 21/05/2026 (Correção)
 
 ### Contexto
-Resolução da falha de renderização (tela branca) ocorrida após a implementação da Sidebar modular.
+Resolução da falha de renderização (tela branca) ocorrão após a implementação da Sidebar modular.
 
 ### Alterações realizadas
 - **Roteamento**: Adicionada rota raiz (`/`) e rota de fallback (`*`) em `main.tsx` para garantir que o componente `App` seja renderizado corretamente.
@@ -205,4 +205,170 @@ Atender aos requisitos de domínio definidos no PRD, onde "Rack" é apenas um ti
 - Arquitetura preparada para suportar outros tipos de recursos no futuro sem refatorações estruturais.
 - Manutenção da fidelidade visual e funcionalidade de agrupamento por andar.
 - Eliminação total de referências obsoletas ao termo `Rack` na estrutura de código do módulo.
+
+## [2026-05-22] Card 3 — Modal de Visualização Detalhada de Recurso
+
+### Implementação Concluída
+- Adição da feature de modal detalhado para recursos físicos seguindo a arquitetura modular do projeto.
+- Criação de componentes desacoplados em `src/Resources/components/`:
+  - `ResourceDetailsModal.tsx`: Orquestrador visual do modal (Dialog).
+  - `ResourceModalHeader.tsx`: Exibição do nome e botão de fechamento customizado.
+  - `ResourceModalImage.tsx`: Renderização de imagem com fallback.
+  - `ResourceModalContent.tsx`: Exibição de descrição com suporte a scroll.
+  - `ResourceModalStatus.tsx`: Reutilização do componente `ResourceStatus`.
+  - `ResourceModalActions.tsx`: Botão de edição (visual).
+- Implementação de primitives de UI:
+  - Criação de `src/components/ui/dialog.tsx` utilizando Radix UI.
+- Atualização do domínio `Resource`:
+  - Expansão da interface `Resource` em `resource.types.ts` com `description` e `imageUrl`.
+  - Atualização de `resource.mock.ts` com dados descritivos para testes.
+- Integração e Fluxo:
+  - `Resources.tsx` centraliza o estado do modal e recurso selecionado (componente controlado).
+  - `ResourceCard.tsx` dispara o evento de seleção via callback.
+  - Propagação de eventos através de `ResourceGrid` e `ResourceFloorSection`.
+- Padrões Visuais e Acessibilidade:
+  - Overlay com `backdrop-blur-sm` e `bg-black/30`.
+  - Layout horizontal (Imagem | Conteúdo).
+  - Estilização institucional (bordas azuis, botões arredondados).
+  - Suporte nativo Radix para ESC, focus trap e ARIA.
+- Qualidade e Arquitetura:
+  - Granularidade de props aplicada (subcomponentes recebem apenas dados necessários).
+  - Preservação do desacoplamento e responsabilidade única.
+  - Sem duplicação de lógica de status ou mocks.
+  - Preparado para futura integração com backend e permissões.
+
+
+---
+
+## 22/05/2026 (Refinamento Visual do Modal de Detalhes)
+
+### Contexto
+Refinamento estético e arquitetural do ResourceDetailsModal para eliminar inconsistências visuais e melhorar a hierarquia de informação e legibilidade.
+
+### Alterações realizadas
+- **Arquitetura (Encapsulamento)**: Removido o botão de fechamento duplicado através do seletor CSS local [&>button]:hidden no DialogContent, preservando a integridade do componente global dialog.tsx.
+- **Layout**: Expandida a largura máxima do modal de max-w-3xl para max-w-4xl para otimizar a distribuição horizontal entre imagem e conteúdo em desktop.
+- **Hierarquia Tipográfica**:
+    - **Título**: Aumentado para text-2xl md:text-3xl font-bold para maior destaque e adaptabilidade responsiva.
+    - **Descrição**: Aumentada de text-sm para text-base, melhorando significativamente a legibilidade.
+- **Ajustes de Proporção e UI**:
+    - **Botão Editar**: Aumentado o padding para px-8 md:px-10 py-3 e aplicada fonte text-base font-semibold.
+    - **Indicador de Status**: Redimensionado o indicador visual (bola) para h-3 w-3 e o texto para text-sm, com ajuste no espaçamento (gap-2.5).
+
+### Motivo
+Corrigir a poluição visual causada por botões duplicados e a sensação de "vazio" no layout do modal devido a fontes subdimensionadas para o espaço disponível.
+
+### Impactos
+- Interface mais limpa, profissional e fiel ao protótipo institucional.
+- Melhor experiência de leitura e escaneabilidade do conteúdo do recurso.
+- Manutenção da modularidade e isolamento de estilos do domínio Resources.
+
+---
+
+## 22/05/2026 (Sistema de Ocultação da Sidebar)
+
+### Contexto
+Implementação do sistema de ocultação completa da Sidebar para otimizar o espaço de trabalho e permitir foco total no conteúdo principal, seguindo a arquitetura modular e regras de acessibilidade.
+
+### Alterações realizadas
+- **Arquitetura**: Reorganização da Sidebar para `shared/Sidebar/components/`, separando a estrutura (`Sidebar.tsx`) do conteúdo visual (`SidebarContent.tsx`).
+- **Animações**: Implementação de transições suaves baseadas em `width` para o container estrutural e `transform/opacity` para o conteúdo visual, utilizando `will-change-transform` para performance.
+- **Controles**:
+    - Adicionado botão de fechamento no `SidebarHeader.tsx`.
+    - Criado `SidebarToggle.tsx` (botão flutuante) centrado verticalmente à esquerda para reabertura.
+- **Estado**: Centralização do controle de visibilidade em `Resources.tsx`.
+- **Estabilidade de Layout**:
+    - Adicionado `min-w-0` ao conteúdo principal para evitar quebras de flexbox.
+    - Adicionado `overflow-x-hidden` ao container raiz para eliminar scrollbars temporárias durante animações.
+- **Acessibilidade**: Implementado `aria-hidden` e o atributo `inert` na Sidebar oculta para impedir interações e navegação por foco invisível.
+- **Constantes**: Criação de `sidebar.constants.ts` para padronização de larguras e transições.
+
+### Motivo
+Melhorar a experiência do usuário permitindo o uso total da largura da tela quando necessário, mantendo a integridade do layout e a acessibilidade do sistema.
+
+### Impactos
+- Interface mais flexível e moderna.
+- Expansão fluida do conteúdo principal sem "layout jumping".
+- Garantia de que elementos ocultos não interferem na navegação por teclado.
+
+---
+
+## 22/05/2026 (Refinamento de UX: Posicionamento do SidebarToggle)
+
+### Contexto
+Ajuste do posicionamento do botão flutuante de reabertura da Sidebar para garantir alinhamento visual com o Header da aplicação.
+
+### Alterações realizadas
+- **SidebarToggle.tsx**: Alterada a classe de posicionamento de `top-1/2 -translate-y-1/2` para `top-4`.
+
+### Motivo
+O posicionamento centralizado verticalmente gerava inconsistência visual e quebrava o alinhamento espacial esperado em relação ao cabeçalho do sistema.
+
+### Impactos
+- Melhor consistência visual e hierarquia espacial.
+- Alinhamento preciso com o Header/Topbar da interface.
+
+---
+
+## 23/05/2026 (Ajuste de Animação: Pop no Modal de Detalhes)
+
+### Contexto
+Substituição da animação lateral (slide) do modal de detalhes dos recursos por uma animação de popup centralizado ("pop animation"), visando uma experiência visual mais moderna e técnica.
+
+### Alterações realizadas
+- **Remoção de Slide**: Desativado o pipeline de animação baseado em keyframes (`animate-in/out`) no componente `ResourceDetailsModal.tsx` através da classe `animate-none`.
+- **Implementação de Pop**: Adicionada transição suave utilizando propriedades individuais de `opacity` e `scale` (fade + zoom).
+- **Refinamento**: Ajustada a duração da transição para 300ms com easing `ease-in-out` para garantir fluidez.
+- **Estabilidade**: A técnica utilizada garante que o `translate` de centralização permaneça estático, eliminando qualquer movimento residual (slide lateral ou vertical).
+
+### Motivo
+Atender à necessidade estética do projeto por transições centralizadas e elegantes, evitando o comportamento de "painel deslizante" que não condizia com a hierarquia visual do modal de detalhes.
+
+### Impactos
+- Interface do modal de detalhes com transição mais limpa e profissional.
+- Preservação total do layout, responsividade e conteúdo do modal.
+- Alteração isolada no domínio `Resources`, sem impactar o comportamento global de dialogs do sistema.
+
+---
+
+## 23/05/2026 (Preparação de Logout: Interação de Hover no Perfil)
+
+### Contexto
+Preparação da área de perfil do usuário na Sidebar para futura funcionalidade de logout, implementando uma interação visual de hover elegante e tecnicamente estável.
+
+### Alterações realizadas
+- **Interação de Hover**: Adicionado comportamento de hover na seção de usuário utilizando a classe `group` do Tailwind.
+- **Transição de Avatar**: Implementada troca suave (fade-out) do avatar durante o hover.
+- **Botão de Logout**: Adicionado botão de logout (`LogOut` icon) que surge exatamente na posição do avatar (fade-in + scale-up).
+- **Otimização de DOM**: Ambos os elementos (avatar e botão) permanecem montados no DOM simultaneamente, controlados via `opacity`, `scale` e `pointer-events`.
+- **Estabilidade Visual**: A técnica evita re-montagens de componentes, flickering e micro-deslocamentos de layout (layout shift), garantindo que nome e e-mail permaneçam estáticos.
+
+### Motivo
+Prover feedback visual imediato para a ação de saída, preparando a arquitetura do componente `SidebarUser` para a futura integração com a lógica de autenticação e limpeza de sessão.
+
+### Impactos
+- Interface mais interativa e intuitiva.
+- Preparação técnica concluída para futura implementação do logout real.
+- Preservação integral da estrutura e estilo institucional da Sidebar.
+
+---
+
+## 23/05/2026 (Sincronização de Animação: Backdrop e Modal)
+
+### Contexto
+Refinamento da sincronização visual entre o backdrop (overlay/blur) e o conteúdo do modal de detalhes para eliminar o atraso percebido e garantir uma transição coesa.
+
+### Alterações realizadas
+- **Sincronização Temporal**: A duração da animação do `DialogOverlay` foi ajustada para 300ms, igualando-se à duração do `DialogContent`.
+- **Otimização Técnica**: Substituídas as animações baseadas em keyframes (`animate-in/out`) do overlay por CSS Transitions (`transition-opacity`), seguindo recomendação técnica para maior estabilidade e performance.
+- **Alinhamento de Easing**: Aplicado o easing `ease-in-out` em ambos os elementos para garantir que a aceleração e desaceleração da transição sejam idênticas.
+- **Estados de Opacidade**: Definidos estados explícitos de `opacity-0` e `opacity-100` controlados pelos atributos `data-[state]` do Radix UI.
+
+### Motivo
+Melhorar a percepção de qualidade do sistema através de uma transição premium onde o fundo e o modal surgem e desaparecem como uma única unidade visual, sem sensação de "blur sobrando" ou atraso na entrada.
+
+### Impactos
+- Experiência de abertura de modal mais fluida, moderna e tecnicamente estável.
+- Redução do trabalho de processamento do browser ao utilizar transições de propriedade única no overlay.
+- Manutenção da integridade visual e funcional, sem alterações estruturais ou globais no componente de Dialog.
 

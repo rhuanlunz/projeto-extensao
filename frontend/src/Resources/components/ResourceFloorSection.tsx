@@ -4,9 +4,10 @@ import { ResourceCard } from "./ResourceCard";
 interface ResourceFloorSectionProps {
   floorName: string;
   resources: Resource[];
+  onResourceClick: (resource: Resource) => void;
 }
 
-export function ResourceFloorSection({ floorName, resources }: ResourceFloorSectionProps) {
+export function ResourceFloorSection({ floorName, resources, onResourceClick }: ResourceFloorSectionProps) {
   return (
     <section className="mb-12">
       <div className="mb-6 flex items-center gap-4">
@@ -18,7 +19,11 @@ export function ResourceFloorSection({ floorName, resources }: ResourceFloorSect
 
       <div className="flex flex-wrap gap-6">
         {resources.map((resource) => (
-          <ResourceCard key={resource.id} resource={resource} />
+          <ResourceCard
+            key={resource.id}
+            resource={resource}
+            onClick={() => onResourceClick(resource)}
+          />
         ))}
       </div>
     </section>
