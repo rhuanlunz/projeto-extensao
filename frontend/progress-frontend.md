@@ -227,7 +227,7 @@ Atender aos requisitos de domínio definidos no PRD, onde "Rack" é apenas um ti
   - `ResourceCard.tsx` dispara o evento de seleção via callback.
   - Propagação de eventos através de `ResourceGrid` e `ResourceFloorSection`.
 - Padrões Visuais e Acessibilidade:
-  - Overlay com `backdrop-blur-sm` e `bg-black/30`.
+  - Overlay with `backdrop-blur-sm` and `bg-black/30`.
   - Layout horizontal (Imagem | Conteúdo).
   - Estilização institucional (bordas azuis, botões arredondados).
   - Suporte nativo Radix para ESC, focus trap e ARIA.
@@ -372,3 +372,40 @@ Melhorar a percepção de qualidade do sistema através de uma transição premi
 - Redução do trabalho de processamento do browser ao utilizar transições de propriedade única no overlay.
 - Manutenção da integridade visual e funcional, sem alterações estruturais ou globais no componente de Dialog.
 
+---
+
+## 23/05/2026 (Implementação do Modal de Cadastro/Edição de Recursos)
+
+### Contexto
+Implementação do fluxo completo de criação e edição de recursos físicos, seguindo uma arquitetura modular "blindada" que garante desacoplamento, escalabilidade e fidelidade visual institucional.
+
+### Alterações realizadas
+- **Dependências**: Instalação de `react-hook-form`, `zod`, `@hookform/resolvers` e componentes Radix UI (`select`, `label`, `slot`).
+- **Shared UI Layer**: 
+    - Criados `select.tsx`, `textarea.tsx` e `form.tsx` em `src/components/ui/`, seguindo rigorosamente o padrão de design do `input.tsx`.
+- **Arquitetura de Domínio (Resources)**:
+    - **Tipagem**: Definida modelagem desacoplada em `resourceForm.types.ts` (`FormData`, `Payloads` e `Unions`).
+    - **Validação**: Implementado schema Zod em `resourceForm.schema.ts` para validação centralizada.
+    - **Camada de Dados**:
+        - `resourceForm.options.ts`: Centralização de opções estáticas (andares, categorias, status).
+        - `resourceForm.mock.ts`: Repositório em memória que reutiliza a fonte oficial de dados (`mockResources`), implementa geração de ID único e simula latência artificial.
+        - `resourceForm.service.ts`: Camada de integração com mappers obrigatórios, isolando a UI da lógica de persistência e contratos de dados.
+- **Componentes de Feature**:
+    - `ResourceFormImage.tsx`: Componente de preview responsivo preparado para futuro upload.
+    - `ResourceForm.tsx`: Owner exclusivo do `useForm`, implementando layout responsivo (horizontal em desktop, vertical em mobile) e estados de loading/bloqueio durante submissão.
+    - `ResourceFormModal.tsx`: Orquestrador centralizado (Dialog) com animação institucional "pop" (fade + scale) sincronizada com o backdrop-blur, garantindo desmontagem segura e acessibilidade.
+- **Integração e Fluxo**:
+    - `Resources.tsx`: Transformado em fonte única de verdade para a listagem e estado do modal, utilizando atualização imutável após persistência mockada.
+    - `ResourceAddButton.tsx`: Refatorado para atuar como gatilho puro via callback.
+- **UX e Acessibilidade**:
+    - Implementado suporte total a ESC, focus trap e navegação por teclado.
+    - Feedback visual via Sonner toasts para sucesso e erro.
+
+### Motivo
+Prover uma infraestrutura robusta e profissional para a gestão de recursos, eliminando acoplamentos entre UI e persistência e preparando o sistema para integração com backend real, mantendo a excelência visual e técnica exigida pelo projeto.
+
+### Impactos
+- Fluxo de cadastro funcional com persistência mockada em memória.
+- Arquitetura preparada para hidratação imediata no futuro modo de edição.
+- Consistência total nas animações e comportamento dos modais do sistema.
+- Interface totalmente responsiva e acessível.
