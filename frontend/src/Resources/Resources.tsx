@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useRef } from "react";
 import { Sidebar, SidebarToggle } from "@/shared/Sidebar";
 import { ResourceHeader } from "./components/ResourceHeader";
 import { ResourceGrid } from "./components/ResourceGrid";
@@ -16,6 +16,7 @@ import { toast, Toaster } from "sonner";
 export function Resources() {
   // Estado para a lista de recursos (Source of Truth)
   const [resources, setResources] = useState<Resource[]>([]);
+  const toggleRef = useRef<HTMLButtonElement>(null);
 
   // Estado para controle do modal de detalhes
   const [selectedResource, setSelectedResource] = useState<Resource | null>(null);
@@ -27,6 +28,37 @@ export function Resources() {
 
   // Estado para controle de visibilidade da Sidebar
   const [isSidebarVisible, setIsSidebarVisible] = useState(true);
+
+  // Blindagem de Hydration & Responsividade: Gerenciamento de estado da Sidebar e Scroll Lock
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 1024) { // lg breakpoint
+        setIsSidebarVisible(false);
+      } else {
+        setIsSidebarVisible(true);
+      }
+    };
+
+    // Executa no mount inicial
+    handleResize();
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  // Blindagem de Scroll Lock para Sidebar Mobile
+  useEffect(() => {
+    const isMobile = window.innerWidth < 1024;
+    if (isMobile && isSidebarVisible) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [isSidebarVisible]);
 
   // Carregamento inicial via Service
   useEffect(() => {
@@ -82,20 +114,32 @@ export function Resources() {
   };
 
   const handleShowSidebar = () => setIsSidebarVisible(true);
-  const handleHideSidebar = () => setIsSidebarVisible(false);
+  const handleHideSidebar = () => {
+    setIsSidebarVisible(false);
+    // Retorna o foco para o botão de toggle ao fechar a sidebar em mobile
+    if (window.innerWidth < 1024) {
+      setTimeout(() => {
+        toggleRef.current?.focus();
+      }, 300); // Aguarda a animação
+    }
+  };
 
   return (
-    <div className="flex h-screen w-full overflow-x-hidden overflow-y-hidden">
+    <div className="flex h-screen w-full overflow-x-hidden overflow-y-hidden bg-[#EEF3F7]">
       <Toaster position="top-right" richColors />
 
       {/* Botão Flutuante para Reabertura */}
-      <SidebarToggle visible={!isSidebarVisible} onOpen={handleShowSidebar} />
+      <SidebarToggle 
+        ref={toggleRef}
+        visible={!isSidebarVisible} 
+        onOpen={handleShowSidebar} 
+      />
 
       {/* Sidebar Global */}
       <Sidebar visible={isSidebarVisible} onClose={handleHideSidebar} />
 
       {/* Conteúdo Principal */}
-      <main className="flex-1 min-w-0 overflow-auto bg-[#EEF3F7] p-10">
+      <main className="flex-1 min-w-0 overflow-auto p-4 sm:p-6 md:p-10 pt-20 lg:pt-10 pb-safe pr-safe pl-safe transition-all duration-300">
         <div className="mx-auto max-w-7xl">
           {/* Banner de Resumo */}
           <ResourceHeader stats={resourceStats} />
@@ -111,7 +155,9 @@ export function Resources() {
         </div>
 
         {/* Botão de Ação Flutuante */}
-        <ResourceAddButton onClick={handleOpenAddModal} />
+        <div className="fixed bottom-6 right-6 sm:bottom-10 sm:right-10 z-30">
+          <ResourceAddButton onClick={handleOpenAddModal} />
+        </div>
       </main>
 
       {/* Modal de Detalhes do Recurso */}

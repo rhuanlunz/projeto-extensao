@@ -73,8 +73,8 @@ export function ResourceForm({ initialData, onSubmit, onCancel, isSubmitting }: 
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col h-full overflow-hidden">
-        <div className="flex flex-col lg:flex-row flex-1 p-8 gap-8">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col">
+        <div className="flex flex-col lg:flex-row p-8 gap-8">
           {/* Lado Esquerdo: Imagem (Desktop) / Topo (Mobile) */}
           <div className="w-full lg:w-1/3 flex-shrink-0">
             <ResourceFormImage imageUrl={initialData?.imageUrl} name={initialData?.name} />
@@ -224,7 +224,7 @@ export function ResourceForm({ initialData, onSubmit, onCancel, isSubmitting }: 
         </div>
 
         {/* Rodapé: Ações */}
-        <div className="flex items-center justify-end gap-4 px-8 py-6 border-t mt-auto">
+        <div className="flex items-center justify-end gap-4 px-8 py-6 border-t">
           <Button 
             type="button" 
             variant="ghost" 
