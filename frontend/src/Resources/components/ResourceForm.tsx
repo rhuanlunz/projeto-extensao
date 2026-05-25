@@ -45,7 +45,7 @@ export function ResourceForm({ initialData, onSubmit, onCancel, isSubmitting }: 
     },
   });
 
-  // Hidratação para modo edição
+  // Blindagem do Reset do RHF: Hidratação segura para modo edição
   useEffect(() => {
     if (initialData) {
       form.reset({
@@ -57,33 +57,43 @@ export function ResourceForm({ initialData, onSubmit, onCancel, isSubmitting }: 
         status: initialData.status,
       });
     } else {
-      form.reset();
+      form.reset({
+        name: "",
+        unescId: "",
+        description: "",
+        category: "Rack",
+        floor: "first-floor",
+        status: "available",
+      });
     }
   }, [initialData, form]);
+
+  const inputClasses = "h-12 rounded-xl px-4 text-base bg-slate-50 border-slate-200 text-slate-900 placeholder:text-slate-400 focus:ring-2 focus:ring-[#0056A4]/20 focus:border-[#0056A4] transition-all";
+  const labelClasses = "text-[15px] font-semibold text-slate-700 mb-2";
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col h-full overflow-hidden">
-        <div className="flex flex-col lg:flex-row flex-1 overflow-y-auto p-6 gap-8">
+        <div className="flex flex-col lg:flex-row flex-1 p-8 gap-8">
           {/* Lado Esquerdo: Imagem (Desktop) / Topo (Mobile) */}
           <div className="w-full lg:w-1/3 flex-shrink-0">
             <ResourceFormImage imageUrl={initialData?.imageUrl} name={initialData?.name} />
           </div>
 
           {/* Lado Direito: Campos do Formulário */}
-          <div className="flex-1 space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="flex-1 space-y-5">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
               <FormField
                 control={form.control}
                 name="name"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-zinc-700">Nome do Recurso</FormLabel>
+                    <FormLabel className={labelClasses}>Nome do Recurso</FormLabel>
                     <FormControl>
                       <Input 
                         placeholder="Ex: Rack R-01" 
                         {...field} 
-                        className="text-black bg-zinc-100" 
+                        className={inputClasses}
                         disabled={isSubmitting}
                       />
                     </FormControl>
@@ -96,12 +106,12 @@ export function ResourceForm({ initialData, onSubmit, onCancel, isSubmitting }: 
                 name="unescId"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-zinc-700">ID / Patrimônio</FormLabel>
+                    <FormLabel className={labelClasses}>ID / Patrimônio</FormLabel>
                     <FormControl>
                       <Input 
                         placeholder="Ex: 123456" 
                         {...field} 
-                        className="text-black bg-zinc-100" 
+                        className={inputClasses}
                         disabled={isSubmitting}
                       />
                     </FormControl>
@@ -116,11 +126,11 @@ export function ResourceForm({ initialData, onSubmit, onCancel, isSubmitting }: 
               name="description"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-zinc-700">Descrição</FormLabel>
+                  <FormLabel className={labelClasses}>Descrição</FormLabel>
                   <FormControl>
                     <Textarea 
                       placeholder="Descreva as especificações do recurso..." 
-                      className="resize-none h-24 text-black bg-zinc-100" 
+                      className="min-h-[140px] rounded-2xl p-4 leading-relaxed text-base bg-slate-50 border-slate-200 text-slate-900 placeholder:text-slate-400 focus:ring-2 focus:ring-[#0056A4]/20 focus:border-[#0056A4] resize-none transition-all" 
                       {...field} 
                       disabled={isSubmitting}
                     />
@@ -130,26 +140,26 @@ export function ResourceForm({ initialData, onSubmit, onCancel, isSubmitting }: 
               )}
             />
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
               <FormField
                 control={form.control}
                 name="category"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-zinc-700">Categoria</FormLabel>
+                    <FormLabel className={labelClasses}>Categoria</FormLabel>
                     <Select 
                       onValueChange={field.onChange} 
-                      defaultValue={field.value}
+                      value={field.value}
                       disabled={isSubmitting}
                     >
                       <FormControl>
-                        <SelectTrigger className="text-black bg-zinc-100">
-                          <SelectValue placeholder="Selecione" />
+                        <SelectTrigger className={inputClasses}>
+                          <SelectValue className="text-slate-900" placeholder="Selecione" />
                         </SelectTrigger>
                       </FormControl>
-                      <SelectContent>
+                      <SelectContent className="max-h-[240px] overflow-y-auto">
                         {categoryOptions.map(opt => (
-                          <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
+                          <SelectItem key={opt.value} value={opt.value} className="text-slate-900">{opt.label}</SelectItem>
                         ))}
                       </SelectContent>
                     </Select>
@@ -162,20 +172,20 @@ export function ResourceForm({ initialData, onSubmit, onCancel, isSubmitting }: 
                 name="floor"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-zinc-700">Andar</FormLabel>
+                    <FormLabel className={labelClasses}>Andar</FormLabel>
                     <Select 
                       onValueChange={field.onChange} 
-                      defaultValue={field.value}
+                      value={field.value}
                       disabled={isSubmitting}
                     >
                       <FormControl>
-                        <SelectTrigger className="text-black bg-zinc-100">
-                          <SelectValue placeholder="Selecione" />
+                        <SelectTrigger className={inputClasses}>
+                          <SelectValue className="text-slate-900" placeholder="Selecione" />
                         </SelectTrigger>
                       </FormControl>
-                      <SelectContent>
+                      <SelectContent className="max-h-[240px] overflow-y-auto">
                         {floorOptions.map(opt => (
-                          <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
+                          <SelectItem key={opt.value} value={opt.value} className="text-slate-900">{opt.label}</SelectItem>
                         ))}
                       </SelectContent>
                     </Select>
@@ -188,20 +198,20 @@ export function ResourceForm({ initialData, onSubmit, onCancel, isSubmitting }: 
                 name="status"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-zinc-700">Status</FormLabel>
+                    <FormLabel className={labelClasses}>Status</FormLabel>
                     <Select 
                       onValueChange={field.onChange} 
-                      defaultValue={field.value}
+                      value={field.value}
                       disabled={isSubmitting}
                     >
                       <FormControl>
-                        <SelectTrigger className="text-black bg-zinc-100">
-                          <SelectValue placeholder="Selecione" />
+                        <SelectTrigger className={inputClasses}>
+                          <SelectValue className="text-slate-900" placeholder="Selecione" />
                         </SelectTrigger>
                       </FormControl>
-                      <SelectContent>
+                      <SelectContent className="max-h-[240px] overflow-y-auto">
                         {statusOptions.map(opt => (
-                          <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
+                          <SelectItem key={opt.value} value={opt.value} className="text-slate-900">{opt.label}</SelectItem>
                         ))}
                       </SelectContent>
                     </Select>
@@ -214,20 +224,20 @@ export function ResourceForm({ initialData, onSubmit, onCancel, isSubmitting }: 
         </div>
 
         {/* Rodapé: Ações */}
-        <div className="flex items-center justify-end gap-3 p-6 bg-zinc-50 border-t">
+        <div className="flex items-center justify-end gap-4 px-8 py-6 border-t mt-auto">
           <Button 
             type="button" 
             variant="ghost" 
             onClick={onCancel}
             disabled={isSubmitting}
-            className="hover:bg-zinc-200 text-zinc-600 font-medium px-8"
+            className="h-11 px-6 rounded-xl text-slate-600 font-medium hover:bg-slate-100"
           >
             Cancelar
           </Button>
           <Button 
             type="submit" 
             disabled={isSubmitting}
-            className="bg-[#0085FF] hover:bg-[#0074E0] text-white px-10 font-semibold transition-all active:scale-95"
+            className="h-11 px-8 rounded-xl bg-[#0085FF] hover:bg-[#0074E0] text-white font-semibold transition-all active:scale-95 shadow-lg shadow-blue-200"
           >
             {isSubmitting ? (
               <>
@@ -245,7 +255,7 @@ export function ResourceForm({ initialData, onSubmit, onCancel, isSubmitting }: 
 }
 
 // Auxiliar para mapear número para string do form
-const mapNumberToFloor = (floor: number): any => {
+const mapNumberToFloor = (floor: number): ResourceFormValues["floor"] => {
   switch (floor) {
     case 1: return "first-floor";
     case 2: return "second-floor";

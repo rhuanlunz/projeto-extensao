@@ -32,7 +32,7 @@ const mapFormDataToPayload = (formData: ResourceFormData): CreateResourcePayload
     category: formData.category,
     floor: formData.floor,
     status: formData.status,
-    imageUrl: "/rack-preset.png", // Preset inicial
+    imageUrl: undefined, // Permitir que a UI aplique o fallback institucional
   };
 };
 
