@@ -19,8 +19,9 @@ createRoot(document.getElementById("root")!).render(
             <Route path="cadastro" element={<Register />} />
             <Route path="esqueci-minha-senha" element={<ForgotPassword />} />
             <Route path="redefinir-senha" element={<ResetPassword />} />
-            <Route path="*" element={<NotFound />} />
           </Route>
+          
+          <Route path="*" element={<NotFound />} />
         
           <Route path="/" element={<Resources />} />
         </Routes>
