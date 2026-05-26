@@ -6,7 +6,7 @@ import ForgotPassword from "@/Auth/ForgotPassword/ForgotPassword.tsx"
 import ResetPassword from "@/Auth/ResetPassword/ResetPassword.tsx"
 import Login from "@/Auth/Login/Login.tsx"
 import Register from "./Auth/Register/Register.tsx"
-import { Resources } from "@/Resources/Resources"
+import { Resources } from "@/pages/Resources/Resources.tsx"
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
