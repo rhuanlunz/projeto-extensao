@@ -4,7 +4,7 @@ import { ArrowRight, LoaderCircle } from "lucide-react";
 import { Link, Navigate, useNavigate, useSearchParams  } from "react-router";
 import { Toaster } from "@/components/ui/sonner"
 import { useState } from "react";
-import PasswordInput from "../../shared/PasswordInput/PasswordInput";
+import PasswordInput from "@/shared/PasswordInput/PasswordInput";
 import resetPasswordService from "./services/resetPasswordService";
 
 export default function ResetPassword() {
