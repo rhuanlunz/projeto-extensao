@@ -2,15 +2,15 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import {Field, FieldContent, FieldLabel } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
-import { ArrowRight, Eye, EyeOff, LoaderCircle } from "lucide-react"
+import { ArrowRight, LoaderCircle } from "lucide-react"
 import { useState } from "react"
 import loginService from "./services/loginService"
 import { Link, useNavigate } from "react-router"
 import { Toaster } from "sonner"
+import PasswordInput from "@/shared/PasswordInput/PasswordInput";
 
 export default function Login() {
   const [loading, setLoading] = useState(false);
-  const [showPassword, setShowPassword] = useState(false)
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
@@ -70,24 +70,13 @@ export default function Login() {
 
                 <FieldContent>
                   <div className="relative mt-1">
-                    <Input
-                      type={showPassword ? "text" : "password"}
-                      value={password}
-                      onChange={e => setPassword(e.target.value)}
-                      className="h-10 pr-10 text-black"
+                    <PasswordInput 
+                        id="password" 
+                        name="password" 
+                        placehoder="Digite sua senha"
+                        value={password}
+                        onChange={setPassword}
                     />
-
-                    <button
-                      type="button"
-                      onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-500 transition-colors hover:text-zinc-800"
-                    >
-                      {showPassword ? (
-                        <EyeOff size={18} />
-                      ) : (
-                        <Eye size={18} />
-                      )}
-                    </button>
                   </div>
 
                   <div className="mt-2 flex justify-end">

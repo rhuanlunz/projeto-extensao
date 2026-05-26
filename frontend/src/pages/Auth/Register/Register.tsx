@@ -2,19 +2,18 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import {Field,FieldContent,FieldLabel,} from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
-import { ArrowRight, Eye, EyeOff, LoaderCircle } from "lucide-react"
+import { ArrowRight, LoaderCircle } from "lucide-react"
 import { useState } from "react"
 import { Toaster } from "sonner"
 import registerService from "./services/registerService"
 import { useNavigate } from "react-router"
+import PasswordInput from "@/shared/PasswordInput/PasswordInput"
 
 export default function Register() {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [passwordConfirmation, setPasswordConfirmation] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -97,28 +96,13 @@ export default function Register() {
                 <FieldContent>
 
                   <div className="relative mt-0">
-
-                    <Input
-                      type={showPassword ? "text" : "password"}
+                    <PasswordInput 
+                      id="new-password" 
+                      name="new-password" 
+                      placehoder="Digite sua senha"
                       value={password}
-                      onChange={e => setPassword(e.target.value)}
-                      className="mt-0 h-10 pr-10 text-black"
+                      onChange={setPassword}
                     />
-
-                    <button
-                      type="button"
-                      onClick={() =>
-                        setShowPassword(!showPassword)
-                      }
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-zinc-800"
-                    >
-                      {showPassword ? (
-                        <EyeOff size={18} />
-                      ) : (
-                        <Eye size={18} />
-                      )}
-                    </button>
-
                   </div>
 
                 </FieldContent>
@@ -134,34 +118,13 @@ export default function Register() {
                 <FieldContent>
 
                   <div className="relative mt-0">
-
-                    <Input
-                      type={
-                        showConfirmPassword
-                          ? "text"
-                          : "password"
-                      }
+                    <PasswordInput 
+                      id="new-password" 
+                      name="new-password" 
+                      placehoder="Confirme sua senha"
                       value={passwordConfirmation}
-                      onChange={e => setPasswordConfirmation(e.target.value)}
-                      className="mt-0 h-10 pr-10 text-black"
+                      onChange={setPasswordConfirmation}
                     />
-
-                    <button
-                      type="button"
-                      onClick={() =>
-                        setShowConfirmPassword(
-                          !showConfirmPassword
-                        )
-                      }
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-zinc-800"
-                    >
-                      {showConfirmPassword ? (
-                        <EyeOff size={18} />
-                      ) : (
-                        <Eye size={18} />
-                      )}
-                    </button>
-
                   </div>
 
                 </FieldContent>
