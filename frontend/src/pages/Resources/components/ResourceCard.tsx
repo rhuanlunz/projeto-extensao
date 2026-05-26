@@ -11,13 +11,15 @@ export function ResourceCard({ resource, onClick }: ResourceCardProps) {
   return (
     <div
       onClick={onClick}
-      className="flex w-full flex-col items-center rounded-xl bg-white p-6 shadow-[0_2px_10px_rgba(0,0,0,0.05)] cursor-pointer transition-all hover:shadow-[0_4px_20px_rgba(0,0,0,0.1)] hover:-translate-y-1"
+      className="flex w-full min-w-0 flex-col items-center rounded-xl bg-white p-6 shadow-[0_2px_10px_rgba(0,0,0,0.05)] cursor-pointer transition-all hover:shadow-[0_4px_20px_rgba(0,0,0,0.1)] hover:-translate-y-1"
     >
       <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-[#E0F2FF]">
         <Server className="h-8 w-8 text-[#0085FF]" />
       </div>
 
-      <h3 className="mb-2 text-center font-medium text-slate-900">{resource.name}</h3>
+      <h3 className="mb-2 w-full max-w-full break-words text-center text-lg font-medium leading-snug text-slate-900 [overflow-wrap:anywhere]">
+        {resource.name}
+      </h3>
 
       <ResourceStatus status={resource.status} />
     </div>

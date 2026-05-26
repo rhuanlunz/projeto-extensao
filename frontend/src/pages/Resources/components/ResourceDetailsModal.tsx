@@ -10,9 +10,10 @@ interface ResourceDetailsModalProps {
   open: boolean;
   resource: Resource | null;
   onClose: () => void;
+  onEdit: (resource: Resource) => void;
 }
 
-export function ResourceDetailsModal({ open, resource, onClose }: ResourceDetailsModalProps) {
+export function ResourceDetailsModal({ open, resource, onClose, onEdit }: ResourceDetailsModalProps) {
   if (!resource) return null;
 
   return (
@@ -27,15 +28,13 @@ export function ResourceDetailsModal({ open, resource, onClose }: ResourceDetail
             </div>
 
             {/* Lado Direito: Conteúdo */}
-            <div className="flex flex-1 flex-col p-4 sm:p-6 lg:p-8 lg:pl-4">
-              <ResourceModalHeader name={resource.name} onClose={onClose} />
-              
-              <div className="mt-4 flex-1">
+            <div className="flex flex-1 flex-col min-w-0 w-full p-4 sm:p-6 lg:p-8 lg:pl-4">
+              <ResourceModalHeader name={resource.name} onClose={onClose} />              <div className="mt-4 flex-1">
                 <ResourceModalContent description={resource.description} />
               </div>
 
               <div className="mt-6 flex items-end justify-between">
-                <ResourceModalActions />
+                <ResourceModalActions onEdit={() => onEdit(resource)} />
                 <ResourceModalStatus status={resource.status} />
               </div>
             </div>

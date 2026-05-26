@@ -93,19 +93,31 @@ export function Resources() {
     }
   };
 
+  const handleEditResource = (resource: Resource) => {
+    setSelectedResource(null);
+    // Blindagem de UI: requestAnimationFrame evita conflitos de overlay/focus trap
+    requestAnimationFrame(() => {
+      setResourceToEdit(resource);
+      setIsFormModalOpen(true);
+    });
+  };
+
   const handleFormSubmit = async (values: ResourceFormValues) => {
     setIsSubmitting(true);
     try {
       if (resourceToEdit) {
         const updated = await updateResource(resourceToEdit.id, values);
+        if (!updated) return;
         setResources(prev => prev.map(r => r.id === updated.id ? updated : r));
         toast.success("Recurso atualizado com sucesso!");
       } else {
         const created = await createResource(values);
+        if (!created) return;
         setResources(prev => [created, ...prev]);
         toast.success("Recurso cadastrado com sucesso!");
       }
       setIsFormModalOpen(false);
+      setResourceToEdit(null);
     } catch (error) {
       toast.error("Erro ao salvar recurso. Tente novamente.");
     } finally {
@@ -165,6 +177,7 @@ export function Resources() {
         open={!!selectedResource}
         resource={selectedResource}
         onClose={handleCloseModal}
+        onEdit={handleEditResource}
       />
 
       {/* Modal de Formulário (Cadastro/Edição) */}
@@ -174,7 +187,6 @@ export function Resources() {
         initialData={resourceToEdit}
         onSubmit={handleFormSubmit}
         isSubmitting={isSubmitting}
-        mode={resourceToEdit ? "edit" : "create"}
       />
     </div>
   );
