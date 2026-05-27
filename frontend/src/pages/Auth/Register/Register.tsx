@@ -26,7 +26,7 @@ export default function Register() {
       
       setLoading(false);
     }}>
-      <div className="flex min-h-screen items-center justify-center bg-[linear-gradient(to_bottom,#0085FF_50%,#E0F2FF_50%)]">
+      <div className="flex min-h-screen p-5 items-center justify-center bg-[linear-gradient(to_bottom,#0085FF_50%,#E0F2FF_50%)]">
         <Toaster />
 
         <Card className="h-145 w-100 rounded-2xl border-zinc-200 shadow-2xl">
