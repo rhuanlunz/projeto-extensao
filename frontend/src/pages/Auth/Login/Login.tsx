@@ -92,7 +92,7 @@ export default function Login() {
                   <Button
                     type="submit"
                     disabled={loading}
-                    className="bg-[#0058BE] p-5 cursor-pointer"
+                    className="bg-[#0058BE] p-5"
                   >
                       {loading ? (
                         <>
@@ -111,7 +111,7 @@ export default function Login() {
                 <div className="mt-4 h-px w-full bg-zinc-300" />
 
                 <Field>
-                  <Link to="/autenticacao/cadastro" className="underline mt-4 cursor-pointer text-center text-sm text-zinc-500 transition-colors hover:text-[#0056A4]">
+                  <Link to="/autenticacao/cadastro" className="underline mt-4 text-center text-sm text-zinc-500 transition-colors hover:text-[#0056A4]">
                     Realizar cadastro
                   </Link>
                 </Field>
