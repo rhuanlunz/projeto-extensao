@@ -43,7 +43,7 @@ export default function Register() {
 
             <div className="mb-3 text-center">
               <h1 className="mb-0 text-3xl font-bold text-[#0056A4]">
-                Recursos
+                Cadastro
               </h1>
 
               <p className="mb-1 text-sm text-zinc-500">
@@ -64,7 +64,8 @@ export default function Register() {
                     type="text"
                     value={username}
                     onChange={e => setUsername(e.target.value)}
-                    className="mt-0 h-10 text-black"
+										placeholder="Digite seu nome de usuário"
+                    className="p-5 rounded-lg bg-gray-100 border-0 text-black"
                   />
                 </FieldContent>
 
@@ -81,7 +82,8 @@ export default function Register() {
                     type="email"
                     value={email}
                     onChange={e => setEmail(e.target.value)}
-                    className="mt-0 h-10 text-black"
+										placeholder="Digite seu E-mail"
+                    className="p-5 rounded-lg bg-gray-100 border-0 text-black"
                   />
                 </FieldContent>
 

@@ -39,7 +39,7 @@ export default function Login() {
 
             <div className="mb-5 text-center">
               <h1 className="mb-1 text-3xl font-bold text-[#0056A4]">
-                Recursos
+                Login
               </h1>
 
               <p className="text-sm text-zinc-500">
@@ -58,7 +58,8 @@ export default function Login() {
                     type="email"
                     value={email}
                     onChange={e => setEmail(e.target.value)}
-                    className="mt-1 h-10 text-black"
+                    placeholder="Digite seu E-mail"
+                    className="p-5 rounded-lg bg-gray-100 border-0 text-black"
                   />
                 </FieldContent>
               </Field>

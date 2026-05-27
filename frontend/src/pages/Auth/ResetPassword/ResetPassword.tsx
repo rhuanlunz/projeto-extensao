@@ -38,10 +38,10 @@ export default function ResetPassword() {
             >
                 <FieldSet >
                     <FieldContent className="flex flex-col items-center justify-center text-center gap-4 p-10">
-                        <img src="/logounesc.png" alt="Logo" className="h-16 w-16 object-contain" />
+                        <img src="/logounesc.png" alt="Logo" className="-mb-4 h-16 w-16 object-contain" />
                         <FieldTitle className="text-2xl font-bold text-[#0058BE]">Redefinir senha</FieldTitle>
 
-                        <FieldDescription className="text-center text-1xl mb-5">
+                        <FieldDescription className="text-center text-sm mb-5">
                             Defina uma nova senha para acessar sua conta.
                         </FieldDescription>
 
