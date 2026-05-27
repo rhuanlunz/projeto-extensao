@@ -7,6 +7,7 @@ use Illuminate\Http\JsonResponse;
 
 use App\Http\Requests\StoreResourceRequest;
 use App\Http\Requests\UpdateResourceRequest;
+use App\Http\Requests\UpdateResourceStatusRequest;
 use App\Http\Resources\ResourceResource;
 
 class ResourceController extends Controller
@@ -72,6 +73,25 @@ class ResourceController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Recurso atualizado com sucesso',
+            'data' => new ResourceResource($resource)
+        ], 200);
+    }
+
+    /**
+     * Update only the status of the specified resource in storage.
+     *
+     * @param UpdateResourceStatusRequest $request
+     * @param string $id
+     * @return JsonResponse
+     */
+    public function updateStatus(UpdateResourceStatusRequest $request, string $id): JsonResponse
+    {
+        $resource = $this->resourceService->updateStatus($id, $request->validated());
+        $resource->load(['level', 'category']);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Status do recurso atualizado com sucesso',
             'data' => new ResourceResource($resource)
         ], 200);
     }
