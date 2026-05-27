@@ -1,10 +1,15 @@
 import { Button } from "@/components/ui/button";
 
-export function ResourceModalActions() {
+interface ResourceModalActionsProps {
+  onEdit: () => void;
+}
+
+export function ResourceModalActions({ onEdit }: ResourceModalActionsProps) {
   return (
-    <div className="mt-4 flex justify-start">
+    <div className="flex justify-start">
       <Button
-        className="rounded-full bg-[#0085FF] px-8 md:px-10 py-3 text-base font-semibold hover:bg-[#0056A4]"
+        onClick={onEdit}
+        className="h-11 px-8 rounded-xl bg-[#0085FF] hover:bg-[#0074E0] text-white font-semibold transition-all active:scale-95 shadow-lg shadow-blue-200"
       >
         Editar
       </Button>

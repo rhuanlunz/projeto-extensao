@@ -10,7 +10,6 @@ interface ResourceFormModalProps {
   initialData: Resource | null;
   onSubmit: (data: ResourceFormValues) => Promise<void>;
   isSubmitting: boolean;
-  mode: "create" | "edit";
 }
 
 export function ResourceFormModal({ 
@@ -18,10 +17,11 @@ export function ResourceFormModal({
   onOpenChange, 
   initialData, 
   onSubmit, 
-  isSubmitting,
-  mode 
+  isSubmitting
 }: ResourceFormModalProps) {
   
+  const isEditing = Boolean(initialData);
+
   const handleClose = () => {
     if (!isSubmitting) {
       onOpenChange(false);
@@ -37,10 +37,12 @@ export function ResourceFormModal({
         <div className="flex items-center justify-between px-8 py-6 shrink-0 border-b border-slate-100">
           <div className="flex flex-col">
             <h2 className="text-3xl font-bold tracking-tight text-[#0056A4]">
-              {mode === "create" ? "Cadastrar Novo Recurso" : "Editar Recurso"}
+              {isEditing ? "Editar Recurso" : "Cadastrar Novo Recurso"}
             </h2>
             <p className="text-sm text-slate-500 mt-1">
-              Gerencie as informações do recurso físico no sistema
+              {isEditing 
+                ? "Atualize as informações do recurso físico selecionado" 
+                : "Gerencie as informações do recurso físico no sistema"}
             </p>
           </div>
           <button 

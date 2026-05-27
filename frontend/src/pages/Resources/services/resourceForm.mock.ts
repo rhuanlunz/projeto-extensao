@@ -31,7 +31,7 @@ export const updateResource = async (payload: UpdateResourcePayload): Promise<Re
   await new Promise((resolve) => setTimeout(resolve, 800));
 
   const index = resourcesDatabase.findIndex((r) => r.id === payload.id);
-  if (index === -index) throw new Error("Recurso não encontrado");
+  if (index === -1) throw new Error("Recurso não encontrado");
 
   const updatedResource: Resource = {
     ...resourcesDatabase[index],

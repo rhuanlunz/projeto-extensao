@@ -95,6 +95,7 @@ export function ResourceForm({ initialData, onSubmit, onCancel, isSubmitting }: 
                         {...field} 
                         className={inputClasses}
                         disabled={isSubmitting}
+                        maxLength={60}
                       />
                     </FormControl>
                     <FormMessage />
@@ -113,6 +114,7 @@ export function ResourceForm({ initialData, onSubmit, onCancel, isSubmitting }: 
                         {...field} 
                         className={inputClasses}
                         disabled={isSubmitting}
+                        maxLength={30}
                       />
                     </FormControl>
                     <FormMessage />
@@ -129,10 +131,11 @@ export function ResourceForm({ initialData, onSubmit, onCancel, isSubmitting }: 
                   <FormLabel className={labelClasses}>Descrição</FormLabel>
                   <FormControl>
                     <Textarea 
-                      placeholder="Descreva as especificações do recurso..." 
+                      placeholder="Adicione uma descrição do recurso (Opcional)" 
                       className="min-h-[140px] rounded-2xl p-4 leading-relaxed text-base bg-slate-50 border-slate-200 text-slate-900 placeholder:text-slate-400 focus:ring-2 focus:ring-[#0056A4]/20 focus:border-[#0056A4] resize-none transition-all" 
                       {...field} 
                       disabled={isSubmitting}
+                      maxLength={300}
                     />
                   </FormControl>
                   <FormMessage />
