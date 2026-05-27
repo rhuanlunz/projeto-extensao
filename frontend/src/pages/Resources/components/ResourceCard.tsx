@@ -17,7 +17,7 @@ export function ResourceCard({ resource, onClick }: ResourceCardProps) {
         <Server className="h-8 w-8 text-[#0085FF]" />
       </div>
 
-      <h3 className="mb-2 w-full max-w-full break-words text-center text-lg font-medium leading-snug text-slate-900 [overflow-wrap:anywhere]">
+      <h3 className="mb-2 w-full max-w-full wrap-break-word text-center text-lg font-medium leading-snug text-slate-900">
         {resource.name}
       </h3>
 

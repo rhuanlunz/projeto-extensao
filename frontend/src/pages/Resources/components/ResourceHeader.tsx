@@ -18,7 +18,7 @@ export function ResourceHeader({ stats }: ResourceHeaderProps) {
         {stats.map((stat) => (
           <div
             key={stat.floor}
-            className="flex flex-1 min-w-[100px] flex-col items-center rounded-xl bg-white/10 p-3 md:p-4 backdrop-blur-sm"
+            className="flex flex-1 min-w-25 flex-col items-center rounded-xl bg-white/10 p-3 md:p-4 backdrop-blur-sm"
           >
             <span className="text-xl md:text-2xl font-bold">
               {String(stat.count).padStart(2, "0")}

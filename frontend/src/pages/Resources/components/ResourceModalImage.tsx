@@ -7,7 +7,7 @@ interface ResourceModalImageProps {
 
 export function ResourceModalImage({ imageUrl, name }: ResourceModalImageProps) {
   return (
-    <div className="flex h-full min-h-[240px] w-full items-center justify-center rounded-3xl bg-[#E0F2FF] lg:w-[280px]">
+    <div className="flex h-full min-h-60 w-full items-center justify-center rounded-3xl bg-[#E0F2FF] lg:w-70">
       {imageUrl ? (
         <img
           src={imageUrl}

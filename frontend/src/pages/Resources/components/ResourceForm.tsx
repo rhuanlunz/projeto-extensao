@@ -76,7 +76,7 @@ export function ResourceForm({ initialData, onSubmit, onCancel, isSubmitting }: 
       <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col">
         <div className="flex flex-col lg:flex-row p-8 gap-8">
           {/* Lado Esquerdo: Imagem (Desktop) / Topo (Mobile) */}
-          <div className="w-full lg:w-1/3 flex-shrink-0">
+          <div className="w-full lg:w-1/3 shrink-0">
             <ResourceFormImage imageUrl={initialData?.imageUrl} name={initialData?.name} />
           </div>
 
@@ -132,7 +132,7 @@ export function ResourceForm({ initialData, onSubmit, onCancel, isSubmitting }: 
                   <FormControl>
                     <Textarea 
                       placeholder="Adicione uma descrição do recurso (Opcional)" 
-                      className="min-h-[140px] rounded-2xl p-4 leading-relaxed text-base bg-slate-50 border-slate-200 text-slate-900 placeholder:text-slate-400 focus:ring-2 focus:ring-[#0056A4]/20 focus:border-[#0056A4] resize-none transition-all" 
+                      className="min-h-35 rounded-2xl p-4 leading-relaxed text-base bg-slate-50 border-slate-200 text-slate-900 placeholder:text-slate-400 focus:ring-2 focus:ring-[#0056A4]/20 focus:border-[#0056A4] resize-none transition-all" 
                       {...field} 
                       disabled={isSubmitting}
                       maxLength={300}
@@ -160,7 +160,7 @@ export function ResourceForm({ initialData, onSubmit, onCancel, isSubmitting }: 
                           <SelectValue className="text-slate-900" placeholder="Selecione" />
                         </SelectTrigger>
                       </FormControl>
-                      <SelectContent className="max-h-[240px] overflow-y-auto">
+                      <SelectContent className="max-h-60 overflow-y-auto">
                         {categoryOptions.map(opt => (
                           <SelectItem key={opt.value} value={opt.value} className="text-slate-900">{opt.label}</SelectItem>
                         ))}
@@ -186,7 +186,7 @@ export function ResourceForm({ initialData, onSubmit, onCancel, isSubmitting }: 
                           <SelectValue className="text-slate-900" placeholder="Selecione" />
                         </SelectTrigger>
                       </FormControl>
-                      <SelectContent className="max-h-[240px] overflow-y-auto">
+                      <SelectContent className="max-h-60 overflow-y-auto">
                         {floorOptions.map(opt => (
                           <SelectItem key={opt.value} value={opt.value} className="text-slate-900">{opt.label}</SelectItem>
                         ))}
@@ -212,7 +212,7 @@ export function ResourceForm({ initialData, onSubmit, onCancel, isSubmitting }: 
                           <SelectValue className="text-slate-900" placeholder="Selecione" />
                         </SelectTrigger>
                       </FormControl>
-                      <SelectContent className="max-h-[240px] overflow-y-auto">
+                      <SelectContent className="max-h-60 overflow-y-auto">
                         {statusOptions.map(opt => (
                           <SelectItem key={opt.value} value={opt.value} className="text-slate-900">{opt.label}</SelectItem>
                         ))}

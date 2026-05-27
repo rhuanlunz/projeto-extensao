@@ -2,7 +2,6 @@ import { useEffect, useMemo, useState, useRef } from "react";
 import { Sidebar, SidebarToggle } from "@/shared/Sidebar";
 import { ResourceHeader } from "./components/ResourceHeader";
 import { ResourceGrid } from "./components/ResourceGrid";
-import { ResourceFilters } from "./components/ResourceFilters";
 import { ResourceAddButton } from "./components/ResourceAddButton";
 import { ResourceDetailsModal } from "./components/ResourceDetailsModal";
 import { ResourceFormModal } from "./components/ResourceFormModal";
@@ -118,7 +117,7 @@ export function Resources() {
       }
       setIsFormModalOpen(false);
       setResourceToEdit(null);
-    } catch (error) {
+    } catch {
       toast.error("Erro ao salvar recurso. Tente novamente.");
     } finally {
       setIsSubmitting(false);
@@ -155,9 +154,6 @@ export function Resources() {
         <div className="mx-auto max-w-7xl">
           {/* Banner de Resumo */}
           <ResourceHeader stats={resourceStats} />
-
-          {/* Filtros (Placeholder) */}
-          <ResourceFilters />
 
           {/* Grid de Recursos agrupados por andar */}
           <ResourceGrid
