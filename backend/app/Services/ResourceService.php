@@ -56,6 +56,21 @@ class ResourceService
     }
 
     /**
+     * Update only the status of an existing resource.
+     *
+     * @param int|string $id
+     * @param array $data
+     * @return Resource
+     */
+    public function updateStatus($id, array $data)
+    {
+        $resource = Resource::findOrFail($id);
+        $resource->update(['status' => $data['status']]);
+
+        return $resource;
+    }
+
+    /**
      * Delete an existing resource (Soft Delete).
      *
      * @param int|string $id

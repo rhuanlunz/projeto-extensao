@@ -7,6 +7,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Tymon\JWTAuth\Exceptions\UserNotDefinedException;
+use Tymon\JWTAuth\Exceptions\JWTException;
 
 class AuthMiddleware
 {
@@ -14,7 +15,7 @@ class AuthMiddleware
     {
         try {
             auth()->userOrFail();
-        } catch (UserNotDefinedException $exception) {
+        } catch (UserNotDefinedException | JWTException $exception) {
             return response()->json([
                 'success' => false,
                 'message' => 'Acesso negado. Usuário não autorizado.'

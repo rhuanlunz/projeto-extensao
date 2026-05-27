@@ -164,4 +164,26 @@ Melhorar a experiência do usuário final e do desenvolvedor frontend, garantind
 ### Impactos
 Todas as respostas da API agora seguem o padrão de envelope definido no PRD. Testes automatizados garantem que futuras alterações não regridam a linguagem ou a estrutura dos erros. O código tornou-se mais limpo com a remoção de mensagens manuais nos FormRequests.
 
+---
+
+## 2026-05-27 (Implementação Final: Autorização Baseada em Roles)
+
+### Contexto
+Finalização e hardening da feature de autorização e controle de acesso baseada em roles (student, teacher, admin) para a API de recursos, assegurando isolamento arquitetural e proteção correta dos endpoints.
+
+### Alterações realizadas
+- Revisão e validação da proteção de rotas no arquivo `routes/resources.php` utilizando os middlewares `AuthMiddleware` seguido de `RoleMiddleware`.
+- Criação e integração do endpoint especializado `PATCH /api/v1/resources/{id}/status` restrito para `teacher` e `admin`, validado via `UpdateResourceStatusRequest`.
+- O endpoint `PUT /api/v1/resources/{id}` (atualização completa) foi rigorosamente mantido exclusivo para a role `admin`.
+- Inclusão do método isolado `updateStatus` no `ResourceService` garantindo a responsabilidade única e evitando lógica condicional baseada em roles nas camadas de negócio.
+- O `AuthMiddleware` foi aprimorado para capturar corretamente exceções de token inexistente (`JWTException`), devolvendo uma resposta padronizada 401.
+- Finalização de suítes de testes dedicadas (`AuthorizationResourceTest` e `UpdateResourceStatusTest`), atestando a eficácia do controle de acesso (403 para student, 401 para requisições não autenticadas) e isolamento dos payloads.
+
+### Motivo
+Implementar a regra de negócio exigida de permitir que professores alterem apenas o status do recurso (disponibilidade) sem lhes conceder acesso de edição total, evitando a criação de anti-patterns como lógicas híbridas no service ou no PUT original. 
+
+### Impactos
+A arquitetura permanece limpa e fiel ao princípio de responsabilidade única. O controle de permissões está totalmente isolado no nível de roteamento (Middlewares), garantindo que regras de negócio não se tornem emaranhadas com regras de autorização de perfis. A suíte de testes reflete e protege integralmente essas restrições.
+
+
 

@@ -1,9 +1,12 @@
 <?php
 
 use App\Models\Resource;
+use App\Http\Enums\Roles;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
+
+beforeEach(fn () => loginAs(Roles::ADMIN));
 
 test('should delete resource with success (soft delete)', function () {
     $resource = Resource::factory()->create();

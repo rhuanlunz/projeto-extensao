@@ -3,9 +3,12 @@
 use App\Models\Category;
 use App\Models\Level;
 use App\Models\Resource;
+use App\Http\Enums\Roles;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
+
+beforeEach(fn () => loginAs(Roles::ADMIN));
 
 test('should create resource with success', function () {
     $category = Category::factory()->create();
