@@ -240,4 +240,27 @@ Garantir total cobertura e segurança para o fluxo crítico de recuperação de 
 ### Impactos
 A suíte de testes de integração passou a cobrir de forma robusta e automatizada todos os caminhos felizes e de erro dos endpoints `/api/v1/auth/forgot` e `/api/v1/auth/reset`, reduzindo o risco de regressões e garantindo o comportamento e envelopamento corretos.
 
+---
+
+## 2026-06-06 (Refatoração: Criação do AuthService e Desacoplamento da Lógica de Autenticação)
+
+### Contexto
+A controladora de autenticação (`AuthController.php`) continha lógica direta de persistência e validações de domínio, fugindo da arquitetura de camadas definida no PRD (Controller -> Service -> Model).
+
+### Alterações realizadas
+- Criação da classe de serviço [AuthService.php](file:///C:/Coding/laravel/backend/app/Services/AuthService.php) encapsulando toda a lógica de negócios para:
+  - Registro de novos usuários (`register`)
+  - Login e autenticação com JWT (`login`)
+  - Logout do sistema (`logout`)
+  - Redefinição de senha com envio de e-mail (`forgot`)
+  - Confirmação de redefinição de senha via token (`reset`)
+- Refatoração da controladora [AuthController.php](file:///C:/Coding/laravel/backend/app/Http/Controllers/AuthController.php) para injetar o `AuthService` via construtor, delegando a execução lógica e focando apenas no tratamento de inputs (Form Requests) e na formatação das respostas em formato JSON com envelopes de sucesso/erro padrão.
+- Execução completa da suíte de testes automatizados com Pest, validando que todos os 89 testes continuam passando perfeitamente sem qualquer quebra ou alteração nos contratos da API.
+
+### Motivo
+Restaurar e consolidar a padronização arquitetural da aplicação backend (Controller -> Service -> Model) e garantir a separação de responsabilidades no domínio de segurança e autenticação.
+
+### Impactos
+A lógica de autenticação e redefinição de senha está completamente isolada em uma camada de serviço reutilizável e facilmente testável. A controladora tornou-se enxuta, cumprindo apenas o papel HTTP/Validação. Nenhuma regressão foi introduzida e todos os fluxos de login, cadastro, logout e recuperação de senha foram validados e continuam funcionando conforme o esperado.
+
 
