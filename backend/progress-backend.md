@@ -166,6 +166,47 @@ Todas as respostas da API agora seguem o padrão de envelope definido no PRD. Te
 
 ---
 
+## 2026-05-27 (Implementação Final: Autorização Baseada em Roles)
+
+### Contexto
+Finalização e hardening da feature de autorização e controle de acesso baseada em roles (student, teacher, admin) para a API de recursos, assegurando isolamento arquitetural e proteção correta dos endpoints.
+
+### Alterações realizadas
+- Revisão e validação da proteção de rotas no arquivo `routes/resources.php` utilizando os middlewares `AuthMiddleware` seguido de `RoleMiddleware`.
+- Criação e integração do endpoint especializado `PATCH /api/v1/resources/{id}/status` restrito para `teacher` e `admin`, validado via `UpdateResourceStatusRequest`.
+- O endpoint `PUT /api/v1/resources/{id}` (atualização completa) foi rigorosamente mantido exclusivo para a role `admin`.
+- Inclusão do método isolado `updateStatus` no `ResourceService` garantindo a responsabilidade única e evitando lógica condicional baseada em roles nas camadas de negócio.
+- O `AuthMiddleware` foi aprimorado para capturar corretamente exceções de token inexistente (`JWTException`), devolvendo uma resposta padronizada 401.
+- Finalização de suítes de testes dedicadas (`AuthorizationResourceTest` e `UpdateResourceStatusTest`), atestando a eficácia do controle de acesso (403 para student, 401 para requisições não autenticadas) e isolamento dos payloads.
+
+### Motivo
+Implementar a regra de negócio exigida de permitir que professores alterem apenas o status do recurso (disponibilidade) sem lhes conceder acesso de edição total, evitando a criação de anti-patterns como lógicas híbridas no service ou no PUT original. 
+
+---
+
+## 2026-05-29 (Implementação: Gerenciamento de Categorias)
+
+### Contexto
+Implementação do CRUD completo para a entidade `Category`, seguindo rigorosamente os padrões arquiteturais e de autorização estabelecidos na feature de recursos.
+
+### Alterações realizadas
+- Criação do `CategoryController` com os métodos `index`, `store`, `update` e `destroy`.
+- Implementação da camada de serviço `CategoryService` para isolamento da lógica de persistência e validação de domínio.
+- Criação dos Form Requests `StoreCategoryRequest` e `UpdateCategoryRequest` com sanitização automática (trim) do campo `name`.
+- Implementação do `CategoryResource` para padronização da resposta JSON, expondo apenas `id` e `name`.
+- Registro das rotas em `routes/categories.php` com proteção por roles: visualização aberta a todos os usuários autenticados e operações de escrita (POST, PUT, DELETE) restritas à role `admin`.
+- Integração do novo arquivo de rotas no `bootstrap/app.php`.
+- Implementação da regra de negócio **RN06**: bloqueio de exclusão de categorias que possuam recursos vinculados, lançando `ValidationException` para manter a consistência com os erros 422 da API.
+
+### Motivo
+Expandir as capacidades administrativas do sistema permitindo o gerenciamento de categorias, garantindo a integridade dos dados através da restrição de exclusão de itens vinculados e mantendo a consistência técnica com o restante da aplicação.
+
+### Impactos
+A API agora oferece endpoints completos para gestão de categorias. A autorização está garantida via middlewares de roles. A integridade referencial é protegida em nível de aplicação, impedindo a remoção acidental de categorias em uso por recursos ativos.
+
+
+---
+
 ## 2026-06-06 (Implementação: Casos de Teste de Recuperação de Senha)
 
 ### Contexto

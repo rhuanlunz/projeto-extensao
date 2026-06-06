@@ -1,34 +1,18 @@
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { ArrowLeft, FileX2 } from "lucide-react"
+import { useNavigate } from "react-router"
 
 export default function NotFound() {
+
+  const navigate = useNavigate()
+
   return (
     <div className="flex min-h-screen items-center justify-center bg-[linear-gradient(to_bottom,_#0085FF_50%,_#E0F2FF_50%)] px-6">
 
-      <Card className="w-[400px] rounded-2xl border-zinc-200 shadow-2xl">
+      <Card className="w-[400px] rounded-2xl shadow-2xl ring-0 outline-none border-none">
 
-        <CardContent className="flex flex-col items-center px-8 py-9">
-
-          <div className="mb-3 flex justify-center">
-            <img
-              src="/logounesc.png"
-              alt="Logo"
-              className="h-18 w-18 object-contain"
-            />
-          </div>
-
-          <div className="mb-7 text-center">
-
-            <h1 className="text-3xl font-bold text-[#0056A4]">
-              Recursos
-            </h1>
-
-            <p className="mt-1 text-sm text-zinc-500">
-              Gestão de infraestrutura
-            </p>
-
-          </div>
+        <CardContent className="flex flex-col items-center px-8 py-10">
 
           <div className="mb-5 flex h-16 w-16 items-center justify-center rounded-xl bg-[#0056A4]/10">
 
@@ -52,11 +36,14 @@ export default function NotFound() {
             ou foi movida.
           </p>
 
-          <Button className="mt-7 h-11 w-full bg-[#0056A4] text-base font-semibold text-white hover:bg-[#0074dd]">
+          <Button
+            onClick={() => navigate(-1)}
+            className="mt-7 h-11 w-full bg-[#0056A4] text-base font-semibold text-white hover:bg-[#0074dd]"
+          >
 
             <ArrowLeft size={18} />
 
-            Voltar ao início
+            Voltar à página anterior
 
           </Button>
 

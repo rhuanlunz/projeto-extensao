@@ -1,9 +1,12 @@
 <?php
 
 use App\Models\Resource;
+use App\Http\Enums\Roles;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
+
+beforeEach(fn () => loginAs(Roles::STUDENT));
 
 test('should return empty grouped list when no resources exist', function () {
     $levels = \App\Models\Level::factory()->count(3)->create();

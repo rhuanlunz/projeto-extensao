@@ -44,7 +44,20 @@ expect()->extend('toBeOne', function () {
 |
 */
 
-function something()
+use App\Models\User;
+use App\Http\Enums\Roles;
+
+/**
+ * Autentica o usuário no ambiente de testes com base na Role fornecida.
+ * Retorna a instância do usuário para facilitar asserts adicionais.
+ */
+function loginAs(Roles $role): User
 {
-    // ..
+    $user = User::factory()->create([
+        'role_id' => $role->value,
+    ]);
+
+    test()->actingAs($user, 'api');
+
+    return $user;
 }
