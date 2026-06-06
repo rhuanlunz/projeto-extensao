@@ -13,6 +13,7 @@ return Application::configure(basePath: dirname(__DIR__))
             Route::prefix($api_prefix.'auth')->group(base_path('routes/auth.php'));
             Route::prefix($api_prefix.'resources')->group(base_path('routes/resources.php'));
             Route::prefix($api_prefix.'categories')->group(base_path('routes/categories.php'));
+            Route::prefix($api_prefix.'settings')->group(base_path('routes/settings.php'));
         }
     )
     ->withMiddleware(function (Middleware $middleware): void {

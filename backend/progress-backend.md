@@ -263,4 +263,36 @@ Restaurar e consolidar a padronização arquitetural da aplicação backend (Con
 ### Impactos
 A lógica de autenticação e redefinição de senha está completamente isolada em uma camada de serviço reutilizável e facilmente testável. A controladora tornou-se enxuta, cumprindo apenas o papel HTTP/Validação. Nenhuma regressão foi introduzida e todos os fluxos de login, cadastro, logout e recuperação de senha foram validados e continuam funcionando conforme o esperado.
 
+---
+
+## 2026-06-06 (Implementação: Endpoint de Configurações - E-mail de Recebimento)
+
+### Contexto
+Implementação da feature de configurações da aplicação para suporte ao envio de requerimentos. O sistema precisava de um endpoint administrativo para armazenar, consultar e atualizar o e-mail de destino das solicitações enviadas pelos usuários.
+
+### Alterações realizadas
+- **Migration**: Criação de [2026_06_06_160000_create_settings_table.php](file:///C:/Coding/laravel/backend/database/migrations/2026_06_06_160000_create_settings_table.php) com a tabela `settings` (campos: `id`, `key` único, `value`, `timestamps`), estruturada como um mapa chave-valor genérico para suportar futuras configurações da aplicação.
+- **Model**: Criação de [Setting.php](file:///C:/Coding/laravel/backend/app/Models/Setting.php) para interface com a tabela `settings`.
+- **Service**: Criação de [SettingService.php](file:///C:/Coding/laravel/backend/app/Services/SettingService.php) com os métodos:
+  - `getRequestEmail()` — busca o e-mail configurado (retorna `null` se não configurado).
+  - `setRequestEmail(email)` — persiste o e-mail pela primeira vez; lança `ValidationException` se já existir.
+  - `updateRequestEmail(email)` — atualiza o e-mail existente; lança `ValidationException` se ainda não foi configurado.
+- **Form Requests**: Criação de [StoreRequestEmailRequest.php](file:///C:/Coding/laravel/backend/app/Http/Requests/StoreRequestEmailRequest.php) e [UpdateRequestEmailRequest.php](file:///C:/Coding/laravel/backend/app/Http/Requests/UpdateRequestEmailRequest.php) com validação de campo `email` obrigatório, string, formato válido e máximo de 255 caracteres.
+- **Controller**: Criação de [SettingController.php](file:///C:/Coding/laravel/backend/app/Http/Controllers/SettingController.php) com os métodos `getRequestEmail`, `storeRequestEmail` e `updateRequestEmail`, injetando o `SettingService` via construtor.
+- **Rotas**: Criação de [routes/settings.php](file:///C:/Coding/laravel/backend/routes/settings.php) com os três endpoints protegidos por `AuthMiddleware` e `role:admin`:
+  - `GET /api/v1/settings/request-email`
+  - `POST /api/v1/settings/request-email`
+  - `PUT /api/v1/settings/request-email`
+- **Bootstrap**: Registro do grupo de rotas `settings` em [bootstrap/app.php](file:///C:/Coding/laravel/backend/bootstrap/app.php).
+- **Testes**: Criação de duas suítes de testes em `tests/Feature/Setting/`:
+  - [AuthorizationSettingTest.php](file:///C:/Coding/laravel/backend/tests/Feature/Setting/AuthorizationSettingTest.php): 9 testes cobrindo retornos 401 (sem autenticação) e 403 (student e teacher) para os três endpoints.
+  - [RequestEmailSettingTest.php](file:///C:/Coding/laravel/backend/tests/Feature/Setting/RequestEmailSettingTest.php): 11 testes cobrindo os fluxos de sucesso e erro (e-mail obrigatório, formato inválido, conflito no POST, ausência no PUT, unicidade no banco).
+
+### Motivo
+Atender ao requisito de painel de configurações (RF09 / PRD) que permite ao administrador definir o e-mail de destino das solicitações de recursos, garantindo que apenas um e-mail pode estar ativo, com restrição de acesso exclusiva à role `admin`.
+
+### Impactos
+A API agora expõe o endpoint `/api/v1/settings/request-email` com controle de acesso robusto. A estrutura da tabela `settings` foi projetada de forma genérica (chave-valor), facilitando a adição de novas configurações no futuro sem novas migrations. Todos os 109 testes do projeto continuam passando (389 assertions).
+
+
 
