@@ -164,4 +164,39 @@ Melhorar a experiência do usuário final e do desenvolvedor frontend, garantind
 ### Impactos
 Todas as respostas da API agora seguem o padrão de envelope definido no PRD. Testes automatizados garantem que futuras alterações não regridam a linguagem ou a estrutura dos erros. O código tornou-se mais limpo com a remoção de mensagens manuais nos FormRequests.
 
+---
+
+## 2026-06-06 (Implementação: Casos de Teste de Recuperação de Senha)
+
+### Contexto
+O projeto carecia de testes automatizados para validar os fluxos de recuperação de senha (`Forgot Password` e `Reset Password`). Além disso, o Request de redefinição de senha (`ResetPasswordRequest`) carecia de validações completas em relação ao campo `email` e de mapeamento correto de mensagem de validação de confirmação de senha.
+
+### Alterações realizadas
+- Criação do arquivo de testes [PasswordRecoveryTest.php](file:///C:/Coding/laravel/backend/tests/Feature/Auth/PasswordRecoveryTest.php) cobrindo todos os cenários especificados:
+  - Forgot Password:
+    1. Envio de e-mail para usuário existente (utilizando fakes de Notification e validando o envio da notificação CustomResetPasswordNotification).
+    2. Validação de obrigatoriedade do campo e-mail.
+    3. Validação de formato de e-mail inválido.
+    4. Tratamento adequado (retorno HTTP 400) para e-mail de usuário inexistente.
+  - Reset Password:
+    1. Redefinição com token válido.
+    2. Validação de obrigatoriedade do token.
+    3. Validação de obrigatoriedade do e-mail.
+    4. Validação de obrigatoriedade de senha.
+    5. Validação de erro de confirmação de senha (senhas que não coincidem).
+    6. Falha adequada (retorno HTTP 500) com token inválido.
+    7. Falha adequada (retorno HTTP 500) com token pertencente a outro usuário.
+    8. Falha adequada (retorno HTTP 500) com token expirado (manipulando a data de criação no banco).
+    9. Confirmação de que a nova senha redefinida foi corretamente criptografada e persistida no banco de dados.
+- Correção de validação no [ResetPasswordRequest.php](file:///C:/Coding/laravel/backend/app/Http/Requests/ResetPasswordRequest.php):
+  - Adicionada validação de obrigatoriedade para o campo `email` na redefinição.
+  - Corrigida a chave de mensagem de erro de confirmação de senha de `new_password_confirmation.confirmed` para `new_password.confirmed`, para refletir a propriedade à qual a regra `confirmed` é aplicada no Laravel.
+- Criação de um arquivo placeholder [tests/Unit/.gitkeep](file:///C:/Coding/laravel/backend/tests/Unit/.gitkeep) para resolver a falha de execução nativa do Pest que ocorria por conta de diretório `tests/Unit` ausente no workspace.
+
+### Motivo
+Garantir total cobertura e segurança para o fluxo crítico de recuperação de senha de usuários da API, alinhando as validações às regras de negócio descritas no PRD.
+
+### Impactos
+A suíte de testes de integração passou a cobrir de forma robusta e automatizada todos os caminhos felizes e de erro dos endpoints `/api/v1/auth/forgot` e `/api/v1/auth/reset`, reduzindo o risco de regressões e garantindo o comportamento e envelopamento corretos.
+
 
