@@ -2,15 +2,15 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Field, FieldContent, FieldLabel } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
-import { ArrowRight, Eye, EyeOff, LoaderCircle } from "lucide-react"
+import { ArrowRight, LoaderCircle } from "lucide-react"
 import { useState } from "react"
 import loginService from "./services/loginService"
 import { Link, useNavigate } from "react-router"
 import { Toaster } from "sonner"
+import PasswordInput from "@/shared/PasswordInput/PasswordInput";
 
 export default function Login() {
   const [loading, setLoading] = useState(false);
-  const [showPassword, setShowPassword] = useState(false)
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
@@ -75,8 +75,7 @@ export default function Login() {
                       type={showPassword ? "text" : "password"}
                       value={password}
                       onChange={e => setPassword(e.target.value)}
-                      className="p-5 rounded-lg bg-gray-100 border-0 text-black"
-                      placeholder="Senha"
+                      className="h-10 pr-10 text-black"
                     />
 
                     <button
@@ -108,7 +107,7 @@ export default function Login() {
                   <Button
                     type="submit"
                     disabled={loading}
-                    className="bg-[#0058BE] p-5 cursor-pointer"
+                    className="bg-[#0058BE] p-5"
                   >
                     {loading ? (
                       <>
@@ -127,10 +126,7 @@ export default function Login() {
                 <div className="mt-4 h-px w-full bg-zinc-300" />
 
                 <Field>
-                  <Link
-                    to="/autenticacao/cadastro"
-                    className="underline mt-4 cursor-pointer text-center text-sm text-zinc-500 transition-colors hover:text-[#0056A4]"
-                  >
+                  <Link to="/autenticacao/cadastro" className="underline mt-4 cursor-pointer text-center text-sm text-zinc-500 transition-colors hover:text-[#0056A4]">
                     Realizar cadastro
                   </Link>
                 </Field>

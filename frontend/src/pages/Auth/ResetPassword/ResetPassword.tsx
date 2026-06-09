@@ -72,7 +72,7 @@ export default function ResetPassword() {
                                 <Button
                                     type="submit"
                                     disabled={loading}
-                                    className="bg-[#0058BE] p-5 cursor-pointer"
+                                    className="bg-[#0058BE] p-5"
                                 >
                                     {loading ? (
                                         <>

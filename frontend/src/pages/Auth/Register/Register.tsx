@@ -2,19 +2,18 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import {Field,FieldContent,FieldLabel,} from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
-import { ArrowRight, Eye, EyeOff, LoaderCircle } from "lucide-react"
+import { ArrowRight, LoaderCircle } from "lucide-react"
 import { useState } from "react"
 import { Toaster } from "sonner"
 import registerService from "./services/registerService"
 import { useNavigate } from "react-router"
+import PasswordInput from "@/shared/PasswordInput/PasswordInput"
 
 export default function Register() {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [passwordConfirmation, setPasswordConfirmation] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -27,7 +26,7 @@ export default function Register() {
       
       setLoading(false);
     }}>
-      <div className="flex min-h-screen items-center justify-center bg-[linear-gradient(to_bottom,#0085FF_50%,#E0F2FF_50%)]">
+      <div className="flex min-h-screen p-5 items-center justify-center bg-[linear-gradient(to_bottom,#0085FF_50%,#E0F2FF_50%)]">
         <Toaster />
 
         <Card className="bg-white rounded-[10px] shadow-xl w-md">
@@ -99,13 +98,13 @@ export default function Register() {
                 <FieldContent>
 
                   <div className="relative mt-0">
-
-                    <Input
-                      type={showPassword ? "text" : "password"}
+                    <PasswordInput 
+                      id="new-password" 
+                      name="new-password" 
+                      placehoder="Digite sua senha"
                       value={password}
                       onChange={e => setPassword(e.target.value)}
-                      className="p-5 rounded-lg bg-gray-100 border-0 text-black"
-                      placeholder="Senha"
+                      className="mt-0 h-10 pr-10 text-black"
                     />
 
                     <button
@@ -137,17 +136,13 @@ export default function Register() {
                 <FieldContent>
 
                   <div className="relative mt-0">
-
-                    <Input
-                      type={
-                        showConfirmPassword
-                          ? "text"
-                          : "password"
-                      }
+                    <PasswordInput 
+                      id="new-password" 
+                      name="new-password" 
+                      placehoder="Confirme sua senha"
                       value={passwordConfirmation}
                       onChange={e => setPasswordConfirmation(e.target.value)}
-                      className="p-5 rounded-lg bg-gray-100 border-0 text-black"
-                      placeholder="Confirme sua senha"
+                      className="mt-0 h-10 pr-10 text-black"
                     />
 
                     <button
@@ -177,7 +172,7 @@ export default function Register() {
                     <Button
                       type="submit"
                       disabled={loading}
-                      className="bg-[#0058BE] p-5 cursor-pointer"
+                      className="bg-[#0058BE] p-5"
                     >
                       {loading ? (
                         <>

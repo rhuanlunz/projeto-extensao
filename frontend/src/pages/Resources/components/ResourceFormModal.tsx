@@ -10,7 +10,6 @@ interface ResourceFormModalProps {
   initialData: Resource | null;
   onSubmit: (data: ResourceFormValues) => Promise<void>;
   isSubmitting: boolean;
-  mode: "create" | "edit";
 }
 
 export function ResourceFormModal({ 
@@ -18,10 +17,11 @@ export function ResourceFormModal({
   onOpenChange, 
   initialData, 
   onSubmit, 
-  isSubmitting,
-  mode 
+  isSubmitting
 }: ResourceFormModalProps) {
   
+  const isEditing = Boolean(initialData);
+
   const handleClose = () => {
     if (!isSubmitting) {
       onOpenChange(false);
@@ -30,17 +30,19 @@ export function ResourceFormModal({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogOverlay className="bg-black/30 backdrop-blur-sm data-[state=open]:animate-none data-[state=closed]:animate-none transition-opacity duration-300 ease-in-out opacity-0 data-[state=open]:opacity-100 data-[state=closed]:opacity-0" />
-      <DialogContent className="w-[95vw] sm:w-full max-w-5xl max-h-[90dvh] flex flex-col border border-slate-200/70 p-0 rounded-3xl overflow-hidden bg-white/95 backdrop-blur-md shadow-2xl [&>button]:hidden data-[state=open]:animate-none data-[state=closed]:animate-none transition-[opacity,scale] duration-300 ease-in-out opacity-0 scale-95 data-[state=open]:opacity-100 data-[state=open]:scale-100 data-[state=closed]:opacity-0 data-[state=closed]:scale-95">
+      <DialogOverlay className="bg-black/30 backdrop-blur-sm" />
+      <DialogContent className="w-[95vw] sm:w-full max-w-5xl max-h-[90dvh] flex flex-col border border-slate-200/70 p-0 rounded-3xl overflow-hidden bg-white/95 backdrop-blur-md shadow-2xl [&>button]:hidden">
         
         {/* Cabeçalho do Modal: Fixo no topo */}
         <div className="flex items-center justify-between px-8 py-6 shrink-0 border-b border-slate-100">
           <div className="flex flex-col">
             <h2 className="text-3xl font-bold tracking-tight text-[#0056A4]">
-              {mode === "create" ? "Cadastrar Novo Recurso" : "Editar Recurso"}
+              {isEditing ? "Editar Recurso" : "Cadastrar Novo Recurso"}
             </h2>
             <p className="text-sm text-slate-500 mt-1">
-              Gerencie as informações do recurso físico no sistema
+              {isEditing 
+                ? "Atualize as informações do recurso físico selecionado" 
+                : "Gerencie as informações do recurso físico no sistema"}
             </p>
           </div>
           <button 

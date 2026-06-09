@@ -2,7 +2,6 @@ import { useEffect, useMemo, useState, useRef } from "react";
 import { Sidebar, SidebarToggle } from "@/shared/Sidebar";
 import { ResourceHeader } from "./components/ResourceHeader";
 import { ResourceGrid } from "./components/ResourceGrid";
-import { ResourceFilters } from "./components/ResourceFilters";
 import { ResourceAddButton } from "./components/ResourceAddButton";
 import { ResourceDetailsModal } from "./components/ResourceDetailsModal";
 import { ResourceFormModal } from "./components/ResourceFormModal";
@@ -93,20 +92,32 @@ export function Resources() {
     }
   };
 
+  const handleEditResource = (resource: Resource) => {
+    setSelectedResource(null);
+    // Blindagem de UI: requestAnimationFrame evita conflitos de overlay/focus trap
+    requestAnimationFrame(() => {
+      setResourceToEdit(resource);
+      setIsFormModalOpen(true);
+    });
+  };
+
   const handleFormSubmit = async (values: ResourceFormValues) => {
     setIsSubmitting(true);
     try {
       if (resourceToEdit) {
         const updated = await updateResource(resourceToEdit.id, values);
+        if (!updated) return;
         setResources(prev => prev.map(r => r.id === updated.id ? updated : r));
         toast.success("Recurso atualizado com sucesso!");
       } else {
         const created = await createResource(values);
+        if (!created) return;
         setResources(prev => [created, ...prev]);
         toast.success("Recurso cadastrado com sucesso!");
       }
       setIsFormModalOpen(false);
-    } catch (error) {
+      setResourceToEdit(null);
+    } catch {
       toast.error("Erro ao salvar recurso. Tente novamente.");
     } finally {
       setIsSubmitting(false);
@@ -144,9 +155,6 @@ export function Resources() {
           {/* Banner de Resumo */}
           <ResourceHeader stats={resourceStats} />
 
-          {/* Filtros (Placeholder) */}
-          <ResourceFilters />
-
           {/* Grid de Recursos agrupados por andar */}
           <ResourceGrid
             groupedResources={groupedResources}
@@ -165,6 +173,7 @@ export function Resources() {
         open={!!selectedResource}
         resource={selectedResource}
         onClose={handleCloseModal}
+        onEdit={handleEditResource}
       />
 
       {/* Modal de Formulário (Cadastro/Edição) */}
@@ -174,7 +183,6 @@ export function Resources() {
         initialData={resourceToEdit}
         onSubmit={handleFormSubmit}
         isSubmitting={isSubmitting}
-        mode={resourceToEdit ? "edit" : "create"}
       />
     </div>
   );

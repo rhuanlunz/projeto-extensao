@@ -14,7 +14,7 @@ export function ResourceFloorSection({ floorName, resources, onResourceClick }: 
         <h2 className="whitespace-nowrap text-lg font-semibold text-slate-800">
           {floorName}
         </h2>
-        <div className="h-[1px] w-full bg-slate-200" />
+        <div className="h-px w-full bg-slate-200" />
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">

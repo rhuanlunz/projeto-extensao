@@ -7,7 +7,7 @@ interface ResourceFormImageProps {
 
 export function ResourceFormImage({ imageUrl, name }: ResourceFormImageProps) {
   return (
-    <div className="relative aspect-square w-full overflow-hidden rounded-3xl bg-[#E0F2FF] border border-blue-100 flex items-center justify-center p-6 md:aspect-auto md:h-full min-h-[280px]">
+    <div className="relative aspect-square w-full overflow-hidden rounded-3xl bg-[#E0F2FF] border border-blue-100 flex items-center justify-center p-6 md:aspect-auto md:h-full min-h-70">
       {imageUrl ? (
         <img
           src={imageUrl}
@@ -26,7 +26,7 @@ export function ResourceFormImage({ imageUrl, name }: ResourceFormImageProps) {
       )}
       
       {/* Overlay decorativo institucional sutil */}
-      <div className="absolute inset-0 bg-gradient-to-tr from-blue-500/5 via-transparent to-white/50 pointer-events-none" />
+      <div className="absolute inset-0 bg-linear-to-tr from-blue-500/5 via-transparent to-white/50 pointer-events-none" />
     </div>
   );
 }
