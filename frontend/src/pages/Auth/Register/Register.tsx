@@ -30,7 +30,7 @@ export default function Register() {
       <div className="flex min-h-screen items-center justify-center bg-[linear-gradient(to_bottom,#0085FF_50%,#E0F2FF_50%)]">
         <Toaster />
 
-        <Card className="h-145 w-100 rounded-2xl border-zinc-200 shadow-2xl">
+        <Card className="bg-white rounded-[10px] shadow-xl w-md">
 
           <CardContent className="flex h-full flex-col justify-center px-8 py-10">
 
@@ -65,7 +65,8 @@ export default function Register() {
                     type="text"
                     value={username}
                     onChange={e => setUsername(e.target.value)}
-                    className="mt-0 h-10 text-black"
+                    className="p-5 rounded-lg bg-gray-100 border-0 text-black"
+                    placeholder="Digite seu nome de usuário"
                   />
                 </FieldContent>
 
@@ -82,7 +83,8 @@ export default function Register() {
                     type="email"
                     value={email}
                     onChange={e => setEmail(e.target.value)}
-                    className="mt-0 h-10 text-black"
+                    className="p-5 rounded-lg bg-gray-100 border-0 text-black"
+                    placeholder="nome@empresa.com.br"
                   />
                 </FieldContent>
 
@@ -102,7 +104,8 @@ export default function Register() {
                       type={showPassword ? "text" : "password"}
                       value={password}
                       onChange={e => setPassword(e.target.value)}
-                      className="mt-0 h-10 pr-10 text-black"
+                      className="p-5 rounded-lg bg-gray-100 border-0 text-black"
+                      placeholder="Senha"
                     />
 
                     <button
@@ -143,7 +146,8 @@ export default function Register() {
                       }
                       value={passwordConfirmation}
                       onChange={e => setPasswordConfirmation(e.target.value)}
-                      className="mt-0 h-10 pr-10 text-black"
+                      className="p-5 rounded-lg bg-gray-100 border-0 text-black"
+                      placeholder="Confirme sua senha"
                     />
 
                     <button
