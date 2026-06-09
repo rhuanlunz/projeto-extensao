@@ -163,9 +163,7 @@ export function Resources() {
         </div>
 
         {/* Botão de Ação Flutuante */}
-        <div className="fixed bottom-6 right-6 sm:bottom-10 sm:right-10 z-30">
-          <ResourceAddButton onClick={handleOpenAddModal} />
-        </div>
+        <ResourceAddButton onClick={handleOpenAddModal} />
       </main>
 
       {/* Modal de Detalhes do Recurso */}

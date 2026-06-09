@@ -7,7 +7,7 @@ export type ResourceCategory = "Rack" | "Switch" | "Server" | "Other";
 export interface ResourceFormData {
   name: string;
   unescId: string;
-  description: string;
+  description?: string;
   category: ResourceCategory;
   floor: ResourceFloor;
   status: ResourceStatus;
@@ -16,11 +16,11 @@ export interface ResourceFormData {
 export interface CreateResourcePayload {
   name: string;
   unescId: string;
-  description: string;
+  description?: string;
   category: ResourceCategory;
   floor: ResourceFloor;
   status: ResourceStatus;
-  imageUrl: string;
+  imageUrl?: string;
 }
 
 export interface UpdateResourcePayload extends Partial<CreateResourcePayload> {

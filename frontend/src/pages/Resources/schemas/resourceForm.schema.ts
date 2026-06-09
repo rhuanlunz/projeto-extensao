@@ -11,15 +11,9 @@ export const resourceFormSchema = z.object({
     .max(300, "A descrição deve ter no máximo 300 caracteres")
     .optional()
     .or(z.literal("")),
-  category: z.enum(["Rack", "Switch", "Server", "Other"], {
-    errorMap: () => ({ message: "Selecione uma categoria válida" }),
-  }),
-  floor: z.enum(["first-floor", "second-floor", "third-floor"], {
-    errorMap: () => ({ message: "Selecione um andar válido" }),
-  }),
-  status: z.enum(["available", "unavailable"], {
-    errorMap: () => ({ message: "Selecione um status válido" }),
-  }),
+  category: z.enum(["Rack", "Switch", "Server", "Other"]),
+  floor: z.enum(["first-floor", "second-floor", "third-floor"]),
+  status: z.enum(["available", "unavailable"]),
 });
 
 export type ResourceFormValues = z.infer<typeof resourceFormSchema>;

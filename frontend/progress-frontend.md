@@ -409,3 +409,32 @@ Prover uma infraestrutura robusta e profissional para a gestão de recursos, eli
 - Arquitetura preparada para hidratação imediata no futuro modo de edição.
 - Consistência total nas animações e comportamento dos modais do sistema.
 - Interface totalmente responsiva e acessível.
+
+---
+
+## 08/06/2026 (Simplificação Estrutural da Feature Resources)
+
+### Contexto
+Conclusão da refatoração estrutural da feature Resources para eliminar a hiper-componentização e simplificar a manutenção do código, conforme planejado na auditoria técnica.
+
+### Alterações realizadas
+- **Fase 1 (Modais):** Consolidado o `ResourceDetailsModal` através da incorporação direta dos componentes `Header`, `Image`, `Content` e `Actions`. O componente `ResourceModalStatus` foi removido, utilizando-se agora o `ResourceStatus` de forma direta.
+- **Fase 2 (Formulário):** O componente `ResourceFormImage` foi absorvido pelo `ResourceForm.tsx`, mantendo a funcionalidade de preview mas reduzindo a dispersão de arquivos.
+- **Fase 3 (Listagem):** Simplificada a árvore de componentes de listagem através da fusão do `ResourceFloorSection` dentro do `ResourceGrid.tsx`. A lógica de agrupamento por andar foi preservada sem a necessidade de uma camada intermediária.
+- **Fase 4 (FAB):** O `ResourceAddButton` foi transformado em um componente FAB (Floating Action Button) totalmente autossuficiente, gerenciando seu próprio posicionamento responsivo e removendo redundâncias no container pai.
+- **Limpeza:** Removidos 7 arquivos de componentes que se tornaram obsoletos após a consolidação.
+
+### Auditoria dos Services (Fase 5)
+- **Mocks:** Identificada forte dependência de persistência volátil em memória (`resourceForm.mock.ts`), o que exigirá estratégia de cache/sincronização na integração real.
+- **Acoplamento:** Detectado acoplamento entre os tipos do formulário (`string` para andares) e o domínio (`number`), exigindo mappers manuais que deverão ser validados contra os contratos da API.
+- **Riscos de Integração:** Ausência de tratamento de erros HTTP específicos e falta de infraestrutura para injeção de tokens JWT nos serviços atuais.
+- **Categorias:** A lógica de categorias está simplificada (hardcoded), necessitando de uma busca dinâmica via API no futuro.
+
+### Motivo
+Garantir uma base de código mais limpa, direta e com menor carga cognitiva para os desenvolvedores, mantendo a robustez arquitetural e preparando o terreno para a integração com o backend.
+
+### Impactos
+- Redução significativa no número de arquivos da feature (de 15 para 8 componentes).
+- Navegação de código mais fluida e intuitiva.
+- Zero regressão visual ou funcional verificada.
+- Build do projeto íntegro e sem erros de tipagem.

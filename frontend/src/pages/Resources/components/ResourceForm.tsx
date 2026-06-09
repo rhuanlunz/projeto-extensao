@@ -18,10 +18,9 @@ import {
   SelectValue 
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { Loader2 } from "lucide-react";
+import { Loader2, Server } from "lucide-react";
 import { resourceFormSchema, type ResourceFormValues } from "../schemas/resourceForm.schema";
 import { categoryOptions, floorOptions, statusOptions } from "../services/resourceForm.options";
-import { ResourceFormImage } from "./ResourceFormImage";
 import type { Resource } from "../services/resource.types";
 import { useEffect } from "react";
 
@@ -77,7 +76,27 @@ export function ResourceForm({ initialData, onSubmit, onCancel, isSubmitting }: 
         <div className="flex flex-col lg:flex-row p-8 gap-8">
           {/* Lado Esquerdo: Imagem (Desktop) / Topo (Mobile) */}
           <div className="w-full lg:w-1/3 shrink-0">
-            <ResourceFormImage imageUrl={initialData?.imageUrl} name={initialData?.name} />
+            <div className="relative aspect-square w-full overflow-hidden rounded-3xl bg-[#E0F2FF] border border-blue-100 flex items-center justify-center p-6 md:aspect-auto md:h-full min-h-70">
+              {initialData?.imageUrl ? (
+                <img
+                  src={initialData.imageUrl}
+                  alt={initialData.name || "Preview do recurso"}
+                  className="h-full w-full object-contain transition-transform duration-500 hover:scale-105"
+                  width={400}
+                  height={400}
+                />
+              ) : (
+                <div className="flex flex-col items-center gap-4 animate-in fade-in zoom-in duration-700">
+                  <Server className="h-20 w-20 text-[#0085FF]" />
+                  <span className="text-xs font-semibold uppercase tracking-wider text-blue-400">
+                    Recurso Institucional
+                  </span>
+                </div>
+              )}
+              
+              {/* Overlay decorativo institucional sutil */}
+              <div className="absolute inset-0 bg-linear-to-tr from-blue-500/5 via-transparent to-white/50 pointer-events-none" />
+            </div>
           </div>
 
           {/* Lado Direito: Campos do Formulário */}
