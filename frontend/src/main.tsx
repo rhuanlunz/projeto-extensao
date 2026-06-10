@@ -9,9 +9,7 @@ import ResetPassword from "@/pages/Auth/ResetPassword/ResetPassword.tsx"
 import Login from "@/pages/Auth/Login/Login.tsx"
 import Register from "./pages/Auth/Register/Register.tsx"
 
-import { Resources } from "@/pages/Resources/Resources.tsx"
-
-import NotFound from "@/pages/NotFound/NotFound.tsx"
+import { AuthGuard } from "@/shared/Auth/AuthGuard.tsx"
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
@@ -22,7 +20,11 @@ createRoot(document.getElementById("root")!).render(
 
         <Route
           path="/"
-          element={<Resources />}
+          element={
+            <AuthGuard>
+              <Resources />
+            </AuthGuard>
+          }
         />
 
         <Route

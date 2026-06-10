@@ -1,19 +1,35 @@
 import { Dialog, DialogContent, DialogOverlay } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
-import { X, Server } from "lucide-react";
+import { X, Server, RefreshCcw, Loader2 } from "lucide-react";
 import type { Resource } from "../services/resource.types";
 import { ResourceStatus } from "./ResourceStatus";
+import { ROLES, hasPermission } from "@/lib/auth";
+import { useState } from "react";
 
 interface ResourceDetailsModalProps {
   open: boolean;
   resource: Resource | null;
   onClose: () => void;
   onEdit: (resource: Resource) => void;
+  onStatusChange?: (id: string | number, newStatus: "disponivel" | "indisponivel") => Promise<void>;
 }
 
-export function ResourceDetailsModal({ open, resource, onClose, onEdit }: ResourceDetailsModalProps) {
+export function ResourceDetailsModal({ open, resource, onClose, onEdit, onStatusChange }: ResourceDetailsModalProps) {
+  const [isUpdatingStatus, setIsUpdatingStatus] = useState(false);
+
   if (!resource) return null;
+
+  const canUpdateStatus = hasPermission([ROLES.ADMIN, ROLES.TEACHER]);
+
+  const handleToggleStatus = async () => {
+    if (!onStatusChange || isUpdatingStatus) return;
+    
+    setIsUpdatingStatus(true);
+    const newStatus = resource.status === "disponivel" ? "indisponivel" : "disponivel";
+    await onStatusChange(resource.id, newStatus);
+    setIsUpdatingStatus(false);
+  };
 
   return (
     <Dialog open={open} onOpenChange={(isOpen) => !isOpen && onClose()}>
@@ -68,16 +84,37 @@ export function ResourceDetailsModal({ open, resource, onClose, onEdit }: Resour
 
               {/* Ações e Status */}
               <div className="mt-6 flex items-end justify-between">
-                <div className="flex justify-start">
+                <div className="flex gap-4 items-center">
                   <Button
                     onClick={() => onEdit(resource)}
                     className="h-11 px-8 rounded-xl bg-[#0085FF] hover:bg-[#0074E0] text-white font-semibold transition-all active:scale-95 shadow-lg shadow-blue-200"
                   >
                     Editar
                   </Button>
+
+                  {canUpdateStatus && (
+                    <Button
+                      variant="outline"
+                      onClick={handleToggleStatus}
+                      disabled={isUpdatingStatus}
+                      className="h-11 px-4 rounded-xl border-slate-200 text-slate-600 font-medium hover:bg-slate-50 transition-all"
+                    >
+                      {isUpdatingStatus ? (
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                      ) : (
+                        <RefreshCcw className="h-4 w-4" />
+                      )}
+                      <span className="ml-2 hidden sm:inline">Alternar Status</span>
+                    </Button>
+                  )}
                 </div>
-                <div className="flex justify-end">
-                  <ResourceStatus status={resource.status} />
+                <div className="flex justify-end items-center gap-3">
+                  <span className="text-xs font-bold uppercase tracking-widest text-slate-400">
+                    {resource.level.name}
+                  </span>
+                  <ResourceStatus 
+                    status={resource.status === "disponivel" ? "available" : "unavailable"} 
+                  />
                 </div>
               </div>
             </div>

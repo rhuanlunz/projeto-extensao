@@ -412,29 +412,54 @@ Prover uma infraestrutura robusta e profissional para a gestão de recursos, eli
 
 ---
 
-## 08/06/2026 (Simplificação Estrutural da Feature Resources)
+## 09/06/2026 (Operações Administrativas e RBAC)
 
 ### Contexto
-Conclusão da refatoração estrutural da feature Resources para eliminar a hiper-componentização e simplificar a manutenção do código, conforme planejado na auditoria técnica.
+Implementação das operações administrativas de exclusão e alteração de status de recursos, integradas com controle de acesso baseado em roles (RBAC) e sincronização de estado em tempo real.
 
 ### Alterações realizadas
-- **Fase 1 (Modais):** Consolidado o `ResourceDetailsModal` através da incorporação direta dos componentes `Header`, `Image`, `Content` e `Actions`. O componente `ResourceModalStatus` foi removido, utilizando-se agora o `ResourceStatus` de forma direta.
-- **Fase 2 (Formulário):** O componente `ResourceFormImage` foi absorvido pelo `ResourceForm.tsx`, mantendo a funcionalidade de preview mas reduzindo a dispersão de arquivos.
-- **Fase 3 (Listagem):** Simplificada a árvore de componentes de listagem através da fusão do `ResourceFloorSection` dentro do `ResourceGrid.tsx`. A lógica de agrupamento por andar foi preservada sem a necessidade de uma camada intermediária.
-- **Fase 4 (FAB):** O `ResourceAddButton` foi transformado em um componente FAB (Floating Action Button) totalmente autossuficiente, gerenciando seu próprio posicionamento responsivo e removendo redundâncias no container pai.
-- **Limpeza:** Removidos 7 arquivos de componentes que se tornaram obsoletos após a consolidação.
-
-### Auditoria dos Services (Fase 5)
-- **Mocks:** Identificada forte dependência de persistência volátil em memória (`resourceForm.mock.ts`), o que exigirá estratégia de cache/sincronização na integração real.
-- **Acoplamento:** Detectado acoplamento entre os tipos do formulário (`string` para andares) e o domínio (`number`), exigindo mappers manuais que deverão ser validados contra os contratos da API.
-- **Riscos de Integração:** Ausência de tratamento de erros HTTP específicos e falta de infraestrutura para injeção de tokens JWT nos serviços atuais.
-- **Categorias:** A lógica de categorias está simplificada (hardcoded), necessitando de uma busca dinâmica via API no futuro.
+- **Backend (JWT)**: Atualizado `User.php` para incluir `role_id` nos claims customizados do JWT, permitindo ao frontend identificar as permissões do usuário sem requisições adicionais.
+- **Infraestrutura de RBAC**: Criado `src/lib/auth.ts` para decodificação segura de tokens e funções auxiliares de permissão (`getUserRole`, `hasPermission`).
+- **Serviços Administrativos**: Implementados `deleteResource` (DELETE) e `updateResourceStatus` (PATCH) em `resourceForm.service.ts` utilizando a infraestrutura `apiFetch`.
+- **UI de Exclusão (Admin)**: 
+    - Adicionado botão "Excluir Recurso" no modal de edição, protegido pela role de Admin (1).
+    - Implementado fluxo de confirmação e feedback visual de processamento.
+- **UI de Status (Teacher/Admin)**:
+    - Adicionado botão "Alternar Status" no modal de visualização, acessível para Teacher (2) e Admin (1).
+    - Implementada sincronização imediata no modal e na listagem principal.
+- **Sincronização de Estado**: Orquestrador `Resources.tsx` atualizado com handlers que garantem a integridade da listagem local após operações de sucesso na API, eliminando a necessidade de refresh manual.
+- **Tratamento de Erros**: Reforçado o uso de `sonner` para feedbacks de erro contextuais (403 Forbidden, 404 Not Found, falhas de rede).
 
 ### Motivo
-Garantir uma base de código mais limpa, direta e com menor carga cognitiva para os desenvolvedores, mantendo a robustez arquitetural e preparando o terreno para a integração com o backend.
+Concluir o ciclo administrativo da feature de Resources, garantindo que usuários com diferentes níveis de acesso possuam as ferramentas adequadas de gestão, protegidas por segurança baseada em token.
 
 ### Impactos
-- Redução significativa no número de arquivos da feature (de 15 para 8 componentes).
-- Navegação de código mais fluida e intuitiva.
-- Zero regressão visual ou funcional verificada.
-- Build do projeto íntegro e sem erros de tipagem.
+- Administradores agora possuem controle total sobre o ciclo de vida dos recursos (criação, edição, status e exclusão).
+- Professores podem gerenciar a disponibilidade de recursos de forma rápida através do modal de visualização.
+- Alunos permanecem com acesso estritamente de leitura, sem visualização de botões administrativos.
+- Interface mais responsiva e tecnicamente alinhada com os padrões de segurança do projeto.
+
+---
+
+## 09/06/2026 (Integração de Categorias Dinâmicas na Sidebar)
+
+### Contexto
+Substituição definitiva dos dados mockados de categorias na Sidebar por dados reais provenientes da API, preservando a arquitetura modular e o comportamento da interface.
+
+### Alterações realizadas
+- **Infraestrutura de Dados**: Criado o serviço `src/shared/Sidebar/services/sidebar.service.ts` para buscar e normalizar categorias via `GET /api/v1/categories`.
+- **Dinamicidade de UI**: 
+    - `SidebarContent.tsx` refatorado para gerenciar estados de busca (`isLoading`, `hasError`, `dynamicItems`).
+    - Implementada lógica de composição dinâmica: o item "Dashboard" permanece fixo, enquanto as categorias da API são agrupadas no novo acordeão "Categorias".
+- **Estados de Interface**: Adicionados feedbacks visuais de carregamento (Spinner), erro (Alert + Retry) e empty state para as categorias.
+- **Busca Lateral**: Sincronizada a lógica de filtragem existente para operar sobre os dados carregados dinamicamente, mantendo a funcionalidade de pesquisa rápida íntegra.
+- **Limpeza Técnica**: Removido o array mockado `sidebarResources` do arquivo `sidebar.mock.ts` e eliminadas referências estáticas obsoletas.
+
+### Motivo
+Eliminar a dependência de dados estáticos hardcoded na navegação principal, garantindo que a Sidebar reflita em tempo real a estrutura de recursos cadastrada no backend e respeite a sessão do usuário via `apiFetch`.
+
+### Impactos
+- Navegação agora reflete fielmente as categorias existentes no banco de dados.
+- Sistema preparado para futuras expansões de itens de menu sem necessidade de novas refatorações estruturais.
+- Melhoria na resiliência da interface com tratamentos explícitos para falhas de rede e sessões expiradas.
+

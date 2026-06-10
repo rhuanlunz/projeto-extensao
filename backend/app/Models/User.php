@@ -78,7 +78,9 @@ class User extends Authenticatable implements JWTSubject, CanResetPassword
 
     public function getJWTCustomClaims(): array
     {
-        return [];
+        return [
+            'role_id' => $this->role_id,
+        ];
     }
 
     public function sendPasswordResetNotification($token): void

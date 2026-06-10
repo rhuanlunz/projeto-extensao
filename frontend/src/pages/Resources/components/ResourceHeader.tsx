@@ -24,7 +24,7 @@ export function ResourceHeader({ stats }: ResourceHeaderProps) {
               {String(stat.count).padStart(2, "0")}
             </span>
             <span className="text-[10px] md:text-xs font-medium uppercase tracking-wider opacity-90 whitespace-nowrap">
-              {stat.floor}º Andar
+              {stat.floor}
             </span>
           </div>
         ))}

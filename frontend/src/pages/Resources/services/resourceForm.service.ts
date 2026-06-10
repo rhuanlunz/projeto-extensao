@@ -1,4 +1,4 @@
-import * as mockRepo from "./resourceForm.mock";
+import { apiFetch } from "@/lib/api";
 import type { 
   ResourceFormData, 
   CreateResourcePayload, 
@@ -7,23 +7,45 @@ import type {
 import type { Resource } from "./resource.types";
 
 export const getResources = async (): Promise<Resource[]> => {
-  return await mockRepo.getResources();
+  const response = await apiFetch("/resources");
+  if (response?.success) {
+    // A API retorna dados agrupados: { "Térreo": [...], "1º Andar": [...] }
+    // Precisamos achatar isso para uma lista única, pois a UI espera um array
+    const groupedData = response.data;
+    const flatResources: Resource[] = [];
+    
+    Object.keys(groupedData).forEach((floorName) => {
+      flatResources.push(...groupedData[floorName]);
+    });
+    
+    return flatResources;
+  }
+  return [];
 };
 
-export const createResource = async (formData: ResourceFormData): Promise<Resource> => {
-  const payload = mapFormDataToPayload(formData);
-  return await mockRepo.createResource(payload);
+export const deleteResource = async (id: string | number): Promise<boolean> => {
+  const response = await apiFetch(`/resources/${id}`, {
+    method: "DELETE",
+  });
+  return !!response?.success;
 };
 
-export const updateResource = async (id: string, formData: ResourceFormData): Promise<Resource> => {
-  const payload: UpdateResourcePayload = {
-    ...mapFormDataToPayload(formData),
-    id,
-  };
-  return await mockRepo.updateResource(payload);
+export const updateResourceStatus = async (
+  id: string | number, 
+  status: "disponivel" | "indisponivel"
+): Promise<Resource | null> => {
+  const response = await apiFetch(`/resources/${id}/status`, {
+    method: "PATCH",
+    body: JSON.stringify({ status }),
+  });
+  if (response?.success) {
+    return response.data;
+  }
+  return null;
 };
 
-// Mappers
+
+// Mappers (Mantidos para referência, serão atualizados na Fase 3 se liberado)
 const mapFormDataToPayload = (formData: ResourceFormData): CreateResourcePayload => {
   return {
     name: formData.name,
@@ -32,26 +54,17 @@ const mapFormDataToPayload = (formData: ResourceFormData): CreateResourcePayload
     category: formData.category,
     floor: formData.floor,
     status: formData.status,
-    imageUrl: undefined, // Permitir que a UI aplique o fallback institucional
+    imageUrl: undefined,
   };
 };
 
 export const mapResourceToFormData = (resource: Resource): ResourceFormData => {
   return {
     name: resource.name,
-    unescId: resource.id, // Simulando que o ID é o UNESC ID
+    unescId: resource.unesc_id,
     description: resource.description || "",
-    category: "Rack", // Default para mock
-    floor: mapNumberToFloor(resource.floor),
-    status: resource.status,
+    category: "Rack", // Placeholder
+    floor: "first-floor", // Placeholder
+    status: resource.status === "disponivel" ? "available" : "unavailable",
   };
-};
-
-const mapNumberToFloor = (floor: number): any => {
-  switch (floor) {
-    case 1: return "first-floor";
-    case 2: return "second-floor";
-    case 3: return "third-floor";
-    default: return "first-floor";
-  }
 };

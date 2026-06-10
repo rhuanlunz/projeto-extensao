@@ -22,16 +22,21 @@ import { Loader2, Server } from "lucide-react";
 import { resourceFormSchema, type ResourceFormValues } from "../schemas/resourceForm.schema";
 import { categoryOptions, floorOptions, statusOptions } from "../services/resourceForm.options";
 import type { Resource } from "../services/resource.types";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { ROLES, hasPermission } from "@/lib/auth";
 
 interface ResourceFormProps {
   initialData: Resource | null;
   onSubmit: (data: ResourceFormValues) => Promise<void>;
+  onDelete?: (id: string | number) => Promise<void>;
   onCancel: () => void;
   isSubmitting: boolean;
 }
 
-export function ResourceForm({ initialData, onSubmit, onCancel, isSubmitting }: ResourceFormProps) {
+export function ResourceForm({ initialData, onSubmit, onDelete, onCancel, isSubmitting }: ResourceFormProps) {
+  const [isDeleting, setIsDeleting] = useState(false);
+  const isEditing = Boolean(initialData);
+
   const form = useForm<ResourceFormValues>({
     resolver: zodResolver(resourceFormSchema),
     defaultValues: {
@@ -49,11 +54,11 @@ export function ResourceForm({ initialData, onSubmit, onCancel, isSubmitting }: 
     if (initialData) {
       form.reset({
         name: initialData.name,
-        unescId: initialData.id,
+        unescId: String(initialData.unesc_id),
         description: initialData.description || "",
         category: "Rack", // Mock fixo para agora
-        floor: mapNumberToFloor(initialData.floor),
-        status: initialData.status,
+        floor: "first-floor", // Mock fixo para agora
+        status: initialData.status === "disponivel" ? "available" : "unavailable",
       });
     } else {
       form.reset({
@@ -66,6 +71,24 @@ export function ResourceForm({ initialData, onSubmit, onCancel, isSubmitting }: 
       });
     }
   }, [initialData, form]);
+
+  const handleProcessDelete = async () => {
+    if (!initialData || !onDelete) return;
+    
+    const confirmed = window.confirm(`Tem certeza que deseja excluir o recurso "${initialData.name}"? Esta ação não pode ser desfeita.`);
+    
+    if (confirmed) {
+      setIsDeleting(true);
+      try {
+        await onDelete(initialData.id);
+      } finally {
+        setIsDeleting(false);
+      }
+    }
+  };
+
+  const canDelete = isEditing && hasPermission([ROLES.ADMIN]);
+  const isActionDisabled = isSubmitting || isDeleting;
 
   const inputClasses = "h-12 rounded-xl px-4 text-base bg-slate-50 border-slate-200 text-slate-900 placeholder:text-slate-400 focus:ring-2 focus:ring-[#0056A4]/20 focus:border-[#0056A4] transition-all";
   const labelClasses = "text-[15px] font-semibold text-slate-700 mb-2";
@@ -113,7 +136,7 @@ export function ResourceForm({ initialData, onSubmit, onCancel, isSubmitting }: 
                         placeholder="Ex: Rack R-01" 
                         {...field} 
                         className={inputClasses}
-                        disabled={isSubmitting}
+                        disabled={isActionDisabled}
                         maxLength={60}
                       />
                     </FormControl>
@@ -132,7 +155,7 @@ export function ResourceForm({ initialData, onSubmit, onCancel, isSubmitting }: 
                         placeholder="Ex: 123456" 
                         {...field} 
                         className={inputClasses}
-                        disabled={isSubmitting}
+                        disabled={isActionDisabled}
                         maxLength={30}
                       />
                     </FormControl>
@@ -153,7 +176,7 @@ export function ResourceForm({ initialData, onSubmit, onCancel, isSubmitting }: 
                       placeholder="Adicione uma descrição do recurso (Opcional)" 
                       className="min-h-35 rounded-2xl p-4 leading-relaxed text-base bg-slate-50 border-slate-200 text-slate-900 placeholder:text-slate-400 focus:ring-2 focus:ring-[#0056A4]/20 focus:border-[#0056A4] resize-none transition-all" 
                       {...field} 
-                      disabled={isSubmitting}
+                      disabled={isActionDisabled}
                       maxLength={300}
                     />
                   </FormControl>
@@ -172,7 +195,7 @@ export function ResourceForm({ initialData, onSubmit, onCancel, isSubmitting }: 
                     <Select 
                       onValueChange={field.onChange} 
                       value={field.value}
-                      disabled={isSubmitting}
+                      disabled={isActionDisabled}
                     >
                       <FormControl>
                         <SelectTrigger className={inputClasses}>
@@ -198,7 +221,7 @@ export function ResourceForm({ initialData, onSubmit, onCancel, isSubmitting }: 
                     <Select 
                       onValueChange={field.onChange} 
                       value={field.value}
-                      disabled={isSubmitting}
+                      disabled={isActionDisabled}
                     >
                       <FormControl>
                         <SelectTrigger className={inputClasses}>
@@ -224,7 +247,7 @@ export function ResourceForm({ initialData, onSubmit, onCancel, isSubmitting }: 
                     <Select 
                       onValueChange={field.onChange} 
                       value={field.value}
-                      disabled={isSubmitting}
+                      disabled={isActionDisabled}
                     >
                       <FormControl>
                         <SelectTrigger className={inputClasses}>
@@ -246,42 +269,49 @@ export function ResourceForm({ initialData, onSubmit, onCancel, isSubmitting }: 
         </div>
 
         {/* Rodapé: Ações */}
-        <div className="flex items-center justify-end gap-4 px-8 py-6 border-t">
-          <Button 
-            type="button" 
-            variant="ghost" 
-            onClick={onCancel}
-            disabled={isSubmitting}
-            className="h-11 px-6 rounded-xl text-slate-600 font-medium hover:bg-slate-100"
-          >
-            Cancelar
-          </Button>
-          <Button 
-            type="submit" 
-            disabled={isSubmitting}
-            className="h-11 px-8 rounded-xl bg-[#0085FF] hover:bg-[#0074E0] text-white font-semibold transition-all active:scale-95 shadow-lg shadow-blue-200"
-          >
-            {isSubmitting ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Salvando...
-              </>
-            ) : (
-              "Salvar Recurso"
+        <div className="flex items-center justify-between px-8 py-6 border-t">
+          <div>
+            {canDelete && (
+              <Button 
+                type="button" 
+                variant="ghost" 
+                onClick={handleProcessDelete}
+                disabled={isActionDisabled}
+                className="h-11 px-6 rounded-xl text-red-500 font-medium hover:bg-red-50 hover:text-red-600 transition-all"
+              >
+                {isDeleting ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
+                Excluir Recurso
+              </Button>
             )}
-          </Button>
+          </div>
+          
+          <div className="flex items-center gap-4">
+            <Button 
+              type="button" 
+              variant="ghost" 
+              onClick={onCancel}
+              disabled={isActionDisabled}
+              className="h-11 px-6 rounded-xl text-slate-600 font-medium hover:bg-slate-100"
+            >
+              Cancelar
+            </Button>
+            <Button 
+              type="submit" 
+              disabled={isActionDisabled}
+              className="h-11 px-8 rounded-xl bg-[#0085FF] hover:bg-[#0074E0] text-white font-semibold transition-all active:scale-95 shadow-lg shadow-blue-200"
+            >
+              {isSubmitting ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Salvando...
+                </>
+              ) : (
+                "Salvar Recurso"
+              )}
+            </Button>
+          </div>
         </div>
       </form>
     </Form>
   );
 }
-
-// Auxiliar para mapear número para string do form
-const mapNumberToFloor = (floor: number): ResourceFormValues["floor"] => {
-  switch (floor) {
-    case 1: return "first-floor";
-    case 2: return "second-floor";
-    case 3: return "third-floor";
-    default: return "first-floor";
-  }
-};

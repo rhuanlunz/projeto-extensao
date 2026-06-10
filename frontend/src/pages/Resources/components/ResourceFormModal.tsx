@@ -9,6 +9,7 @@ interface ResourceFormModalProps {
   onOpenChange: (open: boolean) => void;
   initialData: Resource | null;
   onSubmit: (data: ResourceFormValues) => Promise<void>;
+  onDelete?: (id: string | number) => Promise<void>;
   isSubmitting: boolean;
 }
 
@@ -17,6 +18,7 @@ export function ResourceFormModal({
   onOpenChange, 
   initialData, 
   onSubmit, 
+  onDelete,
   isSubmitting
 }: ResourceFormModalProps) {
   
@@ -60,6 +62,7 @@ export function ResourceFormModal({
             initialData={initialData} 
             onSubmit={onSubmit} 
             onCancel={handleClose}
+            onDelete={onDelete}
             isSubmitting={isSubmitting}
           />
         </div>

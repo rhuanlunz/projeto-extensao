@@ -10,7 +10,7 @@ import { groupResourcesByFloor, calculateResourceStats } from "./services/resour
 import type { Resource } from "./services/resource.types";
 import { getResources, createResource, updateResource } from "./services/resourceForm.service";
 import type { ResourceFormValues } from "./schemas/resourceForm.schema";
-import { toast, Toaster } from "sonner";
+import { getResources, createResource, updateResource, deleteResource, updateResourceStatus } from "./services/resourceForm.service";
 
 export function Resources() {
   // Estado para a lista de recursos (Source of Truth)
@@ -27,6 +27,37 @@ export function Resources() {
 
   // Estado para controle de visibilidade da Sidebar
   const [isSidebarVisible, setIsSidebarVisible] = useState(true);
+
+  const handleStatusUpdate = async (id: string | number, newStatus: "disponivel" | "indisponivel") => {
+    try {
+      const updated = await updateResourceStatus(id, newStatus);
+      if (updated) {
+        setResources(prev => prev.map(r => r.id === id ? updated : r));
+        // Sincroniza o recurso selecionado para refletir no modal aberto
+        if (selectedResource?.id === id) {
+          setSelectedResource(updated);
+        }
+        toast.success("Status atualizado com sucesso!");
+      }
+    } catch {
+      toast.error("Erro ao atualizar status.");
+    }
+  };
+
+  const handleDeleteResource = async (id: string | number) => {
+    try {
+      const success = await deleteResource(id);
+      if (success) {
+        setResources(prev => prev.filter(r => r.id !== id));
+        setIsFormModalOpen(false);
+        setResourceToEdit(null);
+        toast.success("Recurso excluído com sucesso!");
+      }
+    } catch {
+      toast.error("Erro ao excluir recurso.");
+    }
+  };
+
 
   // Blindagem de Hydration & Responsividade: Gerenciamento de estado da Sidebar e Scroll Lock
   useEffect(() => {
@@ -172,6 +203,7 @@ export function Resources() {
         resource={selectedResource}
         onClose={handleCloseModal}
         onEdit={handleEditResource}
+        onStatusChange={handleStatusUpdate}
       />
 
       {/* Modal de Formulário (Cadastro/Edição) */}
@@ -180,6 +212,7 @@ export function Resources() {
         onOpenChange={handleCloseFormModal}
         initialData={resourceToEdit}
         onSubmit={handleFormSubmit}
+        onDelete={handleDeleteResource}
         isSubmitting={isSubmitting}
       />
     </div>
