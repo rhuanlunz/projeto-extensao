@@ -6,6 +6,7 @@ import type { Resource } from "../services/resource.types";
 import { ResourceStatus } from "./ResourceStatus";
 import { ROLES, hasPermission } from "@/lib/auth";
 import { useState } from "react";
+import { useAuth } from "@/hooks/useAuth";
 
 interface ResourceDetailsModalProps {
   open: boolean;
@@ -16,6 +17,7 @@ interface ResourceDetailsModalProps {
 }
 
 export function ResourceDetailsModal({ open, resource, onClose, onEdit, onStatusChange }: ResourceDetailsModalProps) {
+  const { isAdmin } = useAuth();
   const [isUpdatingStatus, setIsUpdatingStatus] = useState(false);
 
   if (!resource) return null;
@@ -85,12 +87,14 @@ export function ResourceDetailsModal({ open, resource, onClose, onEdit, onStatus
               {/* Ações e Status */}
               <div className="mt-6 flex items-end justify-between">
                 <div className="flex gap-4 items-center">
-                  <Button
-                    onClick={() => onEdit(resource)}
-                    className="h-11 px-8 rounded-xl bg-[#0085FF] hover:bg-[#0074E0] text-white font-semibold transition-all active:scale-95 shadow-lg shadow-blue-200"
-                  >
-                    Editar
-                  </Button>
+                  {isAdmin && (
+                    <Button
+                      onClick={() => onEdit(resource)}
+                      className="h-11 px-8 rounded-xl bg-[#0085FF] hover:bg-[#0074E0] text-white font-semibold transition-all active:scale-95 shadow-lg shadow-blue-200"
+                    >
+                      Editar
+                    </Button>
+                  )}
 
                   {canUpdateStatus && (
                     <Button

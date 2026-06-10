@@ -8,11 +8,13 @@ import { ResourceFormModal } from "./components/ResourceFormModal";
 
 import { groupResourcesByFloor, calculateResourceStats } from "./services/resource.group";
 import type { Resource } from "./services/resource.types";
-import { getResources, createResource, updateResource } from "./services/resourceForm.service";
-import type { ResourceFormValues } from "./schemas/resourceForm.schema";
 import { getResources, createResource, updateResource, deleteResource, updateResourceStatus } from "./services/resourceForm.service";
+import type { ResourceFormValues } from "./schemas/resourceForm.schema";
+import { toast, Toaster } from "sonner";
+import { useAuth } from "@/hooks/useAuth";
 
 export function Resources() {
+  const { isAdmin, isTeacher } = useAuth();
   // Estado para a lista de recursos (Source of Truth)
   const [resources, setResources] = useState<Resource[]>([]);
   const toggleRef = useRef<HTMLButtonElement>(null);
@@ -29,6 +31,7 @@ export function Resources() {
   const [isSidebarVisible, setIsSidebarVisible] = useState(true);
 
   const handleStatusUpdate = async (id: string | number, newStatus: "disponivel" | "indisponivel") => {
+    if (!isAdmin && !isTeacher) return;
     try {
       const updated = await updateResourceStatus(id, newStatus);
       if (updated) {
@@ -45,6 +48,7 @@ export function Resources() {
   };
 
   const handleDeleteResource = async (id: string | number) => {
+    if (!isAdmin) return;
     try {
       const success = await deleteResource(id);
       if (success) {
@@ -112,6 +116,7 @@ export function Resources() {
   };
 
   const handleOpenAddModal = () => {
+    if (!isAdmin) return;
     setResourceToEdit(null);
     setIsFormModalOpen(true);
   };
@@ -124,6 +129,7 @@ export function Resources() {
   };
 
   const handleEditResource = (resource: Resource) => {
+    if (!isAdmin) return;
     setSelectedResource(null);
     // Blindagem de UI: requestAnimationFrame evita conflitos de overlay/focus trap
     requestAnimationFrame(() => {
@@ -133,6 +139,7 @@ export function Resources() {
   };
 
   const handleFormSubmit = async (values: ResourceFormValues) => {
+    if (!isAdmin) return;
     setIsSubmitting(true);
     try {
       if (resourceToEdit) {
@@ -193,8 +200,8 @@ export function Resources() {
           />
         </div>
 
-        {/* Botão de Ação Flutuante */}
-        <ResourceAddButton onClick={handleOpenAddModal} />
+        {/* Botão de Ação Flutuante - Exclusivo Admin */}
+        {isAdmin && <ResourceAddButton onClick={handleOpenAddModal} />}
       </main>
 
       {/* Modal de Detalhes do Recurso */}

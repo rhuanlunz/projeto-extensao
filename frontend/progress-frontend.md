@@ -463,3 +463,49 @@ Eliminar a dependência de dados estáticos hardcoded na navegação principal, 
 - Sistema preparado para futuras expansões de itens de menu sem necessidade de novas refatorações estruturais.
 - Melhoria na resiliência da interface com tratamentos explícitos para falhas de rede e sessões expiradas.
 
+
+---
+
+## 10/06/2026 (Correções de RBAC e Segurança)
+
+### Contexto
+Implementação de correções críticas de Controle de Acesso Baseado em Roles (RBAC) e segurança de autenticação identificadas em auditoria técnica.
+
+### Alterações realizadas
+- **Hardening de Autenticação**: Atualizado `AuthGuard.tsx` e `auth.ts` para validar integridade estrutural do JWT e data de expiração (`exp`), com limpeza automática de sessão e redirecionamento para login.
+- **Centralização de Lógica**: Criado o hook customizado `useAuth.ts` para centralizar a gestão de roles e estado de autenticação, otimizando a performance e evitando decodificações redundantes.
+- **Renderização Condicional de RBAC**:
+    - Restrita a exibição do botão de criação de recursos (`ResourceAddButton`) no componente `Resources.tsx` exclusivamente para administradores.
+    - Restrita a exibição do botão de edição no modal de detalhes (`ResourceDetailsModal.tsx`) exclusivamente para administradores.
+- **Menu Administrativo**: Implementada a injeção dinâmica do menu "Configurações" na Sidebar, visível apenas para administradores, e habilitada a navegação via `useNavigate` nos itens de menu.
+- **Sincronização de Storage**: O hook `useAuth` agora monitora o evento `storage` para reagir a mudanças de token em múltiplas abas.
+
+### Motivo
+Garantir que a interface do sistema respeite rigorosamente as permissões de cada perfil de usuário (Student, Teacher, Admin), impedindo o acesso visual e funcional a operações não autorizadas e reforçando a seguran�a das rotas protegidas.
+
+### Impactos
+- Alunos e Professores não visualizam mais botões de criar ou editar recursos.
+- O sistema detecta e invalida tokens expirados antes da renderização dos componentes protegidos.
+- Interface mais limpa e consistente com o PRD, apresentando o menu de Configurações apenas para administradores.
+- Melhor performance na gestão de permissões no frontend.
+
+---
+
+## 10/06/2026 (Blindagem Lógica de RBAC - Defense in Depth)
+
+### Contexto
+Implementação de blindagem lógica adicional nos handlers administrativos da feature Resources para garantir segurança programática e conformidade total com o RBAC.
+
+### Alterações realizadas
+- **Proteção de Handlers**: Adicionadas guardas de permissão explícitas (`if (!isAdmin) return;`) nos handlers `handleOpenAddModal`, `handleEditResource`, `handleDeleteResource` e `handleFormSubmit` em `Resources.tsx`.
+- **Gestão de Status**: Handler `handleStatusUpdate` blindado para permitir execução apenas por usuários com role `Admin` ou `Teacher`.
+- **Blindagem de Estados**: Garantido que os estados `isFormModalOpen` e `resourceToEdit` não sejam alterados sem validação prévia de autorização.
+- **Isolamento de Lógica**: A validação de permissão agora ocorre no início do fluxo lógico, antes de qualquer processamento ou transição de UI.
+
+### Motivo
+Reforçar a segurança do sistema contra execuções indevidas via console, ferramentas de desenvolvedor ou manipulação direta de estado React, complementando a proteção visual de renderização condicional já existente.
+
+### Impactos
+- Student e Teacher estão tecnicamente impedidos de iniciar fluxos de criação e edição.
+- Student está tecnicamente impedido de disparar exclusão ou alteração de status.
+- Conformidade estrita com o PRD garantida tanto na camada de visualização quanto na camada de controle (orquestrador).

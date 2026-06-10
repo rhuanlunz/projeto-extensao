@@ -19,6 +19,7 @@ export function SidebarMenu({ items }: SidebarMenuProps) {
                 key={item.id}
                 label={item.label}
                 icon={item.icon}
+                href={item.route}
               />
             );
           }
@@ -36,6 +37,7 @@ export function SidebarMenu({ items }: SidebarMenuProps) {
                   key={child.id}
                   label={child.label}
                   icon={child.icon}
+                  href={child.route}
                   isNested
                 />
               ))}

@@ -7,13 +7,14 @@ import { SidebarMenu } from "./SidebarMenu";
 import { SidebarFooter } from "./SidebarFooter";
 import { SidebarUser } from "./SidebarUser";
 import { Button } from "@/components/ui/button";
-import { Loader2, AlertCircle, LayoutDashboard, Layers } from "lucide-react";
+import { Loader2, AlertCircle, LayoutDashboard, Layers, Settings } from "lucide-react";
 
 import { mockUser } from "../services/sidebar.mock";
 import { filterSidebarItems } from "../services/sidebar.filter";
 import { SIDEBAR_TRANSITION } from "../services/sidebar.constants";
 import { getSidebarCategories } from "../services/sidebar.service";
 import type { SidebarElement } from "../services/sidebar.types";
+import { useAuth } from "@/hooks/useAuth";
 
 interface SidebarContentProps {
   visible: boolean;
@@ -21,6 +22,7 @@ interface SidebarContentProps {
 }
 
 export function SidebarContent({ visible, onClose }: SidebarContentProps) {
+  const { isAdmin } = useAuth();
   const [searchTerm, setSearchTerm] = useState("");
   const [dynamicItems, setDynamicItems] = useState<SidebarElement[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -47,6 +49,16 @@ export function SidebarContent({ visible, onClose }: SidebarContentProps) {
           label: "Categorias",
           icon: Layers,
           children: categories,
+        });
+      }
+
+      // Injeção de menus administrativos baseada em RBAC
+      if (isAdmin) {
+        items.push({
+          id: "settings",
+          label: "Configurações",
+          icon: Settings,
+          route: "/configuracoes",
         });
       }
 
