@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import {Field, FieldContent, FieldLabel } from "@/components/ui/field"
+import { Field, FieldContent, FieldLabel } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { ArrowRight, LoaderCircle } from "lucide-react"
 import { useState } from "react"
@@ -21,19 +21,19 @@ export default function Login() {
       setLoading(true);
 
       await loginService({ email, password }, navigate);
-      
+
       setLoading(false);
     }}>
       <div className="flex min-h-screen p-5 items-center justify-center bg-[linear-gradient(to_bottom,#0085FF_50%,#E0F2FF_50%)]">
         <Toaster />
 
-        <Card className="h-125 w-100 rounded-2xl border-zinc-200 shadow-2xl">
+        <Card className="bg-white rounded-[10px] shadow-xl w-md">
           <CardContent className="flex h-full flex-col px-8 py-6">
             <div className="-mt-4 mb-0 flex justify-center">
               <img
                 src="/logounesc.png"
                 alt="Logo"
-                className="h-16 w-16 object-contain"
+                className="h-20 w-20 object-contain"
               />
             </div>
 
@@ -58,8 +58,8 @@ export default function Login() {
                     type="email"
                     value={email}
                     onChange={e => setEmail(e.target.value)}
-                    placeholder="Digite seu E-mail"
                     className="p-5 rounded-lg bg-gray-100 border-0 text-black"
+                    placeholder="nome@empresa.com.br"
                   />
                 </FieldContent>
               </Field>
@@ -71,17 +71,31 @@ export default function Login() {
 
                 <FieldContent>
                   <div className="relative mt-1">
-                    <PasswordInput 
-                        id="password" 
-                        name="password" 
-                        placehoder="Digite sua senha"
-                        value={password}
-                        onChange={setPassword}
+                    <Input
+                      type={showPassword ? "text" : "password"}
+                      value={password}
+                      onChange={e => setPassword(e.target.value)}
+                      className="h-10 pr-10 text-black"
                     />
+
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-500 transition-colors hover:text-zinc-800"
+                    >
+                      {showPassword ? (
+                        <EyeOff size={18} />
+                      ) : (
+                        <Eye size={18} />
+                      )}
+                    </button>
                   </div>
 
                   <div className="mt-2 flex justify-end">
-                    <Link to="/autenticacao/esqueci-minha-senha" className="text-[#0058BE] underline">
+                    <Link
+                      to="/autenticacao/esqueci-minha-senha"
+                      className="text-[#0058BE] underline"
+                    >
                       Esqueceu a senha?
                     </Link>
                   </div>
@@ -95,24 +109,24 @@ export default function Login() {
                     disabled={loading}
                     className="bg-[#0058BE] p-5"
                   >
-                      {loading ? (
-                        <>
-                            <LoaderCircle className="animate-spin" />
-                            Entrando...
-                        </>
-                      ) : (
-                        <>
-                            Entrar
-                            <ArrowRight />
-                        </>
-                      )}
+                    {loading ? (
+                      <>
+                        <LoaderCircle className="animate-spin" />
+                        Entrando...
+                      </>
+                    ) : (
+                      <>
+                        Entrar
+                        <ArrowRight />
+                      </>
+                    )}
                   </Button>
                 </Field>
 
                 <div className="mt-4 h-px w-full bg-zinc-300" />
 
                 <Field>
-                  <Link to="/autenticacao/cadastro" className="underline mt-4 text-center text-sm text-zinc-500 transition-colors hover:text-[#0056A4]">
+                  <Link to="/autenticacao/cadastro" className="underline mt-4 cursor-pointer text-center text-sm text-zinc-500 transition-colors hover:text-[#0056A4]">
                     Realizar cadastro
                   </Link>
                 </Field>

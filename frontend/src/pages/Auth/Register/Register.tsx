@@ -29,7 +29,7 @@ export default function Register() {
       <div className="flex min-h-screen p-5 items-center justify-center bg-[linear-gradient(to_bottom,#0085FF_50%,#E0F2FF_50%)]">
         <Toaster />
 
-        <Card className="h-145 w-100 rounded-2xl border-zinc-200 shadow-2xl">
+        <Card className="bg-white rounded-[10px] shadow-xl w-md">
 
           <CardContent className="flex h-full flex-col justify-center px-8 py-10">
 
@@ -64,8 +64,8 @@ export default function Register() {
                     type="text"
                     value={username}
                     onChange={e => setUsername(e.target.value)}
-										placeholder="Digite seu nome de usuário"
                     className="p-5 rounded-lg bg-gray-100 border-0 text-black"
+                    placeholder="Digite seu nome de usuário"
                   />
                 </FieldContent>
 
@@ -82,8 +82,8 @@ export default function Register() {
                     type="email"
                     value={email}
                     onChange={e => setEmail(e.target.value)}
-										placeholder="Digite seu E-mail"
                     className="p-5 rounded-lg bg-gray-100 border-0 text-black"
+                    placeholder="nome@empresa.com.br"
                   />
                 </FieldContent>
 
@@ -103,8 +103,24 @@ export default function Register() {
                       name="new-password" 
                       placehoder="Digite sua senha"
                       value={password}
-                      onChange={setPassword}
+                      onChange={e => setPassword(e.target.value)}
+                      className="mt-0 h-10 pr-10 text-black"
                     />
+
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setShowPassword(!showPassword)
+                      }
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-zinc-800"
+                    >
+                      {showPassword ? (
+                        <EyeOff size={18} />
+                      ) : (
+                        <Eye size={18} />
+                      )}
+                    </button>
+
                   </div>
 
                 </FieldContent>
@@ -125,8 +141,26 @@ export default function Register() {
                       name="new-password" 
                       placehoder="Confirme sua senha"
                       value={passwordConfirmation}
-                      onChange={setPasswordConfirmation}
+                      onChange={e => setPasswordConfirmation(e.target.value)}
+                      className="mt-0 h-10 pr-10 text-black"
                     />
+
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setShowConfirmPassword(
+                          !showConfirmPassword
+                        )
+                      }
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-zinc-800"
+                    >
+                      {showConfirmPassword ? (
+                        <EyeOff size={18} />
+                      ) : (
+                        <Eye size={18} />
+                      )}
+                    </button>
+
                   </div>
 
                 </FieldContent>
