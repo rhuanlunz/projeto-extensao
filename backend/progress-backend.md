@@ -296,3 +296,38 @@ A API agora expõe o endpoint `/api/v1/settings/request-email` com controle de a
 
 
 
+---
+
+## 2026-06-10 (Implementacao: Envio de Requerimentos de Novos Mapeamentos)
+
+### Contexto
+Implementacao do fluxo de envio de solicitacoes de novos mapeamentos de recursos por usuarios autenticados com role `student` ou `teacher`, sem persistencia dos requerimentos em banco de dados.
+
+### Alteracoes realizadas
+- Criacao do endpoint `POST /api/v1/resource-requests`, protegido por `AuthMiddleware` e `role:student,teacher`.
+- Criacao da `ResourceRequestController` para recebimento da requisicao e padronizacao das respostas HTTP.
+- Criacao do `StoreResourceRequestRequest` com validacao de obrigatoriedade, existencia de `category_id`, limites de tamanho e restricao de letras Unicode e espacos para `resource` e `description`.
+- Criacao do `ResourceRequestService` para encapsular a regra de envio do e-mail ao endereco configurado em `settings.request_email`.
+- Criacao do `ResourceRequestMail` e da view de e-mail para estruturar o conteudo enviado aos administradores.
+- Criacao da suite `ResourceRequestTest.php` em `tests/Feature/Category`, cobrindo sucesso para `student` e `teacher`, 401 sem autenticacao, 403 para `admin`, validacoes, falha de envio e garantia de ausencia de persistencia.
+
+### Motivo
+Atender ao requisito de permitir que alunos e professores solicitem novos mapeamentos de recursos via API, centralizando o recebimento pelos administradores atraves de e-mail configuravel e evitando criacao de nova tabela ou persistencia desnecessaria.
+
+### Impactos
+O backend passa a expor um fluxo completo e testado para requerimentos de novos recursos, mantendo o padrao arquitetural Controller -> Form Request -> Service -> Mail e respeitando o controle de acesso baseado em roles. A suite impactada foi validada com 9 testes e 31 assertions.
+
+---
+
+## 2026-06-10 (Ajuste: Contrato de Requerimentos de Novos Mapeamentos)
+
+### Contexto
+A solicitacao de novo mapeamento representa o pedido de criacao/mapeamento de uma nova categoria ou recurso, portanto nao deve exigir `category_id` existente no payload.
+
+### Alteracoes realizadas
+- Remocao do campo `category_id` da validacao e do conteudo do e-mail de requerimento.
+- Ajuste da validacao de `resource` e `description` para permitir pontuacao, mantendo bloqueio de numeros.
+- Atualizacao da suite `ResourceRequestTest.php` para refletir o novo contrato e cobrir envio com pontuacao.
+
+### Impactos
+O endpoint `POST /api/v1/resource-requests` passa a aceitar apenas `resource` e `description`, ambos obrigatorios, com limites mantidos. A suite impactada foi validada com 9 testes e 29 assertions.
