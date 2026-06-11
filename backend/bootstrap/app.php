@@ -15,6 +15,8 @@ return Application::configure(basePath: dirname(__DIR__))
             Route::prefix($api_prefix.'resource-requests')->group(base_path('routes/resource-requests.php'));
             Route::prefix($api_prefix.'categories')->group(base_path('routes/categories.php'));
             Route::prefix($api_prefix.'settings')->group(base_path('routes/settings.php'));
+            Route::prefix($api_prefix.'users')->group(base_path('routes/users.php'));
+            Route::prefix($api_prefix.'levels')->group(base_path('routes/levels.php'));
         }
     )
     ->withMiddleware(function (Middleware $middleware): void {
