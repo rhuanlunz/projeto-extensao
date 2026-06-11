@@ -5,7 +5,7 @@ interface ResourceStatusProps {
 }
 
 export function ResourceStatus({ status }: ResourceStatusProps) {
-  const isAvailable = status === "available";
+  const isAvailable = status === "disponivel";
 
   return (
     <div className="mt-auto flex items-center gap-2.5">
@@ -24,3 +24,4 @@ export function ResourceStatus({ status }: ResourceStatusProps) {
     </div>
   );
 }
+

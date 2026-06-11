@@ -1,4 +1,3 @@
-import { useState, useMemo } from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { SidebarHeader } from "./SidebarHeader";
@@ -7,8 +6,6 @@ import { SidebarMenu } from "./SidebarMenu";
 import { SidebarFooter } from "./SidebarFooter";
 import { SidebarUser } from "./SidebarUser";
 
-import { sidebarResources, mockUser } from "../services/sidebar.mock";
-import { filterSidebarItems } from "../services/sidebar.filter";
 import { SIDEBAR_TRANSITION } from "../services/sidebar.constants";
 
 interface SidebarContentProps {
@@ -17,13 +14,6 @@ interface SidebarContentProps {
 }
 
 export function SidebarContent({ visible, onClose }: SidebarContentProps) {
-  const [searchTerm, setSearchTerm] = useState("");
-
-  const filteredItems = useMemo(
-    () => filterSidebarItems(sidebarResources, searchTerm),
-    [searchTerm]
-  );
-
   return (
     <div
       className={`flex flex-col h-full w-64 bg-white border-r border-slate-100 shadow-sm will-change-transform ${SIDEBAR_TRANSITION} ${
@@ -36,18 +26,20 @@ export function SidebarContent({ visible, onClose }: SidebarContentProps) {
       inert={!visible ? "" : undefined}
     >
       <SidebarHeader onClose={onClose} />
-      
+
       <Separator className="mx-3 mb-6 bg-black/15" />
-      
-      <SidebarSearch onSearch={setSearchTerm} />
+
+      <SidebarSearch onSearch={() => {}} />
 
       <ScrollArea className="flex-1">
-        <SidebarMenu items={filteredItems} />
+        <SidebarMenu items={[]} />
       </ScrollArea>
 
       <SidebarFooter />
-      
-      <SidebarUser user={mockUser} />
+
+      <SidebarUser />
     </div>
   );
 }
+
+

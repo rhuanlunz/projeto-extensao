@@ -13,7 +13,6 @@ class LevelSeeder extends Seeder
     public function run(): void
     {
         $levels = [
-            ['name' => 'Térreo'],
             ['name' => '1º Andar'],
             ['name' => '2º Andar'],
             ['name' => '3º Andar'],

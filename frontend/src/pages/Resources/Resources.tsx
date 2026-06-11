@@ -6,15 +6,21 @@ import { ResourceAddButton } from "./components/ResourceAddButton";
 import { ResourceDetailsModal } from "./components/ResourceDetailsModal";
 import { ResourceFormModal } from "./components/ResourceFormModal";
 
-import { groupResourcesByFloor, calculateResourceStats } from "./services/resource.group";
-import type { Resource } from "./services/resource.types";
-import { getResources, createResource, updateResource } from "./services/resourceForm.service";
+import type { Resource, ResourcesByFloor } from "./services/resource.types";
+import { getResourcesGrouped, createResource, updateResource, deleteResource, updateResourceStatus } from "./services/resourceForm.service";
 import type { ResourceFormValues } from "./schemas/resourceForm.schema";
 import { toast, Toaster } from "sonner";
+import { useAuth } from "@/contexts/AuthContext";
 
 export function Resources() {
-  // Estado para a lista de recursos (Source of Truth)
-  const [resources, setResources] = useState<Resource[]>([]);
+  const { user } = useAuth();
+  const isAdmin = user?.role === 'admin';
+  const isTeacher = user?.role === 'teacher';
+  const canManage = isAdmin;
+  const canEditStatus = isAdmin || isTeacher;
+
+  // Estado para a lista de recursos (Agrupados pela API)
+  const [groupedResources, setGroupedResources] = useState<ResourcesByFloor>({});
   const toggleRef = useRef<HTMLButtonElement>(null);
 
   // Estado para controle do modal de detalhes
@@ -60,17 +66,26 @@ export function Resources() {
   }, [isSidebarVisible]);
 
   // Carregamento inicial via Service
+  const fetchResources = async () => {
+    try {
+      const data = await getResourcesGrouped();
+      setGroupedResources(data);
+    } catch {
+      toast.error("Erro ao carregar recursos.");
+    }
+  };
+
   useEffect(() => {
-    const fetchResources = async () => {
-      const data = await getResources();
-      setResources(data);
-    };
     fetchResources();
   }, []);
 
-  // Processamento de dados via services (memoizado para performance)
-  const groupedResources = useMemo(() => groupResourcesByFloor(resources), [resources]);
-  const resourceStats = useMemo(() => calculateResourceStats(resources), [resources]);
+  // Cálculo de estatísticas (memoizado para performance)
+  const resourceStats = useMemo(() => {
+    return Object.entries(groupedResources).map(([floorName, items]) => ({
+      floorName,
+      count: items.length
+    }));
+  }, [groupedResources]);
 
   const handleSelectResource = (resource: Resource) => {
     setSelectedResource(resource);
@@ -94,27 +109,46 @@ export function Resources() {
 
   const handleEditResource = (resource: Resource) => {
     setSelectedResource(null);
-    // Blindagem de UI: requestAnimationFrame evita conflitos de overlay/focus trap
     requestAnimationFrame(() => {
       setResourceToEdit(resource);
       setIsFormModalOpen(true);
     });
   };
 
+  const handleDeleteResource = async (id: string) => {
+    if (!window.confirm("Tem certeza que deseja excluir este recurso?")) return;
+    try {
+      await deleteResource(id);
+      toast.success("Recurso excluído com sucesso!");
+      fetchResources();
+      setSelectedResource(null);
+    } catch {
+      toast.error("Erro ao excluir recurso.");
+    }
+  };
+
+  const handleStatusUpdate = async (id: string, newStatus: string) => {
+    try {
+      await updateResourceStatus(id, newStatus);
+      toast.success("Status atualizado com sucesso!");
+      fetchResources();
+      setSelectedResource(null);
+    } catch {
+      toast.error("Erro ao atualizar status.");
+    }
+  };
+
   const handleFormSubmit = async (values: ResourceFormValues) => {
     setIsSubmitting(true);
     try {
       if (resourceToEdit) {
-        const updated = await updateResource(resourceToEdit.id, values);
-        if (!updated) return;
-        setResources(prev => prev.map(r => r.id === updated.id ? updated : r));
+        await updateResource(resourceToEdit.id, values as any);
         toast.success("Recurso atualizado com sucesso!");
       } else {
-        const created = await createResource(values);
-        if (!created) return;
-        setResources(prev => [created, ...prev]);
+        await createResource(values as any);
         toast.success("Recurso cadastrado com sucesso!");
       }
+      fetchResources();
       setIsFormModalOpen(false);
       setResourceToEdit(null);
     } catch {
@@ -127,11 +161,10 @@ export function Resources() {
   const handleShowSidebar = () => setIsSidebarVisible(true);
   const handleHideSidebar = () => {
     setIsSidebarVisible(false);
-    // Retorna o foco para o botão de toggle ao fechar a sidebar em mobile
     if (window.innerWidth < 1024) {
       setTimeout(() => {
         toggleRef.current?.focus();
-      }, 300); // Aguarda a animação
+      }, 300);
     }
   };
 
@@ -139,44 +172,42 @@ export function Resources() {
     <div className="flex h-screen w-full overflow-x-hidden overflow-y-hidden bg-[#EEF3F7]">
       <Toaster position="top-right" richColors />
 
-      {/* Botão Flutuante para Reabertura */}
       <SidebarToggle 
         ref={toggleRef}
         visible={!isSidebarVisible} 
         onOpen={handleShowSidebar} 
       />
 
-      {/* Sidebar Global */}
       <Sidebar visible={isSidebarVisible} onClose={handleHideSidebar} />
 
-      {/* Conteúdo Principal */}
       <main className="flex-1 min-w-0 overflow-auto p-4 sm:p-6 md:p-10 pt-20 lg:pt-10 pb-safe pr-safe pl-safe transition-all duration-300">
         <div className="mx-auto max-w-7xl">
-          {/* Banner de Resumo */}
           <ResourceHeader stats={resourceStats} />
 
-          {/* Grid de Recursos agrupados por andar */}
           <ResourceGrid
             groupedResources={groupedResources}
             onResourceClick={handleSelectResource}
           />
         </div>
 
-        {/* Botão de Ação Flutuante */}
-        <div className="fixed bottom-6 right-6 sm:bottom-10 sm:right-10 z-30">
-          <ResourceAddButton onClick={handleOpenAddModal} />
-        </div>
+        {canManage && (
+          <div className="fixed bottom-6 right-6 sm:bottom-10 sm:right-10 z-30">
+            <ResourceAddButton onClick={handleOpenAddModal} />
+          </div>
+        )}
       </main>
 
-      {/* Modal de Detalhes do Recurso */}
       <ResourceDetailsModal
         open={!!selectedResource}
         resource={selectedResource}
         onClose={handleCloseModal}
         onEdit={handleEditResource}
+        onDelete={handleDeleteResource}
+        onStatusToggle={handleStatusUpdate}
+        canEdit={canManage}
+        canToggleStatus={canEditStatus}
       />
 
-      {/* Modal de Formulário (Cadastro/Edição) */}
       <ResourceFormModal 
         open={isFormModalOpen}
         onOpenChange={handleCloseFormModal}
@@ -189,3 +220,4 @@ export function Resources() {
 }
 
 export default Resources;
+

@@ -1,26 +1,21 @@
-export type ResourceStatus = "available" | "unavailable";
-
-export type ResourceFloor = "first-floor" | "second-floor" | "third-floor";
-
-export type ResourceCategory = "Rack" | "Switch" | "Server" | "Other";
+export type ResourceStatus = "disponivel" | "indisponivel";
 
 export interface ResourceFormData {
   name: string;
   unescId: string;
   description: string;
-  category: ResourceCategory;
-  floor: ResourceFloor;
+  category_id: number;
+  level_id: number;
   status: ResourceStatus;
 }
 
 export interface CreateResourcePayload {
   name: string;
-  unescId: string;
-  description: string;
-  category: ResourceCategory;
-  floor: ResourceFloor;
+  unesc_id: string;
   status: ResourceStatus;
-  imageUrl: string;
+  category_id: number;
+  level_id: number;
+  description?: string;
 }
 
 export interface UpdateResourcePayload extends Partial<CreateResourcePayload> {
