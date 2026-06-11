@@ -22,8 +22,17 @@ export default function Register() {
       e.preventDefault();
       setLoading(true);
 
-      await registerService({ username, email, password, passwordConfirmation }, navigate);
+      const success = await registerService({ 
+        name: username, 
+        email, 
+        password, 
+        password_confirmation: passwordConfirmation 
+      });
       
+      if (success) {
+        navigate('/autenticacao/login');
+      }
+
       setLoading(false);
     }}>
       <div className="flex min-h-screen p-5 items-center justify-center bg-[linear-gradient(to_bottom,#0085FF_50%,#E0F2FF_50%)]">

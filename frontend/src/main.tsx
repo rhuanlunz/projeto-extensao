@@ -10,6 +10,7 @@ import Login from "@/pages/Auth/Login/Login.tsx"
 import Register from "./pages/Auth/Register/Register.tsx"
 
 import { Resources } from "@/pages/Resources/Resources.tsx"
+import { Settings } from "@/pages/Settings/Settings.tsx"
 
 import NotFound from "@/pages/NotFound/NotFound.tsx"
 import { AuthProvider } from "@/contexts/AuthContext"
@@ -25,6 +26,15 @@ createRoot(document.getElementById("root")!).render(
             element={
               <PrivateRoute>
                 <Resources />
+              </PrivateRoute>
+            }
+          />
+
+          <Route
+            path="/configuracoes"
+            element={
+              <PrivateRoute allowedRoles={["admin"]}>
+                <Settings />
               </PrivateRoute>
             }
           />

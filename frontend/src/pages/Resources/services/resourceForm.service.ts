@@ -37,6 +37,16 @@ export const getCategories = async () => {
   return response.data.data;
 };
 
+export const createCategory = async (name: string) => {
+  const response = await api.post('/categories', { name });
+  return response.data.data;
+};
+
+export const updateCategory = async (id: number, name: string) => {
+  const response = await api.put(`/categories/${id}`, { name });
+  return response.data.data;
+};
+
 export const getLevels = async () => {
   const response = await api.get('/levels');
   return response.data.data;

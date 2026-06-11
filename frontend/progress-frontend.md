@@ -409,3 +409,55 @@ Prover uma infraestrutura robusta e profissional para a gestão de recursos, eli
 - Arquitetura preparada para hidratação imediata no futuro modo de edição.
 - Consistência total nas animações e comportamento dos modais do sistema.
 - Interface totalmente responsiva e acessível.
+
+---
+
+## 11/06/2026 (Início da Implementação das Features Restantes)
+
+### Contexto
+Início da fase final de implementação para concluir as funcionalidades pendentes conforme o PRD: Gestão de Categorias e Painel Administrativo.
+
+### Objetivos
+- Implementar criação de categorias via Sidebar (Admin).
+- Criar página de Configurações (Painel Administrativo) para Admin.
+- Implementar troca de roles de usuários e configuração de e-mail de destino.
+- Garantir restrições de acesso baseadas em roles (RBAC).
+
+### Alterações Previstas
+- Atualização da Sidebar com botão de adição de categoria.
+- Criação de `CategoryFormModal`.
+- Criação da página `Settings.tsx` e seus componentes.
+- Atualização das rotas e serviços.
+
+---
+
+## 11/06/2026 (Finalização das Features Restantes)
+
+### Contexto
+Conclusão bem-sucedida das funcionalidades restantes do frontend: Gestão de Categorias, Painel Administrativo e Solicitação de Recursos.
+
+### Alterações realizadas
+- **Gestão de Categorias**:
+    - Adicionada função `createCategory` no service de recursos.
+    - Criado componente `CategoryFormModal` com validação via Zod.
+    - Sidebar atualizada para permitir que administradores criem novas categorias diretamente.
+- **Painel Administrativo (Configurações)**:
+    - Criada a página `Settings.tsx` com controle de acesso exclusivo para admins (`allowedRoles: ["admin"]`).
+    - Implementado `EmailSettings` para configuração do e-mail de destino das solicitações.
+    - Implementado `UserManagement` com tabela de usuários e troca dinâmica de roles via API.
+    - Adicionado link "Configurações" na Sidebar para fácil acesso administrativo.
+- **Solicitação de Recursos**:
+    - Criado `RequestResourceModal` que permite aos usuários selecionar categoria e recurso (filtrado) para enviar uma solicitação via e-mail.
+    - Integrado o botão "Solicitar recurso" da Sidebar Footer com o novo modal.
+- **RBAC (Role-Based Access Control)**:
+    - Reforçado o controle de acesso visual em diversos componentes baseando-se na role do usuário (aluno, professor, admin).
+    - Proteção de rotas configurada no `main.tsx`.
+
+### Motivo
+Atender a 100% dos requisitos funcionais (RF) definidos no PRD, entregando um sistema completo para gerenciamento de recursos, controle de acesso e configurações administrativas.
+
+### Impactos
+- Sistema totalmente funcional conforme o escopo do PRD.
+- Interface consistente e intuitiva para todos os perfis de usuário.
+- Fluxo administrativo centralizado e protegido.
+- Facilidade de manutenção através da arquitetura modular baseada em features.

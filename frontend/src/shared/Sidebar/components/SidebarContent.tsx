@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { SidebarHeader } from "./SidebarHeader";
@@ -5,6 +6,7 @@ import { SidebarSearch } from "./SidebarSearch";
 import { SidebarMenu } from "./SidebarMenu";
 import { SidebarFooter } from "./SidebarFooter";
 import { SidebarUser } from "./SidebarUser";
+import { RequestResourceModal } from "./RequestResourceModal";
 
 import { SIDEBAR_TRANSITION } from "../services/sidebar.constants";
 
@@ -16,6 +18,8 @@ interface SidebarContentProps {
 }
 
 export function SidebarContent({ visible, onClose, onSelectCategory, selectedCategoryId }: SidebarContentProps) {
+  const [isRequestModalOpen, setIsRequestModalOpen] = useState(false);
+
   return (
     <div
       className={`flex flex-col h-full w-64 bg-white border-r border-slate-100 shadow-sm will-change-transform ${SIDEBAR_TRANSITION} ${
@@ -33,16 +37,23 @@ export function SidebarContent({ visible, onClose, onSelectCategory, selectedCat
 
       <SidebarSearch onSearch={() => {}} />
 
-      <ScrollArea className="flex-1">
-        <SidebarMenu 
-          onSelectCategory={onSelectCategory} 
-          selectedCategoryId={selectedCategoryId} 
-        />
-      </ScrollArea>
+      <div className="flex-1 min-h-0">
+        <ScrollArea className="h-full">
+          <SidebarMenu 
+            onSelectCategory={onSelectCategory} 
+            selectedCategoryId={selectedCategoryId} 
+          />
+        </ScrollArea>
+      </div>
 
-      <SidebarFooter />
+      <SidebarFooter onRequestResource={() => setIsRequestModalOpen(true)} />
 
       <SidebarUser />
+
+      <RequestResourceModal 
+        open={isRequestModalOpen} 
+        onOpenChange={setIsRequestModalOpen} 
+      />
     </div>
   );
 }

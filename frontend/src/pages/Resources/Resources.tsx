@@ -5,6 +5,7 @@ import { ResourceGrid } from "./components/ResourceGrid";
 import { ResourceAddButton } from "./components/ResourceAddButton";
 import { ResourceDetailsModal } from "./components/ResourceDetailsModal";
 import { ResourceFormModal } from "./components/ResourceFormModal";
+import { DeleteConfirmationModal } from "./components/DeleteConfirmationModal";
 
 import type { Resource, ResourcesByFloor } from "./services/resource.types";
 import { getResourcesGrouped, createResource, updateResource, deleteResource, updateResourceStatus } from "./services/resourceForm.service";
@@ -31,6 +32,10 @@ export function Resources() {
   const [isFormModalOpen, setIsFormModalOpen] = useState(false);
   const [resourceToEdit, setResourceToEdit] = useState<Resource | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Estado para controle de exclusão
+  const [resourceToDelete, setResourceToDelete] = useState<Resource | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   // Estado para controle de visibilidade da Sidebar
   const [isSidebarVisible, setIsSidebarVisible] = useState(true);
@@ -129,15 +134,31 @@ export function Resources() {
     });
   };
 
-  const handleDeleteResource = async (id: string) => {
-    if (!window.confirm("Tem certeza que deseja excluir este recurso?")) return;
+  const handleDeleteResource = (id: string) => {
+    // Busca o recurso completo para exibir o nome no modal
+    const resource = Object.values(groupedResources)
+      .flat()
+      .find(r => r.id === id);
+    
+    if (resource) {
+      setResourceToDelete(resource);
+    }
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!resourceToDelete) return;
+    
+    setIsDeleting(true);
     try {
-      await deleteResource(id);
+      await deleteResource(resourceToDelete.id);
       toast.success("Recurso excluído com sucesso!");
       fetchResources();
+      setResourceToDelete(null);
       setSelectedResource(null);
     } catch {
       toast.error("Erro ao excluir recurso.");
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -234,6 +255,14 @@ export function Resources() {
         onSubmit={handleFormSubmit}
         isSubmitting={isSubmitting}
         defaultCategoryId={selectedCategoryId}
+      />
+
+      <DeleteConfirmationModal
+        open={!!resourceToDelete}
+        onOpenChange={(open) => !open && setResourceToDelete(null)}
+        onConfirm={handleConfirmDelete}
+        itemName={resourceToDelete?.name || ""}
+        isDeleting={isDeleting}
       />
     </div>
   );
