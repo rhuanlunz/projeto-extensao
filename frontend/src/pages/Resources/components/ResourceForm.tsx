@@ -22,7 +22,7 @@ import { Loader2 } from "lucide-react";
 import { resourceFormSchema, type ResourceFormValues } from "../schemas/resourceForm.schema";
 import { ResourceFormImage } from "./ResourceFormImage";
 import type { Resource } from "../services/resource.types";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { getCategories, getLevels, mapResourceToFormData } from "../services/resourceForm.service";
 
 interface ResourceFormProps {
@@ -30,43 +30,45 @@ interface ResourceFormProps {
   onSubmit: (data: ResourceFormValues) => Promise<void>;
   onCancel: () => void;
   isSubmitting: boolean;
+  defaultCategoryId?: number | null;
 }
 
-export function ResourceForm({ initialData, onSubmit, onCancel, isSubmitting }: ResourceFormProps) {
+export function ResourceForm({ initialData, onSubmit, onCancel, isSubmitting, defaultCategoryId }: ResourceFormProps) {
   const [categories, setCategories] = useState<{id: number, name: string}[]>([]);
   const [levels, setLevels] = useState<{id: number, name: string}[]>([]);
 
-  const form = useForm<ResourceFormValues>({
-    resolver: zodResolver(resourceFormSchema),
-    defaultValues: {
+  // Lógica de valores para hidratação automática do formulário
+  const formValues = useMemo(() => {
+    if (initialData) {
+      return mapResourceToFormData(initialData);
+    }
+    return {
       name: "",
       unescId: "",
       description: "",
-      status: "disponivel",
-    },
+      status: "disponivel" as const,
+      category_id: defaultCategoryId || undefined,
+      level_id: undefined,
+    };
+  }, [initialData, defaultCategoryId]);
+
+  const form = useForm<ResourceFormValues>({
+    resolver: zodResolver(resourceFormSchema),
+    values: formValues as any, // React Hook Form sincroniza automaticamente com as mudanças de values
   });
 
   useEffect(() => {
     const loadOptions = async () => {
-      const [catData, levelData] = await Promise.all([getCategories(), getLevels()]);
-      setCategories(catData);
-      setLevels(levelData);
+      try {
+        const [catData, levelData] = await Promise.all([getCategories(), getLevels()]);
+        setCategories(catData);
+        setLevels(levelData);
+      } catch (error) {
+        console.error("Erro ao carregar opções do formulário", error);
+      }
     };
     loadOptions();
   }, []);
-
-  useEffect(() => {
-    if (initialData) {
-      form.reset(mapResourceToFormData(initialData));
-    } else {
-      form.reset({
-        name: "",
-        unescId: "",
-        description: "",
-        status: "disponivel",
-      });
-    }
-  }, [initialData, form]);
 
   const inputClasses = "h-12 rounded-xl px-4 text-base bg-slate-50 border-slate-200 text-slate-900 placeholder:text-slate-400 focus:ring-2 focus:ring-[#0056A4]/20 focus:border-[#0056A4] transition-all";
   const labelClasses = "text-[15px] font-semibold text-slate-700 mb-2";
@@ -150,7 +152,7 @@ export function ResourceForm({ initialData, onSubmit, onCancel, isSubmitting }: 
                     <FormLabel className={labelClasses}>Categoria</FormLabel>
                     <Select 
                       onValueChange={(val) => field.onChange(Number(val))} 
-                      value={field.value?.toString()}
+                      value={field.value ? String(field.value) : undefined}
                       disabled={isSubmitting}
                     >
                       <FormControl>
@@ -176,7 +178,7 @@ export function ResourceForm({ initialData, onSubmit, onCancel, isSubmitting }: 
                     <FormLabel className={labelClasses}>Andar</FormLabel>
                     <Select 
                       onValueChange={(val) => field.onChange(Number(val))} 
-                      value={field.value?.toString()}
+                      value={field.value ? String(field.value) : undefined}
                       disabled={isSubmitting}
                     >
                       <FormControl>
@@ -252,4 +254,3 @@ export function ResourceForm({ initialData, onSubmit, onCancel, isSubmitting }: 
     </Form>
   );
 }
-

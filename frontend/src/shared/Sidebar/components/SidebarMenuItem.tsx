@@ -7,6 +7,7 @@ interface SidebarMenuItemProps {
   href?: string;
   isActive?: boolean;
   isNested?: boolean;
+  onClick?: () => void;
 }
 
 export function SidebarMenuItem({
@@ -14,9 +15,11 @@ export function SidebarMenuItem({
   icon: Icon,
   isActive,
   isNested,
+  onClick,
 }: SidebarMenuItemProps) {
   return (
     <div
+      onClick={onClick}
       className={cn(
         "group flex w-full cursor-pointer items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors hover:bg-slate-50",
         isActive ? "bg-primary/5 text-primary" : "text-slate-600 hover:text-primary",
@@ -28,3 +31,4 @@ export function SidebarMenuItem({
     </div>
   );
 }
+

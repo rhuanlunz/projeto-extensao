@@ -10,6 +10,7 @@ interface ResourceFormModalProps {
   initialData: Resource | null;
   onSubmit: (data: ResourceFormValues) => Promise<void>;
   isSubmitting: boolean;
+  defaultCategoryId?: number | null;
 }
 
 export function ResourceFormModal({ 
@@ -17,7 +18,8 @@ export function ResourceFormModal({
   onOpenChange, 
   initialData, 
   onSubmit, 
-  isSubmitting
+  isSubmitting,
+  defaultCategoryId
 }: ResourceFormModalProps) {
   
   const isEditing = Boolean(initialData);
@@ -61,6 +63,7 @@ export function ResourceFormModal({
             onSubmit={onSubmit} 
             onCancel={handleClose}
             isSubmitting={isSubmitting}
+            defaultCategoryId={defaultCategoryId}
           />
         </div>
       </DialogContent>

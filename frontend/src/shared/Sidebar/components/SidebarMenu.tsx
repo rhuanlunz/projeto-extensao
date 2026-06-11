@@ -7,10 +7,12 @@ import { SidebarAccordion } from "./SidebarAccordion";
 import { getCategories } from "@/pages/Resources/services/resourceForm.service";
 
 interface SidebarMenuProps {
-  items: SidebarElement[]; // Mantendo interface, mas agora ignoramos os mocks
+  items?: SidebarElement[];
+  onSelectCategory: (id: number | null) => void;
+  selectedCategoryId: number | null;
 }
 
-export function SidebarMenu({ items: _items }: SidebarMenuProps) {
+export function SidebarMenu({ onSelectCategory, selectedCategoryId }: SidebarMenuProps) {
   const [categories, setCategories] = useState<{id: number, name: string}[]>([]);
 
   useEffect(() => {
@@ -31,6 +33,8 @@ export function SidebarMenu({ items: _items }: SidebarMenuProps) {
         <SidebarMenuItem
           label="Dashboard"
           icon={LayoutDashboard}
+          onClick={() => onSelectCategory(null)}
+          isActive={selectedCategoryId === null}
         />
 
         {categories.length > 0 && (
@@ -45,6 +49,8 @@ export function SidebarMenu({ items: _items }: SidebarMenuProps) {
                 label={child.name}
                 icon={undefined}
                 isNested
+                onClick={() => onSelectCategory(child.id)}
+                isActive={selectedCategoryId === child.id}
               />
             ))}
           </SidebarAccordion>

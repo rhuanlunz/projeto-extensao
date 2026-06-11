@@ -18,6 +18,7 @@ class ResourceResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'unesc_id' => $this->unesc_id,
+            'description' => $this->description,
             'status' => $this->status,
             'category' => new CategoryResource($this->whenLoaded('category')),
             'level' => new LevelResource($this->whenLoaded('level')),

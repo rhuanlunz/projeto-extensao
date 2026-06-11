@@ -21,6 +21,7 @@ export function Resources() {
 
   // Estado para a lista de recursos (Agrupados pela API)
   const [groupedResources, setGroupedResources] = useState<ResourcesByFloor>({});
+  const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(null);
   const toggleRef = useRef<HTMLButtonElement>(null);
 
   // Estado para controle do modal de detalhes
@@ -77,15 +78,28 @@ export function Resources() {
 
   useEffect(() => {
     fetchResources();
-  }, []);
+  }, [selectedCategoryId]);
 
-  // Cálculo de estatísticas (memoizado para performance)
+  // Filtragem e Cálculo de estatísticas (memoizado para performance)
+  const filteredResources = useMemo(() => {
+    if (selectedCategoryId === null) return groupedResources;
+
+    const filtered: ResourcesByFloor = {};
+    Object.entries(groupedResources).forEach(([floor, items]) => {
+      const filteredItems = items.filter(item => item.category.id === selectedCategoryId);
+      if (filteredItems.length > 0) {
+        filtered[floor] = filteredItems;
+      }
+    });
+    return filtered;
+  }, [groupedResources, selectedCategoryId]);
+
   const resourceStats = useMemo(() => {
-    return Object.entries(groupedResources).map(([floorName, items]) => ({
+    return Object.entries(filteredResources).map(([floorName, items]) => ({
       floorName,
       count: items.length
     }));
-  }, [groupedResources]);
+  }, [filteredResources]);
 
   const handleSelectResource = (resource: Resource) => {
     setSelectedResource(resource);
@@ -178,14 +192,19 @@ export function Resources() {
         onOpen={handleShowSidebar} 
       />
 
-      <Sidebar visible={isSidebarVisible} onClose={handleHideSidebar} />
+      <Sidebar 
+        visible={isSidebarVisible} 
+        onClose={handleHideSidebar} 
+        onSelectCategory={setSelectedCategoryId}
+        selectedCategoryId={selectedCategoryId}
+      />
 
       <main className="flex-1 min-w-0 overflow-auto p-4 sm:p-6 md:p-10 pt-20 lg:pt-10 pb-safe pr-safe pl-safe transition-all duration-300">
         <div className="mx-auto max-w-7xl">
           <ResourceHeader stats={resourceStats} />
 
           <ResourceGrid
-            groupedResources={groupedResources}
+            groupedResources={filteredResources}
             onResourceClick={handleSelectResource}
           />
         </div>
@@ -214,10 +233,10 @@ export function Resources() {
         initialData={resourceToEdit}
         onSubmit={handleFormSubmit}
         isSubmitting={isSubmitting}
+        defaultCategoryId={selectedCategoryId}
       />
     </div>
   );
 }
 
 export default Resources;
-

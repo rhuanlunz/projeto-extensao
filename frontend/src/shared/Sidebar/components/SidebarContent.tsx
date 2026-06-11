@@ -11,9 +11,11 @@ import { SIDEBAR_TRANSITION } from "../services/sidebar.constants";
 interface SidebarContentProps {
   visible: boolean;
   onClose: () => void;
+  onSelectCategory: (id: number | null) => void;
+  selectedCategoryId: number | null;
 }
 
-export function SidebarContent({ visible, onClose }: SidebarContentProps) {
+export function SidebarContent({ visible, onClose, onSelectCategory, selectedCategoryId }: SidebarContentProps) {
   return (
     <div
       className={`flex flex-col h-full w-64 bg-white border-r border-slate-100 shadow-sm will-change-transform ${SIDEBAR_TRANSITION} ${
@@ -32,7 +34,10 @@ export function SidebarContent({ visible, onClose }: SidebarContentProps) {
       <SidebarSearch onSearch={() => {}} />
 
       <ScrollArea className="flex-1">
-        <SidebarMenu items={[]} />
+        <SidebarMenu 
+          onSelectCategory={onSelectCategory} 
+          selectedCategoryId={selectedCategoryId} 
+        />
       </ScrollArea>
 
       <SidebarFooter />

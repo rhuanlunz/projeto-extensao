@@ -37,6 +37,7 @@ class UpdateResourceRequest extends FormRequest
         return [
             'name' => 'required|string|max:255',
             'unesc_id' => 'required|string|max:50|unique:resources,unesc_id,' . $this->route('id'),
+            'description' => 'nullable|string|max:1000',
             'status' => 'required|in:disponivel,indisponivel',
             'category_id' => 'required|exists:categories,id',
             'level_id' => 'required|exists:levels,id',
