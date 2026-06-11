@@ -37,6 +37,9 @@
         }
     },
     "scripts": {
+        "db:presentation": [
+            "@php artisan migrate:fresh --seed --class=PresentationSeeder"
+        ],
         "setup": [
             "composer install",
             "@php -r \"file_exists('.env') || copy('.env.example', '.env');\"",

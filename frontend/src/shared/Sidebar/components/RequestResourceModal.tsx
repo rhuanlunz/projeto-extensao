@@ -35,7 +35,11 @@ import { toast } from "sonner";
 const requestSchema = z.object({
   category_id: z.string().min(1, "A categoria é obrigatória"),
   resource_id: z.string().min(1, "O recurso é obrigatório"),
-  description: z.string().min(10, "A descrição deve ter pelo menos 10 caracteres"),
+  description: z
+    .string()
+    .min(10, "A descrição deve ter pelo menos 10 caracteres")
+    .max(500, "A descrição deve ter no máximo 500 caracteres")
+    .regex(/^[^\d]+$/, "A descrição não pode conter números"),
 });
 
 type RequestFormValues = z.infer<typeof requestSchema>;
@@ -105,16 +109,24 @@ export function RequestResourceModal({
   const onSubmit = async (values: RequestFormValues) => {
     setIsSubmitting(true);
     try {
+      const selectedResource = resources.find(r => r.id === values.resource_id);
+
+      if (!selectedResource) {
+        toast.error("Recurso não encontrado.");
+        return;
+      }
+
       await api.post("/resource-requests", {
-        category_id: parseInt(values.category_id),
-        resource_id: values.resource_id, // resource_id no backend parece ser UUID ou string
+        resource: selectedResource.name,
         description: values.description,
       });
+
       toast.success("Solicitação enviada com sucesso!");
       form.reset();
       onOpenChange(false);
-    } catch {
-      toast.error("Erro ao enviar solicitação. Tente novamente.");
+    } catch (error: any) {
+      const message = error.response?.data?.message || "Erro ao enviar solicitação. Tente novamente.";
+      toast.error(message);
     } finally {
       setIsSubmitting(false);
     }
