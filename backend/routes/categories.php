@@ -2,9 +2,10 @@
 
 use App\Http\Controllers\CategoryController;
 use App\Http\Middleware\AuthMiddleware;
+use App\Http\Middleware\ValidateJwtAudience;
 use Illuminate\Support\Facades\Route;
 
-Route::middleware([AuthMiddleware::class])->group(function () {
+Route::middleware([AuthMiddleware::class, ValidateJwtAudience::class])->group(function () {
 
     // Acesso para student, teacher e admin
     Route::middleware(['role:student,teacher,admin'])->group(function () {

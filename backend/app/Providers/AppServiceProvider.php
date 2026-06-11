@@ -34,6 +34,9 @@ class AppServiceProvider extends ServiceProvider
                 );
             });
 
+        RateLimiter::for('api', fn (Request $request): Limit =>
+            Limit::perMinute(100)->by($request->ip()));
+
         RateLimiter::for('register', fn (Request $request): Limit =>
             Limit::perMinute(10)->by($request->ip()));
         
