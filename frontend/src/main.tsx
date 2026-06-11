@@ -10,6 +10,8 @@ import Login from "@/pages/Auth/Login/Login.tsx"
 import Register from "./pages/Auth/Register/Register.tsx"
 
 import { AuthGuard } from "@/shared/Auth/AuthGuard.tsx"
+import Resources from "./pages/Resources/Resources.tsx"
+import NotFound from "./pages/NotFound/NotFound.tsx"
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>

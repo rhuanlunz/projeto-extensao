@@ -22,7 +22,7 @@ export function ResourceCard({ resource, onClick }: ResourceCardProps) {
       </h3>
 
       <ResourceStatus 
-        status={resource.status === "disponivel" ? "available" : "unavailable"} 
+        status={resource.status} 
       />
     </div>
   );

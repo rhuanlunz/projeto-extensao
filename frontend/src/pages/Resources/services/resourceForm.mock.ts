@@ -17,9 +17,11 @@ export const createResource = async (payload: CreateResourcePayload): Promise<Re
   const newResource: Resource = {
     id: `res-${Math.random().toString(36).substr(2, 9)}`, // ID Único
     name: payload.name,
+    unesc_id: payload.unescId,
     description: payload.description,
-    status: payload.status,
-    floor: mapFloorToNumber(payload.floor),
+    status: payload.status === "available" ? "disponivel" : "indisponivel",
+    level: { id: mapFloorToNumber(payload.floor), name: payload.floor },
+    category: { id: 1, name: payload.category },
     imageUrl: payload.imageUrl,
   };
 
@@ -36,9 +38,14 @@ export const updateResource = async (payload: UpdateResourcePayload): Promise<Re
   const updatedResource: Resource = {
     ...resourcesDatabase[index],
     name: payload.name ?? resourcesDatabase[index].name,
+    unesc_id: payload.unescId ?? resourcesDatabase[index].unesc_id,
     description: payload.description ?? resourcesDatabase[index].description,
-    status: payload.status ?? resourcesDatabase[index].status,
-    floor: payload.floor ? mapFloorToNumber(payload.floor) : resourcesDatabase[index].floor,
+    status: payload.status 
+      ? (payload.status === "available" ? "disponivel" : "indisponivel") 
+      : resourcesDatabase[index].status,
+    level: payload.floor 
+      ? { id: mapFloorToNumber(payload.floor), name: payload.floor } 
+      : resourcesDatabase[index].level,
     imageUrl: payload.imageUrl ?? resourcesDatabase[index].imageUrl,
   };
 

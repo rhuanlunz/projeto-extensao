@@ -117,7 +117,7 @@ export function ResourceDetailsModal({ open, resource, onClose, onEdit, onStatus
                     {resource.level.name}
                   </span>
                   <ResourceStatus 
-                    status={resource.status === "disponivel" ? "available" : "unavailable"} 
+                    status={resource.status} 
                   />
                 </div>
               </div>

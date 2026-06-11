@@ -1,5 +1,5 @@
 import { Navigate } from "react-router";
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
 import { isValidToken, isTokenExpired } from "@/lib/auth";
 
 interface AuthGuardProps {

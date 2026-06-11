@@ -1,8 +1,7 @@
 import { apiFetch } from "@/lib/api";
 import type { 
   ResourceFormData, 
-  CreateResourcePayload, 
-  UpdateResourcePayload 
+  CreateResourcePayload 
 } from "../types/resourceForm.types";
 import type { Resource } from "./resource.types";
 
@@ -21,6 +20,32 @@ export const getResources = async (): Promise<Resource[]> => {
     return flatResources;
   }
   return [];
+};
+
+export const createResource = async (formData: ResourceFormData): Promise<Resource | null> => {
+  const payload = mapFormDataToPayload(formData);
+  const response = await apiFetch("/resources", {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
+
+  if (response?.success) {
+    return response.data;
+  }
+  return null;
+};
+
+export const updateResource = async (id: string | number, formData: ResourceFormData): Promise<Resource | null> => {
+  const payload = mapFormDataToPayload(formData);
+  const response = await apiFetch(`/resources/${id}`, {
+    method: "PUT",
+    body: JSON.stringify(payload),
+  });
+
+  if (response?.success) {
+    return response.data;
+  }
+  return null;
 };
 
 export const deleteResource = async (id: string | number): Promise<boolean> => {
@@ -45,26 +70,44 @@ export const updateResourceStatus = async (
 };
 
 
-// Mappers (Mantidos para referência, serão atualizados na Fase 3 se liberado)
 const mapFormDataToPayload = (formData: ResourceFormData): CreateResourcePayload => {
+  // Mapeamento de UI para IDs do Backend
+  const floorMap: Record<string, number> = {
+    "first-floor": 1,
+    "second-floor": 2,
+    "third-floor": 3
+  };
+
+  const categoryMap: Record<string, number> = {
+    "Rack": 1,
+    "Switch": 2,
+    "Server": 3,
+    "Other": 4
+  };
+
   return {
     name: formData.name,
     unescId: formData.unescId,
     description: formData.description,
-    category: formData.category,
-    floor: formData.floor,
-    status: formData.status,
-    imageUrl: undefined,
-  };
+    category_id: categoryMap[formData.category] || 1,
+    level_id: floorMap[formData.floor] || 1,
+    status: formData.status === "available" ? "disponivel" : "indisponivel",
+  } as any; // Using any for now to match payload structure expected by backend
 };
 
 export const mapResourceToFormData = (resource: Resource): ResourceFormData => {
+  const reverseFloorMap: Record<number, any> = {
+    1: "first-floor",
+    2: "second-floor",
+    3: "third-floor"
+  };
+
   return {
     name: resource.name,
     unescId: resource.unesc_id,
     description: resource.description || "",
-    category: "Rack", // Placeholder
-    floor: "first-floor", // Placeholder
+    category: resource.category?.name as any || "Rack",
+    floor: reverseFloorMap[resource.level?.id] || "first-floor",
     status: resource.status === "disponivel" ? "available" : "unavailable",
   };
 };

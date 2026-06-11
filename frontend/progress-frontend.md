@@ -481,7 +481,7 @@ Implementação de correções críticas de Controle de Acesso Baseado em Roles 
 - **Sincronização de Storage**: O hook `useAuth` agora monitora o evento `storage` para reagir a mudanças de token em múltiplas abas.
 
 ### Motivo
-Garantir que a interface do sistema respeite rigorosamente as permissões de cada perfil de usuário (Student, Teacher, Admin), impedindo o acesso visual e funcional a operações não autorizadas e reforçando a seguran�a das rotas protegidas.
+Garantir que a interface do sistema respeite rigorosamente as permissões de cada perfil de usuário (Student, Teacher, Admin), impedindo o acesso visual e funcional a operações não autorizadas e reforçando a seguran�a das rotas protegidas.
 
 ### Impactos
 - Alunos e Professores não visualizam mais botões de criar ou editar recursos.
@@ -491,21 +491,28 @@ Garantir que a interface do sistema respeite rigorosamente as permissões de cad
 
 ---
 
-## 10/06/2026 (Blindagem Lógica de RBAC - Defense in Depth)
+## 11/06/2026 (Restauração de Renderização e Correção de Integridade)
 
 ### Contexto
-Implementação de blindagem lógica adicional nos handlers administrativos da feature Resources para garantir segurança programática e conformidade total com o RBAC.
+Resolução de falha crítica de renderização (tela branca) e correção de 19 erros de compilação que impediam a inicialização da aplicação após as últimas implementações de RBAC e segurança.
 
 ### Alterações realizadas
-- **Proteção de Handlers**: Adicionadas guardas de permissão explícitas (`if (!isAdmin) return;`) nos handlers `handleOpenAddModal`, `handleEditResource`, `handleDeleteResource` e `handleFormSubmit` em `Resources.tsx`.
-- **Gestão de Status**: Handler `handleStatusUpdate` blindado para permitir execução apenas por usuários com role `Admin` ou `Teacher`.
-- **Blindagem de Estados**: Garantido que os estados `isFormModalOpen` e `resourceToEdit` não sejam alterados sem validação prévia de autorização.
-- **Isolamento de Lógica**: A validação de permissão agora ocorre no início do fluxo lógico, antes de qualquer processamento ou transição de UI.
+- **Causa Raiz (Render Crash)**: Corrigidos imports inválidos da biblioteca `lucide-react` nos componentes globais `accordion.tsx` e `sonner.tsx` (remoção do sufixo `Icon` inexistente).
+- **Alinhamento de Tipos (Domain Driven)**:
+    - Sincronizada a nomenclatura de `ResourceStatus` em toda a aplicação para utilizar os valores oficiais do backend (`disponivel` / `indisponivel`) em vez de termos em inglês.
+    - Atualizados os componentes `ResourceStatus.tsx`, `ResourceCard.tsx` e `ResourceDetailsModal.tsx` para consumir o estado diretamente do domínio.
+- **Restauração de Mocks**:
+    - Refatorados `resource.mock.ts` e `resourceForm.mock.ts` para aderir ao contrato oficial `Resource`, substituindo a propriedade legada `floor` pelo objeto estruturado `level`.
+- **Implementação de Serviços**:
+    - Exportadas e implementadas as funções `createResource` e `updateResource` em `resourceForm.service.ts` utilizando a infraestrutura `apiFetch`, resolvendo as pendências de importação no orquestrador `Resources.tsx`.
+- **Conformidade TypeScript**:
+    - Ajustado `AuthGuard.tsx` para utilizar `import type` em conformidade com a regra `verbatimModuleSyntax`.
 
 ### Motivo
-Reforçar a segurança do sistema contra execuções indevidas via console, ferramentas de desenvolvedor ou manipulação direta de estado React, complementando a proteção visual de renderização condicional já existente.
+Restaurar a disponibilidade do sistema e garantir que a base de código seja 100% compilável e tipada, eliminando divergências entre o modelo de dados do frontend e o contrato real da API.
 
 ### Impactos
-- Student e Teacher estão tecnicamente impedidos de iniciar fluxos de criação e edição.
-- Student está tecnicamente impedido de disparar exclusão ou alteração de status.
-- Conformidade estrita com o PRD garantida tanto na camada de visualização quanto na camada de controle (orquestrador).
+- **Build**: Finalizado com sucesso (`npm run build` OK).
+- **Typecheck**: 0 erros encontrados (`npm run typecheck` OK).
+- **Renderização**: Aplicação volta a renderizar normalmente, com listagem de recursos e Sidebar operais.
+- **Segurança**: Mantida a integridade total do AuthGuard e das proteções de RBAC (Admin/Teacher/Student).
