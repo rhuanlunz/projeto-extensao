@@ -331,3 +331,47 @@ A solicitacao de novo mapeamento representa o pedido de criacao/mapeamento de um
 
 ### Impactos
 O endpoint `POST /api/v1/resource-requests` passa a aceitar apenas `resource` e `description`, ambos obrigatorios, com limites mantidos. A suite impactada foi validada com 9 testes e 29 assertions.
+
+---
+
+## 2026-06-10 (Implementação: Gerenciamento de Usuários e Promoção de Roles)
+
+### Contexto
+O sistema carecia de endpoints administrativos para gerenciamento de usuários, impossibilitando que administradores promovessem usuários comuns (Students) a professores (Teachers) ou outros administradores através da API.
+
+### Alterações realizadas
+- Criação do `UserController.php` com os métodos `index` (listagem) e `updateRole` (atualização de perfil).
+- Implementação do `UserService.php` para isolar a lógica de busca e atualização de roles, utilizando `Eager Loading` para as relações de roles.
+- Criação do `UserResource.php` para padronizar a saída de dados do usuário, garantindo a exposição controlada de campos e relacionamentos.
+- Criação do `UpdateUserRoleRequest.php` para validar a existência e o formato do `role_id` enviado.
+- Registro das rotas em `routes/users.php` sob o prefixo `/api/v1/users`, com proteção estrita via `AuthMiddleware` e `role:admin`.
+- Integração do novo grupo de rotas no arquivo central `bootstrap/app.php`.
+- Criação de suíte de testes automatizados `UserManagementTest.php` em `tests/Feature/User/`, validando listagem, atualização de role, controle de acesso (403 para não-admins) e validações de payload.
+
+### Motivo
+Atender à necessidade crítica de operação administrativa do sistema, permitindo que o administrador do Bloco B gerencie os níveis de acesso dos usuários de forma segura e auditável via API.
+
+### Impactos
+A API agora permite a gestão completa de perfis de usuários por administradores. A arquitetura segue o padrão `Controller -> Service -> Model` e está 100% coberta por testes de integração, garantindo que a promoção de usuários funcione sem comprometer a integridade do sistema de autenticação JWT existente.
+
+---
+
+## 2026-06-10 (Implementação: Endpoint de Andares/Levels)
+
+### Contexto
+O frontend necessitava de um endpoint para obter a lista de andares (levels) disponíveis para popular formulários de criação e edição de recursos.
+
+### Alterações realizadas
+- Criação do `LevelService.php` com o método `getAllLevels()`.
+- Criação do `LevelController.php` com o método `index()`.
+- Criação do arquivo de rotas `routes/levels.php` definindo o endpoint `GET /api/v1/levels`.
+- Registro do prefixo `levels` no arquivo `bootstrap/app.php`.
+- O endpoint foi configurado como somente leitura e acessível a qualquer usuário autenticado (`student`, `teacher`, `admin`).
+
+### Motivo
+Fornecer os dados necessários para que o frontend possa exibir dinamicamente os andares disponíveis no sistema, resolvendo um bloqueador de integração identificado na auditoria técnica.
+
+### Impactos
+O frontend agora pode consumir a lista de andares, permitindo a correta implementação dos formulários de cadastro de recursos.
+
+
