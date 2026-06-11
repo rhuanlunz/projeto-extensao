@@ -5,16 +5,24 @@ import { ResourceGrid } from "./components/ResourceGrid";
 import { ResourceAddButton } from "./components/ResourceAddButton";
 import { ResourceDetailsModal } from "./components/ResourceDetailsModal";
 import { ResourceFormModal } from "./components/ResourceFormModal";
+import { DeleteConfirmationModal } from "./components/DeleteConfirmationModal";
 
-import { groupResourcesByFloor, calculateResourceStats } from "./services/resource.group";
-import type { Resource } from "./services/resource.types";
-import { getResources, createResource, updateResource } from "./services/resourceForm.service";
+import type { Resource, ResourcesByFloor } from "./services/resource.types";
+import { getResourcesGrouped, createResource, updateResource, deleteResource, updateResourceStatus } from "./services/resourceForm.service";
 import type { ResourceFormValues } from "./schemas/resourceForm.schema";
 import { toast, Toaster } from "sonner";
+import { useAuth } from "@/contexts/AuthContext";
 
 export function Resources() {
-  // Estado para a lista de recursos (Source of Truth)
-  const [resources, setResources] = useState<Resource[]>([]);
+  const { user } = useAuth();
+  const isAdmin = user?.role === 'admin';
+  const isTeacher = user?.role === 'teacher';
+  const canManage = isAdmin;
+  const canEditStatus = isAdmin || isTeacher;
+
+  // Estado para a lista de recursos (Agrupados pela API)
+  const [groupedResources, setGroupedResources] = useState<ResourcesByFloor>({});
+  const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(null);
   const toggleRef = useRef<HTMLButtonElement>(null);
 
   // Estado para controle do modal de detalhes
@@ -24,6 +32,10 @@ export function Resources() {
   const [isFormModalOpen, setIsFormModalOpen] = useState(false);
   const [resourceToEdit, setResourceToEdit] = useState<Resource | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Estado para controle de exclusão
+  const [resourceToDelete, setResourceToDelete] = useState<Resource | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   // Estado para controle de visibilidade da Sidebar
   const [isSidebarVisible, setIsSidebarVisible] = useState(true);
@@ -60,17 +72,39 @@ export function Resources() {
   }, [isSidebarVisible]);
 
   // Carregamento inicial via Service
-  useEffect(() => {
-    const fetchResources = async () => {
-      const data = await getResources();
-      setResources(data);
-    };
-    fetchResources();
-  }, []);
+  const fetchResources = async () => {
+    try {
+      const data = await getResourcesGrouped();
+      setGroupedResources(data);
+    } catch {
+      toast.error("Erro ao carregar recursos.");
+    }
+  };
 
-  // Processamento de dados via services (memoizado para performance)
-  const groupedResources = useMemo(() => groupResourcesByFloor(resources), [resources]);
-  const resourceStats = useMemo(() => calculateResourceStats(resources), [resources]);
+  useEffect(() => {
+    fetchResources();
+  }, [selectedCategoryId]);
+
+  // Filtragem e Cálculo de estatísticas (memoizado para performance)
+  const filteredResources = useMemo(() => {
+    if (selectedCategoryId === null) return groupedResources;
+
+    const filtered: ResourcesByFloor = {};
+    Object.entries(groupedResources).forEach(([floor, items]) => {
+      const filteredItems = items.filter(item => item.category.id === selectedCategoryId);
+      if (filteredItems.length > 0) {
+        filtered[floor] = filteredItems;
+      }
+    });
+    return filtered;
+  }, [groupedResources, selectedCategoryId]);
+
+  const resourceStats = useMemo(() => {
+    return Object.entries(filteredResources).map(([floorName, items]) => ({
+      floorName,
+      count: items.length
+    }));
+  }, [filteredResources]);
 
   const handleSelectResource = (resource: Resource) => {
     setSelectedResource(resource);
@@ -94,27 +128,62 @@ export function Resources() {
 
   const handleEditResource = (resource: Resource) => {
     setSelectedResource(null);
-    // Blindagem de UI: requestAnimationFrame evita conflitos de overlay/focus trap
     requestAnimationFrame(() => {
       setResourceToEdit(resource);
       setIsFormModalOpen(true);
     });
   };
 
+  const handleDeleteResource = (id: string) => {
+    // Busca o recurso completo para exibir o nome no modal
+    const resource = Object.values(groupedResources)
+      .flat()
+      .find(r => r.id === id);
+    
+    if (resource) {
+      setResourceToDelete(resource);
+    }
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!resourceToDelete) return;
+    
+    setIsDeleting(true);
+    try {
+      await deleteResource(resourceToDelete.id);
+      toast.success("Recurso excluído com sucesso!");
+      fetchResources();
+      setResourceToDelete(null);
+      setSelectedResource(null);
+    } catch {
+      toast.error("Erro ao excluir recurso.");
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
+  const handleStatusUpdate = async (id: string, newStatus: string) => {
+    try {
+      await updateResourceStatus(id, newStatus);
+      toast.success("Status atualizado com sucesso!");
+      fetchResources();
+      setSelectedResource(null);
+    } catch {
+      toast.error("Erro ao atualizar status.");
+    }
+  };
+
   const handleFormSubmit = async (values: ResourceFormValues) => {
     setIsSubmitting(true);
     try {
       if (resourceToEdit) {
-        const updated = await updateResource(resourceToEdit.id, values);
-        if (!updated) return;
-        setResources(prev => prev.map(r => r.id === updated.id ? updated : r));
+        await updateResource(resourceToEdit.id, values as any);
         toast.success("Recurso atualizado com sucesso!");
       } else {
-        const created = await createResource(values);
-        if (!created) return;
-        setResources(prev => [created, ...prev]);
+        await createResource(values as any);
         toast.success("Recurso cadastrado com sucesso!");
       }
+      fetchResources();
       setIsFormModalOpen(false);
       setResourceToEdit(null);
     } catch {
@@ -127,11 +196,10 @@ export function Resources() {
   const handleShowSidebar = () => setIsSidebarVisible(true);
   const handleHideSidebar = () => {
     setIsSidebarVisible(false);
-    // Retorna o foco para o botão de toggle ao fechar a sidebar em mobile
     if (window.innerWidth < 1024) {
       setTimeout(() => {
         toggleRef.current?.focus();
-      }, 300); // Aguarda a animação
+      }, 300);
     }
   };
 
@@ -139,50 +207,62 @@ export function Resources() {
     <div className="flex h-screen w-full overflow-x-hidden overflow-y-hidden bg-[#EEF3F7]">
       <Toaster position="top-right" richColors />
 
-      {/* Botão Flutuante para Reabertura */}
       <SidebarToggle 
         ref={toggleRef}
         visible={!isSidebarVisible} 
         onOpen={handleShowSidebar} 
       />
 
-      {/* Sidebar Global */}
-      <Sidebar visible={isSidebarVisible} onClose={handleHideSidebar} />
+      <Sidebar 
+        visible={isSidebarVisible} 
+        onClose={handleHideSidebar} 
+        onSelectCategory={setSelectedCategoryId}
+        selectedCategoryId={selectedCategoryId}
+      />
 
-      {/* Conteúdo Principal */}
       <main className="flex-1 min-w-0 overflow-auto p-4 sm:p-6 md:p-10 pt-20 lg:pt-10 pb-safe pr-safe pl-safe transition-all duration-300">
         <div className="mx-auto max-w-7xl">
-          {/* Banner de Resumo */}
           <ResourceHeader stats={resourceStats} />
 
-          {/* Grid de Recursos agrupados por andar */}
           <ResourceGrid
-            groupedResources={groupedResources}
+            groupedResources={filteredResources}
             onResourceClick={handleSelectResource}
           />
         </div>
 
-        {/* Botão de Ação Flutuante */}
-        <div className="fixed bottom-6 right-6 sm:bottom-10 sm:right-10 z-30">
-          <ResourceAddButton onClick={handleOpenAddModal} />
-        </div>
+        {canManage && (
+          <div className="fixed bottom-6 right-6 sm:bottom-10 sm:right-10 z-30">
+            <ResourceAddButton onClick={handleOpenAddModal} />
+          </div>
+        )}
       </main>
 
-      {/* Modal de Detalhes do Recurso */}
       <ResourceDetailsModal
         open={!!selectedResource}
         resource={selectedResource}
         onClose={handleCloseModal}
         onEdit={handleEditResource}
+        onDelete={handleDeleteResource}
+        onStatusToggle={handleStatusUpdate}
+        canEdit={canManage}
+        canToggleStatus={canEditStatus}
       />
 
-      {/* Modal de Formulário (Cadastro/Edição) */}
       <ResourceFormModal 
         open={isFormModalOpen}
         onOpenChange={handleCloseFormModal}
         initialData={resourceToEdit}
         onSubmit={handleFormSubmit}
         isSubmitting={isSubmitting}
+        defaultCategoryId={selectedCategoryId}
+      />
+
+      <DeleteConfirmationModal
+        open={!!resourceToDelete}
+        onOpenChange={(open) => !open && setResourceToDelete(null)}
+        onConfirm={handleConfirmDelete}
+        itemName={resourceToDelete?.name || ""}
+        isDeleting={isDeleting}
       />
     </div>
   );

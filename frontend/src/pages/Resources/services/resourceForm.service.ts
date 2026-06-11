@@ -1,4 +1,4 @@
-import * as mockRepo from "./resourceForm.mock";
+import { api } from "@/lib/api";
 import type { 
   ResourceFormData, 
   CreateResourcePayload, 
@@ -6,52 +6,71 @@ import type {
 } from "../types/resourceForm.types";
 import type { Resource } from "./resource.types";
 
-export const getResources = async (): Promise<Resource[]> => {
-  return await mockRepo.getResources();
+export const getResourcesGrouped = async (): Promise<Record<string, Resource[]>> => {
+  const response = await api.get('/resources');
+  return response.data.data;
 };
 
 export const createResource = async (formData: ResourceFormData): Promise<Resource> => {
   const payload = mapFormDataToPayload(formData);
-  return await mockRepo.createResource(payload);
+  const response = await api.post('/resources', payload);
+  return response.data.data;
 };
 
 export const updateResource = async (id: string, formData: ResourceFormData): Promise<Resource> => {
-  const payload: UpdateResourcePayload = {
-    ...mapFormDataToPayload(formData),
-    id,
-  };
-  return await mockRepo.updateResource(payload);
+  const payload = mapFormDataToPayload(formData);
+  const response = await api.put(`/resources/${id}`, payload);
+  return response.data.data;
+};
+
+export const updateResourceStatus = async (id: string, status: string): Promise<Resource> => {
+  const response = await api.patch(`/resources/${id}/status`, { status });
+  return response.data.data;
+};
+
+export const deleteResource = async (id: string): Promise<void> => {
+  await api.delete(`/resources/${id}`);
+};
+
+export const getCategories = async () => {
+  const response = await api.get('/categories');
+  return response.data.data;
+};
+
+export const createCategory = async (name: string) => {
+  const response = await api.post('/categories', { name });
+  return response.data.data;
+};
+
+export const updateCategory = async (id: number, name: string) => {
+  const response = await api.put(`/categories/${id}`, { name });
+  return response.data.data;
+};
+
+export const getLevels = async () => {
+  const response = await api.get('/levels');
+  return response.data.data;
 };
 
 // Mappers
 const mapFormDataToPayload = (formData: ResourceFormData): CreateResourcePayload => {
   return {
     name: formData.name,
-    unescId: formData.unescId,
-    description: formData.description,
-    category: formData.category,
-    floor: formData.floor,
+    unesc_id: formData.unescId,
     status: formData.status,
-    imageUrl: undefined, // Permitir que a UI aplique o fallback institucional
+    category_id: formData.category_id,
+    level_id: formData.level_id,
+    description: formData.description,
   };
 };
 
 export const mapResourceToFormData = (resource: Resource): ResourceFormData => {
   return {
     name: resource.name,
-    unescId: resource.id, // Simulando que o ID é o UNESC ID
+    unescId: resource.unesc_id,
     description: resource.description || "",
-    category: "Rack", // Default para mock
-    floor: mapNumberToFloor(resource.floor),
+    category_id: resource.category.id,
+    level_id: resource.level.id,
     status: resource.status,
   };
-};
-
-const mapNumberToFloor = (floor: number): any => {
-  switch (floor) {
-    case 1: return "first-floor";
-    case 2: return "second-floor";
-    case 3: return "third-floor";
-    default: return "first-floor";
-  }
 };

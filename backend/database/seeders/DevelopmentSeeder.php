@@ -27,6 +27,13 @@ class DevelopmentSeeder extends Seeder
 
         // 1. Cria usuários fakes com senhas explícitas para facilitar DX
         User::factory()->create([
+            'name' => 'Admin Teste',
+            'email' => 'admin@teste.com',
+            'password' => Hash::make('password'),
+            'role_id' => Roles::ADMIN->value,
+        ]);
+
+        User::factory()->create([
             'name' => 'Professor Teste',
             'email' => $anchorEmail,
             'password' => Hash::make('password'),

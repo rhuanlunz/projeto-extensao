@@ -22,8 +22,17 @@ export default function Register() {
       e.preventDefault();
       setLoading(true);
 
-      await registerService({ username, email, password, passwordConfirmation }, navigate);
+      const success = await registerService({ 
+        name: username, 
+        email, 
+        password, 
+        password_confirmation: passwordConfirmation 
+      });
       
+      if (success) {
+        navigate('/autenticacao/login');
+      }
+
       setLoading(false);
     }}>
       <div className="flex min-h-screen p-5 items-center justify-center bg-[linear-gradient(to_bottom,#0085FF_50%,#E0F2FF_50%)]">
@@ -96,73 +105,36 @@ export default function Register() {
                 </FieldLabel>
 
                 <FieldContent>
-
                   <div className="relative mt-0">
                     <PasswordInput 
                       id="new-password" 
                       name="new-password" 
                       placehoder="Digite sua senha"
                       value={password}
-                      onChange={e => setPassword(e.target.value)}
-                      className="mt-0 h-10 pr-10 text-black"
+                      onChange={setPassword}
                     />
+                    </div>
+                    </FieldContent>
 
-                    <button
-                      type="button"
-                      onClick={() =>
-                        setShowPassword(!showPassword)
-                      }
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-zinc-800"
-                    >
-                      {showPassword ? (
-                        <EyeOff size={18} />
-                      ) : (
-                        <Eye size={18} />
-                      )}
-                    </button>
+                    </Field>
 
-                  </div>
+                    <Field>
 
-                </FieldContent>
+                    <FieldLabel className="mt-0 text-sm font-medium">
+                    Confirmar senha
+                    </FieldLabel>
 
-              </Field>
+                    <FieldContent>
 
-              <Field>
-
-                <FieldLabel className="mt-0text-sm font-medium">
-                  Confirmar senha
-                </FieldLabel>
-
-                <FieldContent>
-
-                  <div className="relative mt-0">
+                    <div className="relative mt-0">
                     <PasswordInput 
-                      id="new-password" 
-                      name="new-password" 
+                      id="confirm-password" 
+                      name="confirm-password" 
                       placehoder="Confirme sua senha"
                       value={passwordConfirmation}
-                      onChange={e => setPasswordConfirmation(e.target.value)}
-                      className="mt-0 h-10 pr-10 text-black"
+                      onChange={setPasswordConfirmation}
                     />
-
-                    <button
-                      type="button"
-                      onClick={() =>
-                        setShowConfirmPassword(
-                          !showConfirmPassword
-                        )
-                      }
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-zinc-800"
-                    >
-                      {showConfirmPassword ? (
-                        <EyeOff size={18} />
-                      ) : (
-                        <Eye size={18} />
-                      )}
-                    </button>
-
                   </div>
-
                 </FieldContent>
 
               </Field>

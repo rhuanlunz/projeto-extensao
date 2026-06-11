@@ -5,9 +5,11 @@ import { useEffect, useRef, useState } from "react";
 interface SidebarProps {
   visible: boolean;
   onClose: () => void;
+  onSelectCategory: (id: number | null) => void;
+  selectedCategoryId: number | null;
 }
 
-export function Sidebar({ visible, onClose }: SidebarProps) {
+export function Sidebar({ visible, onClose, onSelectCategory, selectedCategoryId }: SidebarProps) {
   const [isMounted, setIsMounted] = useState(false);
   const sidebarRef = useRef<HTMLElement>(null);
 
@@ -62,7 +64,12 @@ export function Sidebar({ visible, onClose }: SidebarProps) {
           shrink-0 overflow-hidden
         `}
       >
-        <SidebarContent visible={visible} onClose={onClose} />
+        <SidebarContent 
+          visible={visible} 
+          onClose={onClose} 
+          onSelectCategory={onSelectCategory}
+          selectedCategoryId={selectedCategoryId}
+        />
       </aside>
     </>
   );

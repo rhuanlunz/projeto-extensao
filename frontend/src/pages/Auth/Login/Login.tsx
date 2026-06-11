@@ -8,19 +8,26 @@ import loginService from "./services/loginService"
 import { Link, useNavigate } from "react-router"
 import { Toaster } from "sonner"
 import PasswordInput from "@/shared/PasswordInput/PasswordInput";
+import { useAuth } from "@/contexts/AuthContext"
 
 export default function Login() {
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   return (
     <form onSubmit={async e => {
       e.preventDefault();
       setLoading(true);
 
-      await loginService({ email, password }, navigate);
+      const data = await loginService({ email, password });
+      
+      if (data && data.success) {
+        login(data.data.access_token);
+        navigate('/', { replace: true });
+      }
 
       setLoading(false);
     }}>
@@ -70,26 +77,10 @@ export default function Login() {
                 </FieldLabel>
 
                 <FieldContent>
-                  <div className="relative mt-1">
-                    <Input
-                      type={showPassword ? "text" : "password"}
-                      value={password}
-                      onChange={e => setPassword(e.target.value)}
-                      className="h-10 pr-10 text-black"
-                    />
-
-                    <button
-                      type="button"
-                      onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-500 transition-colors hover:text-zinc-800"
-                    >
-                      {showPassword ? (
-                        <EyeOff size={18} />
-                      ) : (
-                        <Eye size={18} />
-                      )}
-                    </button>
-                  </div>
+                  <PasswordInput 
+                    value={password}
+                    onChange={setPassword}
+                  />
 
                   <div className="mt-2 flex justify-end">
                     <Link

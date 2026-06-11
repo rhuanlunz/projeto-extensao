@@ -14,6 +14,7 @@ class Resource extends Model
     protected $fillable = [
         'name',
         'unesc_id',
+        'description',
         'status',
         'category_id',
         'level_id'

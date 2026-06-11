@@ -1,46 +1,32 @@
+import { api } from "@/lib/api";
 import { showErrorMessage } from "@/wrappers/sonnerWrapper";
-import type { NavigateFunction } from "react-router";
 
 interface Credentials {
   email: string
   password: string
 }
 
-export default async function loginService(loginCredentials: Credentials, navigate: NavigateFunction) {
+export default async function loginService(loginCredentials: Credentials) {
     if (!loginCredentials.email) {
         showErrorMessage('O email não foi informado!');
-        return;
+        return null;
     }
 
     if (!loginCredentials.password) {
         showErrorMessage('A senha não foi informada!');
-        return;
+        return null;
     }
 
     try {
-        const response = await fetch('http://localhost:8000/api/v1/auth/login', {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                email: loginCredentials.email,
-                password: loginCredentials.password,
-            })
+        const response = await api.post('/auth/login', {
+            email: loginCredentials.email,
+            password: loginCredentials.password,
         });
 
-        const jsonData = await response.json();
-
-        if (jsonData.success == false) {
-            showErrorMessage(jsonData.message);
-            return;
-        }
-
-        localStorage.setItem('access_token', jsonData.data.access_token);
-
-        navigate('/', { replace: true });
-    } catch {
-        showErrorMessage('Erro ao realizar login!');
+        return response.data;
+    } catch (error: any) {
+        const message = error.response?.data?.message || 'Erro ao realizar login!';
+        showErrorMessage(message);
+        return null;
     }
 }

@@ -78,7 +78,14 @@ class User extends Authenticatable implements JWTSubject, CanResetPassword
 
     public function getJWTCustomClaims(): array
     {
+        $roleName = 'student';
+        if ($this->role_id === Roles::ADMIN->value) $roleName = 'admin';
+        if ($this->role_id === Roles::TEACHER->value) $roleName = 'teacher';
+
         return [
+            'role' => $roleName,
+            'name' => $this->name,
+            'email' => $this->email,
             'aud' => config('JWT_AUDIENCE', 'resource-api'),
         ];
     }

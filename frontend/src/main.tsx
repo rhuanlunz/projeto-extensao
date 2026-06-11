@@ -10,49 +10,61 @@ import Login from "@/pages/Auth/Login/Login.tsx"
 import Register from "./pages/Auth/Register/Register.tsx"
 
 import { Resources } from "@/pages/Resources/Resources.tsx"
+import { Settings } from "@/pages/Settings/Settings.tsx"
 
 import NotFound from "@/pages/NotFound/NotFound.tsx"
+import { AuthProvider } from "@/contexts/AuthContext"
+import { PrivateRoute } from "@/routes/PrivateRoute"
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
+    <AuthProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <PrivateRoute>
+                <Resources />
+              </PrivateRoute>
+            }
+          />
 
-    <BrowserRouter>
+          <Route
+            path="/configuracoes"
+            element={
+              <PrivateRoute allowedRoles={["admin"]}>
+                <Settings />
+              </PrivateRoute>
+            }
+          />
 
-      <Routes>
+          <Route
+            path="/autenticacao/login"
+            element={<Login />}
+          />
 
-        <Route
-          path="/"
-          element={<Resources />}
-        />
+          <Route
+            path="/autenticacao/cadastro"
+            element={<Register />}
+          />
 
-        <Route
-          path="/autenticacao/login"
-          element={<Login />}
-        />
+          <Route
+            path="/autenticacao/esqueci-minha-senha"
+            element={<ForgotPassword />}
+          />
 
-        <Route
-          path="/autenticacao/cadastro"
-          element={<Register />}
-        />
+          <Route
+            path="/autenticacao/redefinir-senha"
+            element={<ResetPassword />}
+          />
 
-        <Route
-          path="/autenticacao/esqueci-minha-senha"
-          element={<ForgotPassword />}
-        />
-
-        <Route
-          path="/autenticacao/redefinir-senha"
-          element={<ResetPassword />}
-        />
-
-        <Route
-          path="*"
-          element={<NotFound />}
-        />
-
-      </Routes>
-
-    </BrowserRouter>
-
+          <Route
+            path="*"
+            element={<NotFound />}
+          />
+        </Routes>
+      </BrowserRouter>
+    </AuthProvider>
   </StrictMode>
 )

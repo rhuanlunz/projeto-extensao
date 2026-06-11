@@ -17,14 +17,14 @@ export function ResourceHeader({ stats }: ResourceHeaderProps) {
       <div className="flex flex-wrap gap-3 md:gap-4 w-full lg:w-auto">
         {stats.map((stat) => (
           <div
-            key={stat.floor}
+            key={stat.floorName}
             className="flex flex-1 min-w-25 flex-col items-center rounded-xl bg-white/10 p-3 md:p-4 backdrop-blur-sm"
           >
             <span className="text-xl md:text-2xl font-bold">
               {String(stat.count).padStart(2, "0")}
             </span>
             <span className="text-[10px] md:text-xs font-medium uppercase tracking-wider opacity-90 whitespace-nowrap">
-              {stat.floor}º Andar
+              {stat.floorName}
             </span>
           </div>
         ))}
@@ -32,3 +32,4 @@ export function ResourceHeader({ stats }: ResourceHeaderProps) {
     </div>
   );
 }
+

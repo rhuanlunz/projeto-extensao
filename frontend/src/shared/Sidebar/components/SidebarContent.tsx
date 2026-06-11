@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState } from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { SidebarHeader } from "./SidebarHeader";
@@ -6,23 +6,19 @@ import { SidebarSearch } from "./SidebarSearch";
 import { SidebarMenu } from "./SidebarMenu";
 import { SidebarFooter } from "./SidebarFooter";
 import { SidebarUser } from "./SidebarUser";
+import { RequestResourceModal } from "./RequestResourceModal";
 
-import { sidebarResources, mockUser } from "../services/sidebar.mock";
-import { filterSidebarItems } from "../services/sidebar.filter";
 import { SIDEBAR_TRANSITION } from "../services/sidebar.constants";
 
 interface SidebarContentProps {
   visible: boolean;
   onClose: () => void;
+  onSelectCategory: (id: number | null) => void;
+  selectedCategoryId: number | null;
 }
 
-export function SidebarContent({ visible, onClose }: SidebarContentProps) {
-  const [searchTerm, setSearchTerm] = useState("");
-
-  const filteredItems = useMemo(
-    () => filterSidebarItems(sidebarResources, searchTerm),
-    [searchTerm]
-  );
+export function SidebarContent({ visible, onClose, onSelectCategory, selectedCategoryId }: SidebarContentProps) {
+  const [isRequestModalOpen, setIsRequestModalOpen] = useState(false);
 
   return (
     <div
@@ -36,18 +32,30 @@ export function SidebarContent({ visible, onClose }: SidebarContentProps) {
       inert={!visible ? "" : undefined}
     >
       <SidebarHeader onClose={onClose} />
-      
+
       <Separator className="mx-3 mb-6 bg-black/15" />
-      
-      <SidebarSearch onSearch={setSearchTerm} />
 
-      <ScrollArea className="flex-1">
-        <SidebarMenu items={filteredItems} />
-      </ScrollArea>
+      <SidebarSearch onSearch={() => {}} />
 
-      <SidebarFooter />
-      
-      <SidebarUser user={mockUser} />
+      <div className="flex-1 min-h-0">
+        <ScrollArea className="h-full">
+          <SidebarMenu 
+            onSelectCategory={onSelectCategory} 
+            selectedCategoryId={selectedCategoryId} 
+          />
+        </ScrollArea>
+      </div>
+
+      <SidebarFooter onRequestResource={() => setIsRequestModalOpen(true)} />
+
+      <SidebarUser />
+
+      <RequestResourceModal 
+        open={isRequestModalOpen} 
+        onOpenChange={setIsRequestModalOpen} 
+      />
     </div>
   );
 }
+
+
